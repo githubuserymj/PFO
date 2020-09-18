@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoPostMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoPost" >
+    <id column="post_id" property="postId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="post_title" property="postTitle" jdbcType="VARCHAR" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="post_status" property="postStatus" jdbcType="BIT" />
+    <result column="topic_id" property="topicId" jdbcType="INTEGER" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
+    <result column="o_coin" property="oCoin" jdbcType="INTEGER" />
+    <result column="origin_url" property="originUrl" jdbcType="VARCHAR" />
+    <result column="favor_count" property="favorCount" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.offer.pojo.PfoPost" extends="BaseResultMap" >
+    <result column="post_body" property="postBody" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    post_id, user_id, post_title, deliver_time, post_status, topic_id, view_count, comment_count,
+    o_coin, origin_url, favor_count
+  </sql>
+  <sql id="Blob_Column_List" >
+    post_body
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.offer.pojo.PfoPostExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_post
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoPostExample" >
+    <!-- select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_post
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if> -->
+    select * from pfo_post
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_post
+    where post_id = #{postId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_post
+    where post_id = #{postId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoPostExample" >
+    delete from pfo_post
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoPost" >
+    insert into pfo_post (post_id, user_id, post_title,
+      deliver_time, post_status, topic_id,
+      view_count, comment_count, o_coin,
+      origin_url, favor_count, post_body
+      )
+    values (#{postId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{postTitle,jdbcType=VARCHAR},
+      #{deliverTime,jdbcType=TIMESTAMP}, #{postStatus,jdbcType=BIT}, #{topicId,jdbcType=INTEGER},
+      #{viewCount,jdbcType=INTEGER}, #{commentCount,jdbcType=INTEGER}, #{oCoin,jdbcType=INTEGER},
+      #{originUrl,jdbcType=VARCHAR}, #{favorCount,jdbcType=INTEGER}, #{postBody,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoPost" >
+    insert into pfo_post
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        post_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="postTitle != null" >
+        post_title,
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time,
+      </if>
+      <if test="postStatus != null" >
+        post_status,
+      </if>
+      <if test="topicId != null" >
+        topic_id,
+      </if>
+      <if test="viewCount != null" >
+        view_count,
+      </if>
+      <if test="commentCount != null" >
+        comment_count,
+      </if>
+      <if test="oCoin != null" >
+        o_coin,
+      </if>
+      <if test="originUrl != null" >
+        origin_url,
+      </if>
+      <if test="favorCount != null" >
+        favor_count,
+      </if>
+      <if test="postBody != null" >
+        post_body,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        #{postId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postTitle != null" >
+        #{postTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverTime != null" >
+        #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="postStatus != null" >
+        #{postStatus,jdbcType=BIT},
+      </if>
+      <if test="topicId != null" >
+        #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="viewCount != null" >
+        #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="commentCount != null" >
+        #{commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="oCoin != null" >
+        #{oCoin,jdbcType=INTEGER},
+      </if>
+      <if test="originUrl != null" >
+        #{originUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="favorCount != null" >
+        #{favorCount,jdbcType=INTEGER},
+      </if>
+      <if test="postBody != null" >
+        #{postBody,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoPostExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_post
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_post
+    <set >
+      <if test="record.postId != null" >
+        post_id = #{record.postId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.postTitle != null" >
+        post_title = #{record.postTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deliverTime != null" >
+        deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.postStatus != null" >
+        post_status = #{record.postStatus,jdbcType=BIT},
+      </if>
+      <if test="record.topicId != null" >
+        topic_id = #{record.topicId,jdbcType=INTEGER},
+      </if>
+      <if test="record.viewCount != null" >
+        view_count = #{record.viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.commentCount != null" >
+        comment_count = #{record.commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.oCoin != null" >
+        o_coin = #{record.oCoin,jdbcType=INTEGER},
+      </if>
+      <if test="record.originUrl != null" >
+        origin_url = #{record.originUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.favorCount != null" >
+        favor_count = #{record.favorCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.postBody != null" >
+        post_body = #{record.postBody,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update pfo_post
+    set post_id = #{record.postId,jdbcType=BIGINT},
+    user_id = #{record.userId,jdbcType=BIGINT},
+    post_title = #{record.postTitle,jdbcType=VARCHAR},
+    deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+    post_status = #{record.postStatus,jdbcType=BIT},
+    topic_id = #{record.topicId,jdbcType=INTEGER},
+    view_count = #{record.viewCount,jdbcType=INTEGER},
+    comment_count = #{record.commentCount,jdbcType=INTEGER},
+    o_coin = #{record.oCoin,jdbcType=INTEGER},
+    origin_url = #{record.originUrl,jdbcType=VARCHAR},
+    favor_count = #{record.favorCount,jdbcType=INTEGER},
+    post_body = #{record.postBody,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_post
+    set post_id = #{record.postId,jdbcType=BIGINT},
+    user_id = #{record.userId,jdbcType=BIGINT},
+    post_title = #{record.postTitle,jdbcType=VARCHAR},
+    deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+    post_status = #{record.postStatus,jdbcType=BIT},
+    topic_id = #{record.topicId,jdbcType=INTEGER},
+    view_count = #{record.viewCount,jdbcType=INTEGER},
+    comment_count = #{record.commentCount,jdbcType=INTEGER},
+    o_coin = #{record.oCoin,jdbcType=INTEGER},
+    origin_url = #{record.originUrl,jdbcType=VARCHAR},
+    favor_count = #{record.favorCount,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoPost" >
+    update pfo_post
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postTitle != null" >
+        post_title = #{postTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="postStatus != null" >
+        post_status = #{postStatus,jdbcType=BIT},
+      </if>
+      <if test="topicId != null" >
+        topic_id = #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="viewCount != null" >
+        view_count = #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="commentCount != null" >
+        comment_count = #{commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="oCoin != null" >
+        o_coin = #{oCoin,jdbcType=INTEGER},
+      </if>
+      <if test="originUrl != null" >
+        origin_url = #{originUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="favorCount != null" >
+        favor_count = #{favorCount,jdbcType=INTEGER},
+      </if>
+      <if test="postBody != null" >
+        post_body = #{postBody,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where post_id = #{postId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.offer.pojo.PfoPost" >
+    update pfo_post
+    set user_id = #{userId,jdbcType=BIGINT},
+      post_title = #{postTitle,jdbcType=VARCHAR},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      post_status = #{postStatus,jdbcType=BIT},
+      topic_id = #{topicId,jdbcType=INTEGER},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      o_coin = #{oCoin,jdbcType=INTEGER},
+      origin_url = #{originUrl,jdbcType=VARCHAR},
+      favor_count = #{favorCount,jdbcType=INTEGER},
+      post_body = #{postBody,jdbcType=LONGVARCHAR}
+    where post_id = #{postId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoPost" >
+    update pfo_post
+    set user_id = #{userId,jdbcType=BIGINT},
+      post_title = #{postTitle,jdbcType=VARCHAR},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      post_status = #{postStatus,jdbcType=BIT},
+      topic_id = #{topicId,jdbcType=INTEGER},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      o_coin = #{oCoin,jdbcType=INTEGER},
+      origin_url = #{originUrl,jdbcType=VARCHAR},
+      favor_count = #{favorCount,jdbcType=INTEGER}
+    where post_id = #{postId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 标签返回值类型-->
+  <resultMap id="TagMap" type="com.offer.pojo.PfoTag">
+    <id column="tag_id" property="tagId" jdbcType="BIGINT" />
+    <result column="tag_name" property="tagName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- 添加帖子-->
+  <insert id="addPost" parameterType="com.offer.pojo.PfoPost" useGeneratedKeys="true" keyProperty="postId">
+    insert into pfo_post (post_id, post_title, deliver_time,
+      post_status, topic_id, view_count,
+      comment_count, o_coin, origin_url,
+      post_body,user_id,favor_count)
+    values (#{postId,jdbcType=BIGINT}, #{postTitle,jdbcType=VARCHAR}, #{deliverTime,jdbcType=TIMESTAMP},
+      #{postStatus,jdbcType=BIT}, #{topicId,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER},
+      #{commentCount,jdbcType=INTEGER}, #{oCoin,jdbcType=INTEGER}, #{originUrl,jdbcType=VARCHAR},
+      #{postBody,jdbcType=LONGVARCHAR},#{userId,jdbcType=BIGINT},#{favorCount,jdbcType=INTEGER})
+  </insert>
+
+  <!-- 根据id修改帖子-->
+  <update id="updateById" parameterType="com.offer.pojo.PfoPost">
+   update pfo_post
+    set user_id = #{userId,jdbcType=BIGINT},
+      post_title = #{postTitle,jdbcType=VARCHAR},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      post_status = #{postStatus,jdbcType=BIT},
+      topic_id = #{topicId,jdbcType=INTEGER},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      o_coin = #{oCoin,jdbcType=INTEGER},
+      origin_url = #{originUrl,jdbcType=VARCHAR},
+      post_body = #{postBody,jdbcType=LONGVARCHAR},
+	  favor_count = #{favorCount,jdbcType=INTEGER}
+    where post_id = #{postId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 根据id删除帖子-->
+  <delete id="deleteById" parameterType="java.lang.Long" >
+    delete from pfo_post where post_id = #{postId}
+  </delete>
+
+  <!-- 根据帖子id查询帖子的对应的所有标签-->
+  <select id="queryAllTagsByPostId" resultType="com.offer.pojo.PfoTag" parameterType="java.lang.Long">
+    select t.*, pt.post_id
+    from pfo_tag t,pfo_post_tag pt
+    where t.tag_id = pt.tag_id
+    and pt.post_id = #{postId}
+  </select>
+
+  <!-- 根据标签id查询标签的对应的所有帖子-->
+  <select id="queryAllPostsByTagId" resultType="com.offer.pojo.PfoPost" parameterType="java.lang.Long">
+    select p.*, pt.tag_id
+    from pfo_post p,pfo_post_tag pt
+    where p.post_id = pt.post_id
+    and pt.tag_id=#{tagId}
+  </select>
+
+  <!-- 查询所有帖子的所有标签(去重)-->
+  <select id="queryAllTagsWithPosts" resultType="com.offer.pojo.PfoTag">
+    select distinct
+    t.tag_id, t.tag_name
+    from pfo_tag t,pfo_post_tag pt
+    where t.tag_id = pt.tag_id
+  </select>
+
+  <!-- 根据用户id查询她发布的所有帖子-->
+  <select id="queryAllPostsByUserId" resultType="com.offer.pojo.PfoPost">
+    select * from pfo_post
+    where user_id = #{userId}
+  </select>
+
+  <!-- 根据主题ID查询所有帖子-->
+  <select id="queryAllPostsByTopicId" resultType="com.offer.pojo.PfoPost">
+    select * from pfo_post
+    where topic_id = #{topicId}
+  </select>
+
+  <!-- 自定义字段结果集-->
+  <resultMap id="RequiredMap" type="com.offer.pojo.PfoPostRequired" >
+    <id column="post_id" property="postId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="post_title" property="postTitle" jdbcType="VARCHAR" />
+    <result column="user_photo" property="userPhoto" jdbcType="VARCHAR" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="topic_id" property="topicId" jdbcType="INTEGER" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="favor_count" property="favorCount" jdbcType="INTEGER" />
+    <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="topic_name" property="topicName" jdbcType="VARCHAR" />
+    <collection column="id" property="tagList" ofType="com.offer.pojo.PfoTag">
+      <!-- 定义这个集合中元素的封装规则 -->
+      <id column="tag_id" property="tagId" jdbcType="BIGINT" />
+      <result column="tag_name" property="tagName" jdbcType="VARCHAR" />
+    </collection>
+
+  </resultMap>
+  <!-- 查找需要的多个字段-->
+  <select id="queryByRequired" resultMap="RequiredMap" parameterType="com.offer.pojo.PfoPostExample">
+    select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count,favor_count,
+    p.post_id,u.user_id,p.topic_id
+    from pfo_user u,pfo_post p,pfo_topic t
+    where u.user_id=p.user_id and p.topic_id = t.topic_id order by post_id
+  </select>
+  <!-- 根据帖子id查询帖子信息-->
+  <select id="queryPostByPostId" resultType="com.offer.pojo.PfoPost">
+    select * from pfo_post
+    where post_id = #{postId}
+  </select>
+
+
+  <!-- 查找需要的多个字段 排序-->
+  <!-- order = 1 最新发表    排序
+       order = 2 最多浏览    浏览量降序
+       order = 3 最多回复    回复降序
+  -->
+  <select id="queryByRequiredOrder" resultMap="RequiredMap" parameterType="java.lang.Integer">
+    <if test="order == 1">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count,favor_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t
+      where u.user_id=p.user_id and p.topic_id = t.topic_id order by deliver_time desc
+    </if>
+    <if test="order == 2">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count,favor_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t
+      where u.user_id=p.user_id and p.topic_id = t.topic_id order by view_count desc
+    </if>
+    <if test="order == 3">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count,favor_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t
+      where u.user_id=p.user_id and p.topic_id = t.topic_id order by comment_count desc
+    </if>
+    <!--<if test="tagId">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t,pfo_post_tag pt
+      where u.user_id=p.user_id and p.topic_id = t.topic_id and pt.tag_id =#{tagId} and pt.post_id = p.post_id
+    </if>
+    <if test="topicId">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t
+      where u.user_id=p.user_id and p.topic_id = t.topic_id and p.topic_id =#{topicId}
+    </if>-->
+  </select>
+
+
+  <!-- 根据标签id显示需要字段-->
+  <select id="queryRequiredByTagId" resultMap="RequiredMap" parameterType="java.lang.Long">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count,favor_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t,pfo_post_tag pt
+      where u.user_id=p.user_id and p.topic_id = t.topic_id and pt.tag_id =#{tagId} and pt.post_id = p.post_id
+  </select>
+
+  <!-- 根据主题id显示需要字段-->
+  <select id="queryRequiredByTopicId" resultMap="RequiredMap" parameterType="java.lang.Integer">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count,favor_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t
+      where u.user_id=p.user_id and p.topic_id = t.topic_id and p.topic_id =#{topicId}
+  </select>
+
+
+  <!-- 根据用户输入条件进行模糊查询 scanner(用户输入的查询条件)-->
+  <select id="queryRequiredByScanner" resultMap="RequiredMap" parameterType="java.lang.String">
+      select post_title, user_name,user_photo,deliver_time,topic_name,view_count,comment_count,favor_count
+      ,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t
+      where u.user_id=p.user_id and p.topic_id = t.topic_id and p.post_body like '%${scanner}%'
+  </select>
+
+
+  <!-- 根据用户输入条件进行模糊查询 str(用户输入的查询条件)-->
+  <select id="queryRequiredByPostId" resultMap="RequiredMap" parameterType="java.lang.Long">
+      select post_title,user_name,user_photo,deliver_time,topic_name,view_count,comment_count,
+      favor_count,p.post_id,u.user_id,p.topic_id
+      from pfo_user u,pfo_post p,pfo_topic t
+      where u.user_id=p.user_id and p.topic_id = t.topic_id and p.post_id=#{postId} order by post_id
+  </select>
+</mapper>

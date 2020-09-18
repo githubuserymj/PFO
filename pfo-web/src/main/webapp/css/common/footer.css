@@ -1,0 +1,49 @@
+
+#footer-box{
+    width: 100%;
+    font: 12px/1.5 arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;
+    min-width: 700px;
+    height: 140px;
+    overflow: hidden;
+}
+
+.ft-links a {
+    text-decoration: none;
+    color: #d4d2d2;
+}
+
+.ft-links a:hover{
+    color: #ffffff;
+}
+
+.qq-code {
+    width: 90px;
+    height: 90px;
+}
+
+
+.ft-links li {
+    display: inline-block;
+}
+
+
+.ft-main {
+    border-left: 1px seashell solid;
+    padding-left: 40px;
+}
+
+#ft-nav {
+    margin-left: 90px;
+}
+
+#ft-text {
+    margin: 0 80px;
+}
+
+#ft-text img {
+    margin-right: 10px;
+}
+
+.webrights{
+    color: #D4D2D2;
+}

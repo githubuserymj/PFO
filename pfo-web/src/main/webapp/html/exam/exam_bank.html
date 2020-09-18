@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>试题库</title>
+
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <script src="/pfo/js/exam/current.js"></script>
+    <script src="/pfo/js/jquery.sPage.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/jquery.sPage.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/exam/eaxm_bank.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/global.css" type="text/css">
+
+</head>
+<body>
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <div id="second-nav" class="container">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="/pfo/html/exam/exam_bank.html">公司历届套题</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pfo/html/exam/SpecialPractice.html">专项练习</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pfo/html/exam/questionCenter.html">试题广场</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container" id="warp">
+    <div id="box">
+        <dl>
+            <dt>公司：</dt>
+            <dd>字节跳动</dd>
+            <dd>京东</dd>
+            <dd>网易游戏</dd>
+            <dd>爱奇艺</dd>
+            <dd>小红书</dd>
+            <dd>滴滴</dd>
+            <dd>百度</dd>
+            <dd>携程</dd>
+            <dd>哔哩哔哩</dd>
+        </dl>
+        <dl>
+            <dt>职位：</dt>
+            <dd>Java工程师</dd>
+            <dd>前端工程师</dd>
+            <dd>数据库工程师</dd>
+            <dd>数据分析师</dd>
+            <dd>测试工程师</dd>
+        </dl>
+        <dl style="border: none">
+            <dt>年份：</dt>
+            <dd>2020</dd>
+            <dd>2019</dd>
+            <dd>2018</dd>
+            <dd>2017</dd>
+            <dd>2016以前</dd>
+        </dl>
+        <dl class="select" style="border-bottom-width: 0px;">
+            <dt>已选条件：</dt>
+            <!-- <dd>百度<span>x</span></dd>
+                <dd>测试工程师<span>x</span></dd> -->
+        </dl>
+    </div>
+
+    <!--试卷展示框-->
+    <div class="exam-box">
+        <!--条件展示-->
+        <div class="tab-nva">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a id="default-order" class="nav-link active" onclick="SetSortKey(this.id)" href="#">综合排序</a>
+                </li>
+                <li class="nav-item">
+                    <a id="ct" class="nav-link" onclick="SetSortKey(this.id)" href="#">发布时间
+                        <span class="badge">
+                            <img class="order-img" src="" alt="" width="18px" height="18px">
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a id="ot" class="nav-link" onclick="SetSortKey(this.id)" href="#">开放时间
+                        <span class="badge">
+                            <img class="order-img" src="" alt="" width="18px" height="18px">
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a id="et" class="nav-link" onclick="SetSortKey(this.id)" href="#">闭答时间
+                        <span class="badge">
+                            <img class="order-img" src="" alt="" width="18px" height="18px">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-box">
+            <!--试卷卡片-->
+            <!--<div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">华为研发工程师编程题</h4>
+                    <img class="card-img" src="https://static.runoob.com/images/mix/img_avatar.png" alt="Card image"
+                         style="width:100%">
+                    <p class="card-text">2018暑假校招</p>
+                    <a href="paper_detail.jsp" class="btn btn-primary">查看详情</a>
+                </div>
+            </div>-->
+        </div>
+
+        <!--分页-->
+        <div>
+            <div id="myPage" class="Pagination"></div>
+        </div>
+
+    </div>
+
+    <br>
+</div>
+
+<!--底部栏-->
+<script src="/pfo/js/common/footer.js" type="application/javascript"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css" type="text/css">
+
+<script>
+    var n = 0
+    var flag
+    var SortKey = {
+        key: 'ct,ot,et',
+        type: 'desc,desc,desc'
+    }
+    $(document).ready(papersLoad(1))
+
+
+    <!--数据获取-->
+    function papersLoad(currPage) {
+        /*var params = {
+            currPage: currPage,
+            pageSize: 6,
+            orderObj:{
+                orederKey: SortKey.key,
+                orederType: SortKey.type,
+                conditions: getConditions()
+            }
+        }*/
+
+        $.get({
+            url: "/pfo/exam/queryAllPapers",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: 'currPage=' + currPage + '&pageSize=6&conditions=' + getConditions() + '&orderKey=' + SortKey.key + '&orderType=' + SortKey.type,
+            success: function (data) {
+                showPapers(data)
+                var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                // 调用分页插件
+                $("#myPage").sPage({
+                    page: data.currPage,//当前页码，必填
+                    total: data.totalSize,//数据总条数，必填
+                    pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                    showTotal: true,//是否显示总条数，默认关闭：false
+                    totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                    noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                    showSkip: true,//是否显示跳页，默认关闭：false
+                    showPN: true,//是否显示上下翻页，默认开启：true
+                    prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                    nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                    backFun: function (page) {
+                        //点击分页按钮回调函数，返回当前页码
+                        papersLoad(page)
+                    }
+                });
+            }
+        })
+    }
+
+    function showPapers(data) {
+        var card = ''
+
+        for (var i = 0; i < data.dataList.length; i++) {
+            card += "<div class=\"card\">"
+            card += "<div class=\"card-body\">"
+            card += "<h6 class=\"card-title\">"
+            card += data.dataList[i].paperName
+            card += "</h6>"
+            card += "<img class=\"card-img\" src=\""
+            card += data.dataList[i].paperImg
+            card += "\" alt=\"Card image\" style=\"width:160px;height:165px\">"
+            card += "<p class=\"card-text\">"
+            card += data.dataList[i].paperDescription.split("#")[1]
+            card += "</p>"
+            card += "<a href=\""
+            card += '/pfo/exam/queryPaperById?paperId='+data.dataList[i].paperId
+            card += "\" class=\"btn btn-primary\">"
+            card += "查看详情</a>"
+            card += "</div></div>"
+
+        }
+
+        $('.menu-box').html(card)
+
+    }
+
+    <!--多条件选择栏-->
+    var dls = document.querySelectorAll('dl:not(.select)');
+    var selected = document.querySelector('.select');
+
+    for (var i = 0; i < dls.length; i++) {
+        //给每一行的dl标签添加一条属性，用于对应下面的dd标签。
+        // 约定如果这个属性的值为true表示对应的标签没有创建。
+        // 如果值为false表示对应的标签已经创建了
+        dls[i].mark = false;
+        select(i);
+    }
+
+    function select(n) {
+        //每一行都需要创建一个dd标签，放到这里是为了如果标签已经被创建了，
+        // 通过这个变量能够找到这个标签
+        var dds = dls[n].querySelectorAll('dd');
+        var prev = null;
+        var dd = null;
+
+        for (var i = 0; i < dds.length; i++) {
+            dds[i].onclick = function () {
+                //给当前点击的添加一个高亮
+                //prev && (prev.className = '');
+
+                if (prev) {
+                    prev.className = ''
+                }
+
+                this.className = 'active';
+
+                prev = this;
+
+                //创建dd标签
+                var parent = this.parentNode;
+                if (!parent.mark) {	//这个条件满足说明对应的dd标签还没有创建
+                    dd = document.createElement('dd');
+                    dd.className = "key-word"
+                    dd.innerHTML = this.innerHTML;
+                    selected.appendChild(dd);
+
+                    parent.mark = true;
+
+                } else {
+                    //走这里的时候说明对应的标签已经创建了，只需要把内容修改了就可以了
+                    dd.innerHTML = this.innerHTML;
+                }
+
+                var span = document.createElement('span');
+                var This = this;
+                span.innerHTML = 'X';
+                span.onclick = function () {
+                    //alert(1);
+                    /*
+                        点击关闭后要做的事情
+                            1、移除掉dd
+                            2、把上面点击的那个class去掉
+                            3、父级身上的mark属性要更新
+                     */
+                    selected.removeChild(dd);
+                    This.className = '';
+                    parent.mark = false;
+                    papersLoad(1)
+                };
+                dd.appendChild(span);
+
+                papersLoad(1)
+            };
+        }
+    }
+
+    //获取筛选条件
+    function getConditions() {
+        var conditions = []
+        var keyWords = document.getElementsByClassName("key-word")
+        for (var n = 0; n < keyWords.length; n++) {
+            conditions.push(keyWords[n].firstChild.nodeValue)
+        }
+        return conditions
+    }
+
+    //获取排序条件
+    function SetSortKey(id) {
+        //判断是否切换排序按钮，若切换按钮重新计数
+        if (flag != id) {
+            n = 0
+            flag = id
+            $('.order-img').attr('src','')
+        }
+
+        $('.nav-link').removeClass('active')
+        $('#' + id + '').addClass('active')
+
+        if(id == 'default-order'){
+            SortKey = {
+                key: 'ct,ot,et',
+                type: 'desc,desc,desc'
+            }
+        }else {
+            n++
+            $('#'+id+' .order-img').attr('src', '/pfo/img/tools/asc.png')
+
+            var okey = id
+            var otype = "asc"
+            //点击偶数次为降序
+            if (n % 2 == 0) {
+                otype = "desc"
+                $('#'+id+' .order-img').attr('src', '/pfo/img/tools/desc.png')
+            }
+
+            SortKey = {
+                key: okey,
+                type: otype
+            }
+        }
+
+        papersLoad(1)
+    }
+
+</script>
+</body>
+</html>

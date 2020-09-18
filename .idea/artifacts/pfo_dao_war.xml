@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="pfo-dao:war">
+    <output-path>$PROJECT_DIR$/pfo-dao/target</output-path>
+    <root id="archive" name="pfo-dao-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="pfo-dao:war exploded" />
+    </root>
+  </artifact>
+</component>

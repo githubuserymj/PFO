@@ -1,0 +1,177 @@
+.question-box{
+    margin-top: 40px;
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 50px;
+}
+
+.question-progress{
+    padding: 10px 270px 10px 30px;
+    background: #232c31;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    white-space: nowrap;
+    height: 50px;
+}
+
+.question-progress .progress{
+    margin: 0;
+    width: 90%;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.progress-nums{
+    color: #fff;
+    font-size: 20px;
+}
+
+.ico-time-control{
+    display: inline-block;
+    vertical-align: -5px;
+    height: 28px;
+    width: 28px;
+    margin-left: 30px;
+    margin-right: 5px;
+    background-image: url("/pfo/img/tools/暂停.png");
+}
+
+.progress-time{
+    font-size: 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #2d3339;
+    border-radius: 0 6px 0 0;
+    color: #fff;
+    height: 40px;
+    width: 250px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.question-type{
+    padding: 15px 20px 15px 55px;
+    background: #fff url("/pfo/img/tools/问题.png") 20px 14px no-repeat;
+    line-height: 1.5;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    border-radius: 3px;
+}
+
+.question-main{
+    padding: 20px;
+}
+
+.question-title{
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.question-options{
+    margin-bottom: 20px;
+    border: 1px solid #d4d4d4;
+    border-radius: 2px;
+    padding: 12px 20px 13px;
+    background: #fff;
+    display: block;
+}
+
+.question-main .checkbox{
+    margin: 0;
+    line-height: 20px;
+}
+
+.checkbox{
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+    display: inline-block;
+}
+
+.checkbox .icons{
+    border: 1px solid #ddd;
+    vertical-align: -3px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    display: inline-block;
+    margin-right: 3px;
+    border-radius: 2px;
+    line-height: normal;
+    position: relative;
+}
+
+.checkbox input{
+
+}
+
+.checkbox pre{
+    display: inline-block;
+    vertical-align: top;
+    max-width: 850px;
+    padding: 0;
+    margin: 0;
+    background: 0 0;
+    border: none;
+}
+
+.question-action{
+    margin-bottom: 60px;
+    font-size: 14px;
+}
+
+.question-operation{
+    float: left;
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: 13px;
+}
+
+.question-operation-item i{
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    vertical-align: middle;
+}
+
+.question-operation-item{
+    font-size: 14px;
+    line-height: 12px;
+    margin-left: 5px;
+}
+
+.question-next{
+    float: right;
+}
+
+.answer-sheet{
+    border-top: 1px dashed #ddd;
+    padding: 20px;
+    font-size: 16px;
+    background: #fff;
+}
+
+.answer-sheet-num{
+    margin-top: 15px;
+    list-style: none;
+    overflow: auto;
+}
+
+.answer-sheet-num li{
+    float: left;
+    margin-right: 10px;
+}
+
+.answer-sheet-num a{
+    position: relative;
+    display: block;
+    color: #7aece6;
+    font-size: 16px;
+    width: 36px;
+    text-align: center;
+    height: 30px;
+    line-height: 12px;
+    border: #8eece9 1px solid;
+}

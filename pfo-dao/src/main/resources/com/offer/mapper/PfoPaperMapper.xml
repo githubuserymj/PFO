@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoPaperMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoPaper" >
+    <id column="paper_id" property="paperId" jdbcType="BIGINT" />
+    <result column="paper_name" property="paperName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="open_time" property="openTime" jdbcType="TIMESTAMP" />
+    <result column="close_time" property="closeTime" jdbcType="TIMESTAMP" />
+    <result column="question_list_id" property="questionListId" jdbcType="VARCHAR" />
+    <result column="paper_description" property="paperDescription" jdbcType="VARCHAR" />
+    <result column="paper_img" property="paperImg" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    paper_id, paper_name, create_time, open_time, close_time, question_list_id, paper_description, 
+    paper_img
+  </sql>
+
+  <!--多条件查询排序分页全部试卷-->
+  <select id="queryAllPapers" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from
+      pfo_paper
+    where
+      1=1
+    <if test="conditions != null and conditions.size() != 0" >
+      and
+      <foreach collection="conditions" index="index" item="item" open="("
+                   separator="and" close=")">
+      paper_name like concat('%',#{item},'%')
+    </foreach>
+    </if>
+    <if test="orderMap.size() != 0 and orderMap != null">
+      order by
+      <foreach item="value" index="key" collection="orderMap.entrySet()" separator=",">
+        ${key} ${value}
+      </foreach>
+    </if>
+
+  </select>
+
+  <!-- 根据试卷列表id获取试卷列表  查看公司的套题列表 -->
+  <select id="selectPapersByPrimaryKeys" resultMap="BaseResultMap" parameterType="java.util.List">
+    select *
+    from
+      pfo_paper p
+    where
+      p.paper_id in
+    <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+    order by
+      p.create_time desc, p.open_time desc, p.close_time desc
+  </select>
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoPaperExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pfo_paper
+    where paper_id = #{paperId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_paper
+    where paper_id = #{paperId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoPaperExample" >
+    delete from pfo_paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoPaper" >
+    insert into pfo_paper (paper_id, paper_name, create_time, 
+      open_time, close_time, question_list_id, 
+      paper_description, paper_img)
+    values (#{paperId,jdbcType=BIGINT}, #{paperName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{openTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, #{questionListId,jdbcType=VARCHAR}, 
+      #{paperDescription,jdbcType=VARCHAR}, #{paperImg,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoPaper" >
+    insert into pfo_paper
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="paperId != null" >
+        paper_id,
+      </if>
+      <if test="paperName != null" >
+        paper_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="openTime != null" >
+        open_time,
+      </if>
+      <if test="closeTime != null" >
+        close_time,
+      </if>
+      <if test="questionListId != null" >
+        question_list_id,
+      </if>
+      <if test="paperDescription != null" >
+        paper_description,
+      </if>
+      <if test="paperImg != null" >
+        paper_img,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="paperId != null" >
+        #{paperId,jdbcType=BIGINT},
+      </if>
+      <if test="paperName != null" >
+        #{paperName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openTime != null" >
+        #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null" >
+        #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="questionListId != null" >
+        #{questionListId,jdbcType=VARCHAR},
+      </if>
+      <if test="paperDescription != null" >
+        #{paperDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="paperImg != null" >
+        #{paperImg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoPaperExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_paper
+    <set >
+      <if test="record.paperId != null" >
+        paper_id = #{record.paperId,jdbcType=BIGINT},
+      </if>
+      <if test="record.paperName != null" >
+        paper_name = #{record.paperName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.openTime != null" >
+        open_time = #{record.openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.closeTime != null" >
+        close_time = #{record.closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.questionListId != null" >
+        question_list_id = #{record.questionListId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paperDescription != null" >
+        paper_description = #{record.paperDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paperImg != null" >
+        paper_img = #{record.paperImg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_paper
+    set paper_id = #{record.paperId,jdbcType=BIGINT},
+      paper_name = #{record.paperName,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      open_time = #{record.openTime,jdbcType=TIMESTAMP},
+      close_time = #{record.closeTime,jdbcType=TIMESTAMP},
+      question_list_id = #{record.questionListId,jdbcType=VARCHAR},
+      paper_description = #{record.paperDescription,jdbcType=VARCHAR},
+      paper_img = #{record.paperImg,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoPaper" >
+    update pfo_paper
+    <set >
+      <if test="paperName != null" >
+        paper_name = #{paperName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openTime != null" >
+        open_time = #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null" >
+        close_time = #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="questionListId != null" >
+        question_list_id = #{questionListId,jdbcType=VARCHAR},
+      </if>
+      <if test="paperDescription != null" >
+        paper_description = #{paperDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="paperImg != null" >
+        paper_img = #{paperImg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where paper_id = #{paperId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoPaper" >
+    update pfo_paper
+    set paper_name = #{paperName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      open_time = #{openTime,jdbcType=TIMESTAMP},
+      close_time = #{closeTime,jdbcType=TIMESTAMP},
+      question_list_id = #{questionListId,jdbcType=VARCHAR},
+      paper_description = #{paperDescription,jdbcType=VARCHAR},
+      paper_img = #{paperImg,jdbcType=VARCHAR}
+    where paper_id = #{paperId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>招聘详情</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/recruit/recruit_detail.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="main rec-page clearfix">
+            <div class="crumbs-path">
+                <a href="recruit_list2.html">招聘信息列表</a>
+                <span>&gt;</span>
+                <a id="company-name" href="javascript:void(0)">公司名称</a>
+            </div>
+            <div class="content ">
+                <div class="module-box">
+                    <div class="module-head clearfix">
+                        <h1>职位详情</h1>
+                    </div>
+                    <div class="module-body module-info">
+                        <div class="rec-job js-job-item">
+                            <div class="rec-job-title clearfix recruitment-info">
+                                <h2 id="recruitment-title">招聘标题</h2>
+                                <div style="float: right; width: 100px">
+                                    <span style="font-weight: 900">报名人数：</span><span id="sign-up-number">122  <a id="querySignUplist" href="javascript:void(0)" onclick="selectSignUpByRecruitmentId(this)" style="display: none;">查看报名表</a></span>
+                                </div>
+                            </div>
+                            <div class="recruitment-info">
+                                <span style="font-weight: 900">发布时间：</span>
+                                <span id="recruitment-dt">deliver_time</span>
+                            </div>
+                            <div class="rec-job-detail">
+                                <span class="rec-job-item js-nc-title-tips" title="职位类别：运营" style="font-weight:900"><i class="job-ico job-ico1"></i>招聘职位：</span><span id="recruitment-position"></span>
+                                <span class="rec-job-item js-nc-title-tips" title="工作城市：上海" style="margin-left: 20px; font-weight: 900"><i class="job-ico job-ico2"></i>地点：</span><span id="recruitment-address"></span>
+                            </div>
+                            <div>
+                            <div class="recruitment-content">
+                                <span style="font-weight: 900">招聘内容</span>
+                                <div id="recruit-content">
+                                    招聘内容
+                                </div>
+                            </div>
+                            </div>
+                            <div class="rec-btn-wrap js-job-btn">
+                                当前在线用户:<span id="common-user-id" >当前在线用户id</span>
+                                <!-- 按钮触发模态框  disabled="disabled" 验证码？ -->
+                                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addSignUp"> 申请职位</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bar">
+                <!-- 公司信息 -->
+                <div class="module-box">
+                    <div class="module-body" style="padding-left: 30px">
+                        <a id="recruitment-company-id" data-val="" href="javascript:void(0)" class="rec-com" titile="点击访问公司主页" onclick="toCompanyWebsitePage(this)">
+                            <img class="js-company-logo" src="" style="max-width:218px;" alt="这是公司logo">
+                            <h3 class="company-name">公司名称</h3>
+                        </a>
+                        <div class="rec-info">
+                            <p class="com-type">互联网、移动APP</p>
+                            <p class="com-address">上海</p>
+                            <p class="company-position">在招职位</p>
+                            <ul>
+                                <li>研发</li>
+                                <li>数据</li>
+                                <li>算法</li>
+                                <li>测试</li>
+                            </ul>
+                        </div>
+                        <div class="com-detail">
+                            <p>公司介绍</p>
+                            <p id="company-introduce"></p>
+                            <p>
+                                <a href="http://www.ziguhonglan.com" alt="访问公司官网" target="_blank" title="访问公司官网">http://www.ziguhonglan.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 获取招聘信息关联公司信息的企业用户 -->
+                <div class="module-box">
+                    <div class="module-head clearfix" style="margin-bottom: 10px">
+                        <h1>发布者(企业用户)</h1>
+                        <div style="clear: both">
+                            <a href="#">
+                                <img class="user-photo" src="#" alt="用户头像">
+                            </a>
+                        </div>
+
+                        <!--<a href="#">+ 关注</a>-->
+                        <div style="clear: both">
+                            <a id="user-email" href="javascript:void(0)">公司邮箱：xxx@123.com</a>
+                        </div>
+                        <div>
+                            <a id="user-phone" href="javascript:void(0)">联系电话：111</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--主体内容结束-->
+</div>
+<!-- 模态框（Modal） 报名 -->
+<div class="modal fade" id="addSignUp" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <span>报名须知</span>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <p>
+                        任职要求
+                    </p>
+                    <p>
+                        <br/>
+                    </p>
+                    <p>
+                        1、熟知追星文化（国内、日韩、欧美等）或者<span>各类二次元文化（游戏、动漫、小说、同人等）</span>
+                    </p>
+                    <p>
+                        2、各类圈子资深用户，喜欢发表自己的看法和观点
+                    </p>
+                    <p>
+                        3、有较强的文案功底，有小说或剧本创作者加分
+                    </p>
+                    <p>
+                        4、丰富的创意
+                    </p>
+                    <p>
+                        5、有理想，能落地
+                    </p>
+                    <p>
+                        6、本科以上，2020年毕业生优先
+                    </p>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="accept" onclick="accept(this)"> 我接受报名须知协议
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="recruitment-paper-id" data-val="">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <!-- disabled="disabled" -->
+                <button id="add-sign-up" type="button" class="btn btn-primary" onclick="addSignUp(this)">报名</button>
+            </div>
+            <script>
+                function accept(obj) {
+                    if ($("obj").prop("checked") == false) {
+                        alert("checked");
+                        $("#add-sign-up").removeAttr("disabled");
+                    } else {
+                        $("#add-sign-up").attr("disabled", true);
+                    }
+                }
+            </script>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+</body>
+<script>
+    $(document).ready(
+        getLoginUserId(),
+        getRecruitmentDetil(),
+    )
+
+    // 获取地址栏参数
+    function getUrlSearch(name) {
+        // 为传参，返回空
+        if (!name) return null;
+        // 查询参数：先通过search取值，如果取不到值就通过hash来获取
+        var after = window.location.search;
+        after = after.substr(1) || window.location.hash.split('?')[1];
+        // 地址栏URL没有查询参数，返回空
+        if (!after) return null;
+        // 如果查询参数汇总没有"name"，返回空
+        if (after.indexOf(name) == -1) return null;
+
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+        // 当地址栏参数存在中文时，需要解码，不然会乱码
+        var r = decodeURI(after).match(reg);
+        // 如果url中"name"没有值，返回空
+        if (!r) return null;
+
+        return r[2];
+    }
+
+    function getLoginUserId() {
+        // 获取登录用户的id
+        $.ajax({
+            url: "/pfo/user/getUser",
+            dataType: "json",
+            success: function (data) {
+                id = data.data.userId;
+                $("#common-user-id").text(id);
+            }
+        })
+    }
+
+    function jugeLoginUserId(userId) {
+        var loginUserId = $("#common-user-id").text();
+        if (loginUserId == userId) {
+            $("#querySignUplist").css("display", "block");
+        } else {
+            $("#querySignUplist").css("display", "none");
+        }
+    }
+
+    // 获取招聘详情信息
+    function getRecruitmentDetil() {
+        /**
+         * 获取招聘信息关联的公司信息和公司用户(公司管理员)信息
+         */
+        $.ajax({
+            url: "/pfo/recruitment/queryByRecruitmentId2",
+            data: "recruitmentId=" + getUrlSearch("recruitmentId"),
+            dataType: "json",
+            /**
+             * @param data
+             */
+            success: function (data) {
+                // console.log("招聘信息关联公司信息，用户信息：" + data);
+                console.log(data);
+
+                var value = data.data;
+                $("#recruitment-title").html(value.recruitmentTitle)
+                $("#recruitment-dt").html(value.deliverTime);
+                $("#recruitment-position").html(value.position);
+                $("#recruitment-address").html(value.pfoCompany.companyAddress);
+                $("#recruit-content").html(value.recruitmentContent);
+                $("#recruitment-paper-id").val(value.paperId)
+                var company = value.pfoCompany;
+                jugeLoginUserId(value.pfoCompany.userId);
+                $(".js-company-logo").attr({
+                    "src": value.pfoCompany.logo
+                })
+                $("#recruitment-company-id").attr(
+                    "data-val", value.companyId
+                )
+                $(".crumbs-path #company-name").html(value.pfoCompany.companyName);
+                $(".company-name").html(value.pfoCompany.companyName);
+                $(".com-detail p").html(value.pfoCompany.introduce);
+                $(".user-photo").attr({
+                    "src": company.user.userPhoto
+                })
+                $(".user-email").html(company.user.userEmail)
+                $(".user-phone").html(company.user.userPhone);
+                $("#recruitment-dt").html(value.deliverTime);
+
+            }
+        })
+
+        // 查看该招聘信息的报名人数  暂不渲染数据
+        $.get({
+            url: "/pfo/recruitment/queryCountByRecruitmentId",
+            data: "recruitmentId=" + getUrlSearch("recruitmentId"),
+            dataType: "json",
+            success: function (count) {
+                if (count) {
+                    console.log("该招聘信息的报名人数是:" + count)
+                } else {
+                    console.log("还没有用户报名")
+                }
+
+            }
+        })
+    }
+
+    // 根据招聘信息查看报名信息 关联用户表（普通用户） 含分页
+    function selectSignUpByRecruitmentId(obj){
+        var userId = $("#common-user-id").html();
+
+        $(obj).attr({
+            "href": "/pfo/html/user/user2.html?recruitmentId=" + getUrlSearch("recruitmentId"),
+        });
+    }
+
+    /**
+     * 参加报名 添加报名信息
+     * @param obj
+     */
+    function addSignUp(obj) {
+        var recruitmentId = getUrlSearch("recruitmentId");
+        var deliverTime = $("#recruitment-dt").html();
+        var userId = $("#common-user-id").html();
+        $.ajax({
+            url:"/pfo/signUp/addSignUp",
+            dataType: "json",
+            data: {
+                "userId" :userId,
+                "recruitmentId": recruitmentId,
+                "deliverTime": deliverTime
+            },
+            method: "post",
+            success: function (data) {
+                var paperId = $("#recruitment-paper-id").val();
+                if (paperId) {
+                    if(confirm("报名成功! 当前招聘已经发布笔试套题，是否前笔试页面参加笔试？")) {
+                        window.location.href = "/pfo/exam/queryPaperById?paperId=" + paperId;
+                    }
+                } else {
+
+                    alert("报名成功，当前招聘笔试套题未发布，请耐心等待...");
+                }
+
+            },
+            error: function (xhr) {
+                console.warn(xhr);
+                alert("报名失败");
+            }
+        });
+
+        $(obj).attr({
+            "data-dismiss": "modal"
+        })
+    }
+
+    function toCompanyWebsitePage(obj) {
+        var companyId = $("#recruitment-company-id").attr("data-val");
+
+        $(obj).attr(
+            "href", "../company/company_website.html?companyId=" + companyId
+        )
+    }
+</script>
+</html>

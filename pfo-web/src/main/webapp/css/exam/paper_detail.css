@@ -1,0 +1,91 @@
+#detail-box {
+    display: inline-block;
+    position: relative;
+    width: 70%;
+}
+
+.show-list{
+    display: block;
+    float: right;
+    width: 28%;
+}
+
+#ranking {
+
+}
+
+#user-list{
+    margin-top: 20px;
+    padding: 10px;
+    padding-left: 20px;
+    height: 300px;
+    margin-bottom: 40px;
+}
+
+#paper-content {
+    width: 100%;
+    display: inline-block;
+}
+
+#paper-content h5 {
+    display: block;
+}
+
+#paper-summary {
+    width: 100%;
+    font-size: 12px;
+    margin: auto;
+}
+
+.paper-wrap {
+    padding: 10px;
+}
+
+.paper-img {
+    display: inline;
+    float: left;
+    width: 160px;
+    height: 180px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    border-radius: 10px;
+}
+
+.paper-detail {
+    display: inline-block;
+}
+
+#start-train{
+    margin: auto;
+    margin-top: 20px;
+}
+
+#start-train a{
+    color: #333;
+    text-decoration: none;
+}
+
+video, #canvas, #canvas1 {
+    position: absolute;
+    width: 300px;
+    height: 400px;
+}
+
+#canvas1 {
+    position: absolute;
+}
+
+.catchWindow {
+    position: relative;
+    width: 300px;
+    height: 400px;
+}
+
+.button-box{
+    margin-top: 10px;
+    text-align: center;
+}
+
+#facePhoto{
+    float: right;
+}

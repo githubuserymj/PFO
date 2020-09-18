@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-commons" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-controller" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-dao" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-filter" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-model" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-util" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pfo-web" charset="UTF-8" />
+  </component>
+</project>

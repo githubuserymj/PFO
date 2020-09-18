@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/pfo.iml" filepath="$PROJECT_DIR$/pfo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-commons/pfo-commons.iml" filepath="$PROJECT_DIR$/pfo-commons/pfo-commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-controller/pfo-controller.iml" filepath="$PROJECT_DIR$/pfo-controller/pfo-controller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-dao/pfo-dao.iml" filepath="$PROJECT_DIR$/pfo-dao/pfo-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-filter/pfo-filter.iml" filepath="$PROJECT_DIR$/pfo-filter/pfo-filter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-model/pfo-model.iml" filepath="$PROJECT_DIR$/pfo-model/pfo-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-service/pfo-service.iml" filepath="$PROJECT_DIR$/pfo-service/pfo-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-util/pfo-util.iml" filepath="$PROJECT_DIR$/pfo-util/pfo-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfo-web/pfo-web.iml" filepath="$PROJECT_DIR$/pfo-web/pfo-web.iml" />
+    </modules>
+  </component>
+</project>

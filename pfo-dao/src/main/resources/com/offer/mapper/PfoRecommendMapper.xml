@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoRecommendMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoRecommend" >
+    <id column="recommend_id" property="recommendId" jdbcType="INTEGER" />
+    <result column="paper_id_list" property="paperIdList" jdbcType="VARCHAR" />
+    <result column="post_id_list" property="postIdList" jdbcType="VARCHAR" />
+    <result column="recruitment_id_list" property="recruitmentIdList" jdbcType="VARCHAR" />
+    <result column="news_id_list" property="newsIdList" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    recommend_id, paper_id_list, post_id_list, recruitment_id_list, news_id_list
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoRecommendExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_recommend
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pfo_recommend
+    where recommend_id = #{recommendId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pfo_recommend
+    where recommend_id = #{recommendId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoRecommendExample" >
+    delete from pfo_recommend
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoRecommend" >
+    insert into pfo_recommend (recommend_id, paper_id_list, post_id_list, 
+      recruitment_id_list, news_id_list)
+    values (#{recommendId,jdbcType=INTEGER}, #{paperIdList,jdbcType=VARCHAR}, #{postIdList,jdbcType=VARCHAR}, 
+      #{recruitmentIdList,jdbcType=VARCHAR}, #{newsIdList,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoRecommend" >
+    insert into pfo_recommend
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="recommendId != null" >
+        recommend_id,
+      </if>
+      <if test="paperIdList != null" >
+        paper_id_list,
+      </if>
+      <if test="postIdList != null" >
+        post_id_list,
+      </if>
+      <if test="recruitmentIdList != null" >
+        recruitment_id_list,
+      </if>
+      <if test="newsIdList != null" >
+        news_id_list,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="recommendId != null" >
+        #{recommendId,jdbcType=INTEGER},
+      </if>
+      <if test="paperIdList != null" >
+        #{paperIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="postIdList != null" >
+        #{postIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="recruitmentIdList != null" >
+        #{recruitmentIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="newsIdList != null" >
+        #{newsIdList,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoRecommendExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_recommend
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_recommend
+    <set >
+      <if test="record.recommendId != null" >
+        recommend_id = #{record.recommendId,jdbcType=INTEGER},
+      </if>
+      <if test="record.paperIdList != null" >
+        paper_id_list = #{record.paperIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="record.postIdList != null" >
+        post_id_list = #{record.postIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="record.recruitmentIdList != null" >
+        recruitment_id_list = #{record.recruitmentIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsIdList != null" >
+        news_id_list = #{record.newsIdList,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_recommend
+    set recommend_id = #{record.recommendId,jdbcType=INTEGER},
+      paper_id_list = #{record.paperIdList,jdbcType=VARCHAR},
+      post_id_list = #{record.postIdList,jdbcType=VARCHAR},
+      recruitment_id_list = #{record.recruitmentIdList,jdbcType=VARCHAR},
+      news_id_list = #{record.newsIdList,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoRecommend" >
+    update pfo_recommend
+    <set >
+      <if test="paperIdList != null" >
+        paper_id_list = #{paperIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="postIdList != null" >
+        post_id_list = #{postIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="recruitmentIdList != null" >
+        recruitment_id_list = #{recruitmentIdList,jdbcType=VARCHAR},
+      </if>
+      <if test="newsIdList != null" >
+        news_id_list = #{newsIdList,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where recommend_id = #{recommendId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoRecommend" >
+    update pfo_recommend
+    set paper_id_list = #{paperIdList,jdbcType=VARCHAR},
+      post_id_list = #{postIdList,jdbcType=VARCHAR},
+      recruitment_id_list = #{recruitmentIdList,jdbcType=VARCHAR},
+      news_id_list = #{newsIdList,jdbcType=VARCHAR}
+    where recommend_id = #{recommendId,jdbcType=INTEGER}
+  </update>
+
+  <!-- 自定义dao -->
+  <!-- 获取所有推荐信息 -->
+  <select id="queryAllRecommend" resultMap="BaseResultMap">
+    select * from pfo_recommend
+  </select>
+
+  <!-- 根据任意条件查询Recommend信息 -->
+  <select id="queryRecommend" parameterType="com.offer.pojo.PfoRecommend" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pfo_recommend
+    <where>
+      <if test="recommendId != null">
+        recommend_id = #{recommendId, jdbcType=INT}
+      </if>
+      <if test="paperIdList != null" >
+        AND paper_id_list = #{paperIdList,jdbcType=VARCHAR}
+      </if>
+      <if test="postIdList != null" >
+        AND post_id_list = #{postIdList,jdbcType=VARCHAR}
+      </if>
+      <if test="recruitmentIdList != null" >
+        AND recruitment_id_list = #{recruitmentIdList,jdbcType=VARCHAR}
+      </if>
+      <if test="newsIdList != null" >
+        AND news_id_list = #{newsIdList,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+
+
+</mapper>

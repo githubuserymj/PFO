@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公司主页</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="/pfo/css/company/company_website.css">
+    <link rel="stylesheet" href="/pfo/css/jquery.sPage.css" type="text/css">
+    <script src="/pfo/js/jquery.sPage.js"></script>
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <!--引用百度地图API-->
+    <style type="text/css">
+        html,body{margin:0;padding:0;}
+        .iw_poi_title {color:#CC5522;font-size:14px;font-weight:bold;overflow:hidden;padding-right:13px;white-space:nowrap}
+        .iw_poi_content {font:12px arial,sans-serif;overflow:visible;padding-top:4px;white-space:-moz-pre-wrap;word-wrap:break-word}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <!-- 公司主页  编辑公司信息  模态框  授权 -->
+        <div class="company-describe">
+            <span>
+                <div class="crumbs-path">
+                    <a href="#">首页</a>
+                    <span>&gt;</span>
+                    <a href="../recruit/recruit_recommend.html">求职</a>
+                    <span>&gt;</span>
+                    <span class="crumbs-end">阿里巴巴</span>
+                    <div style="float: right" >
+                        <!-- style="visibility: hidden;" -->
+                        <a class="edit js-nav-date" id="editCompanyInfo" href="#companyInfo" data-toggle="modal" style="display: none">编辑</a>
+                    </div>
+                </div>
+
+                <div class="company-website">
+                    <a href="javascript:void(0)" title="点击访问管理员主页">
+                        <img src="https://uploadfiles.nowcoder.com/images/20180917/4107856_1537180998772_EA0EB791BBE9BECA5981335580CD0F58" alt="公司logo" class="img-circle">
+                    </a>
+                </div>
+                <div class="company-official-website" style="padding: 20px">
+                    <span id="company-introduce">某公司信息描述...</span>
+                    <span><a href="#">访问公司官网</a></span>
+                </div>
+            </span>
+        </div>
+
+        <div class="nk-main with-banner-page discuss-page clearfix">
+            <!-- 招聘信息报名人数分析  echarts ??  -->
+            <div class="module-box" data-target-block="6">
+                <div class="module-head clearfix">
+                    <h1>公司招聘信息报名情况分析</h1>
+                </div>
+                <div class="module-body">
+                    <label>招聘信息报名数据：<span class="company-address"></span></label><br>
+                    <div id="chartmain" style="height: 400px; background-color: #888888"></div>
+                    <script type="text/javascript" src="/pfo/js/echarts.min.js"></script>
+                    <script>
+                        function showExampleWithCount(rtList, countList) {
+                            console.log("riList: " + rtList);
+                            console.log("countList: " + countList);
+                            var xData = rtList;
+                            var y1Data = countList;
+                            option = {
+                                grid: {
+                                    left: '7%',
+                                    right: '5%',
+                                    top: '25%',
+                                    bottom: '19%',
+                                },
+                                title: {
+                                    show: false
+                                },
+                                tooltip : {
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
+                                },
+                                legend: {
+                                    data:['报名人数', '监控密度'],
+                                    right: '3%',
+                                    top: '10%',
+                                    itemWidth: 11,
+                                    itemHeight: 11,
+                                    textStyle: {
+                                        color: '#ffffff',
+                                        fontSize: 13
+                                    }
+                                },
+                                toolbox: {
+                                    show: false,
+                                },
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        boundaryGap: true,
+                                        show: true,
+                                        axisTick: {
+                                            show: false
+                                        },
+                                        axisLabel: {
+                                            fontSize: 15,
+                                            color: '#d0d0d0',
+                                            margin: 8,
+                                            interval: 0,
+                                            formatter:function(val){
+                                                return val.split("").join("\n");
+                                            }
+                                        },
+                                        axisLine: {
+                                            lineStyle: {
+                                                type: 'solid',
+                                                color: '#4e608b',//左边线的颜色
+                                                width:'1'//坐标线的宽度
+                                            }
+                                        },
+                                        data: xData
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        scale: true,
+                                        name: '',
+                                        axisLine: {
+                                            show: false
+                                        },
+                                        splitNumber : 4,
+                                        axisTick: {
+                                            show: false
+                                        },
+                                        splitLine: {
+                                            lineStyle: {
+                                                // 使用深浅的间隔色
+                                                color: '#4e608b'
+                                            }
+                                        },
+                                        axisLabel: {
+                                            fontSize: 13,
+                                            color: '#d0d0d0',
+                                            margin: 12,
+                                        },
+                                        max: 10,
+                                        min: 0,
+                                        boundaryGap: [0.2, 0.2]
+                                    },
+
+                                ],
+                                series: [
+                                    {
+                                        name:'报名人数',
+                                        type:'bar',
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: 'top',
+                                                textStyle: {
+                                                    color: '#1dacfe'
+                                                }
+                                            }
+                                        },
+                                        itemStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                                                    offset: 0,
+                                                    color: "#4889fb" // 0% 处的颜色
+                                                }, {
+                                                    offset: 1,
+                                                    color: "#15b3ff" // 100% 处的颜色
+                                                }], false)
+                                            }
+                                        },
+                                        barWidth: '40%',
+                                        yAxisIndex: 0,
+                                        data: y1Data
+                                    }
+                                ]
+                            };
+
+                            //初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('chartmain'));
+
+                            //使用制定的配置项和数据显示图表
+                            myChart.setOption(option);
+                        }
+
+                    </script>
+                    <!--<div class="company-map-info" style="width: 80%; margin: auto">-->
+                        <!--<iframe src="point.html" id="mapframe" frameborder="0" scrolling="no" style="width: 100%; text-align: center"></iframe>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+            <!-- 招聘消息 limit 只展示最新的几条 -->
+            <div class="module-box" data-target-block="5">
+                <div class="module-head clearfix">
+                    <h1>招聘消息</h1>
+                    <div class="module-head-oprt">
+                        <a id="add-recruitment-info" href="#myModal1" data-toggle="modal" class="btn btn-primary btn-sm btn-auto" style="float: right; display: none" >+ 添加招聘信息</a>
+                    </div>
+                </div>
+                <!-- 招聘信息 查看详情 添加 -->
+                <div class="module-body">
+                    <div>
+                        <ul class="recruitment-list" style="overflow:hidden;overflow-x:hidden;">
+
+                        </ul>
+                    </div>
+                    <div>
+                        <a href="javascript:void(0)" onclick="selectAllRecruitmentByCompany(this)">查看更多本公司的招聘信息 》》</a>
+                    </div>
+                </div>
+            </div>
+            <!-- 套题 -->
+            <div class="module-box" data-target-block="7">
+                <div class="module-head clearfix">
+                    <h1>公司套题</h1>
+                    <div class="module-head-oprt">
+                        <!-- 按钮触发模态框  disabled="disabled" -->
+                        <!--<a id="add-paper-info" href="javascript:void(0)" class="btn btn-primary btn-sm btn-auto" style="float: right; display: none" onclick="addPaperByCompanyId(this)">+ 新题上传</a>-->
+                    </div>
+                </div>
+                <!-- 公司套题  查看 移除 添加 -->
+                <div class="module-body ">
+                    <ul class="paper-list-box clearfix" style="overflow:hidden;overflow-x:hidden;">
+                    </ul>
+                    <div class="js-pager pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- 模态框 公司管理员修改公司信息 -->
+<div class="modal fade" id="companyInfo" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- 邮箱 验证码 -->
+                <div>
+                    <span>修改公司信息</span>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+                <!--<div>-->
+                    <!--<span>请输入授权码</span>-->
+                    <!--<input type="text" placeholder="请输入授权码(邮箱验证码):" style="margin-left: 10px">-->
+                <!--</div>-->
+                <!-- display: none; -->
+                <form class="form-horizontal" style="margin: 5px auto; " >
+                    <div class="form-group">
+                        <label for="edit-company-name" class="col-sm-4 control-label">公司名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit-company-name" placeholder="请输入公司名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-company-address" class="col-sm-4 control-label">公司地点</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit-company-address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-company-introduce" class="col-sm-4 control-label">公司介绍</label>
+                        <div class="col-sm-10">
+                            <textarea name="companyIntroduce" row="100" class="form-control" id="edit-company-introduce"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-company-logo" class="col-sm-4 control-label">logo</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit-company-logo">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-company-url" class="col-sm-4 control-label">官网网址</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit-company-url">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="edit-company-info" type="button" class="btn btn-primary" onclick="updateCompanyInfo(this)">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    // 渲染公司模态框
+    function renderCompanyModal(data) {
+        var companyInfo = data.data;
+        $("#edit-company-name").val(companyInfo.companyName);
+        $("#edit-company-address").val(companyInfo.companyAddress);
+        $("#edit-company-introduce").text(companyInfo.introduce);
+        $("#edit-company-logo").val(companyInfo.logo);
+        $("#edit-company-url").val(companyInfo.companyUrl);
+    }
+
+    /**
+     * 修改公司信息
+     * @param obj
+     */
+    function updateCompanyInfo(obj) {
+        var companyId = getUrlSearch("companyId");
+        var companyName = $("#edit-company-name").val();
+        var companyAddress = $("#edit-company-address").val();
+        var introduce = $("#edit-company-introduce").val();
+        var logo = $("#edit-company-logo").val();
+        var companyUrl = $("#edit-company-url").val();
+
+        $.ajax({
+            url: "/pfo/company/updateCompany",
+            data: {
+                "companyId": companyId,
+                "companyName": companyName,
+                "companyAddress": companyAddress,
+                "introduce": introduce,
+                "logo": logo,
+                "companyUrl": companyUrl
+            },
+            method: "post",
+            success: function (data) {
+                alert("修改成功,刷新页面试试？");
+            },
+            error: function (xhr) {
+                console.warn(xhr);
+            }
+        })
+
+        $(obj).attr({
+            "data-dismiss": "modal"
+        })
+    }
+</script>
+
+<!-- 模态框（Modal）  公司管理员发布招聘信息 -->
+<div class="modal fade" id="myModal1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- 邮箱 验证码 -->
+                <div>
+                    <span>发布招聘消息</span>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <!-- 输入招聘信息 -->
+            <div class="modal-body" >
+                <!--<div>-->
+                    <!--<span>请输入授权码</span>-->
+                    <!--<input type="text" placeholder="请输入授权码">-->
+                <!--</div>-->
+                <!-- display: none; -->
+                <form class="form-horizontal" style="margin: auto;" >
+                    <div class="form-group">
+                        <label for="add-recruitment-title" class="col-sm-4 control-label">招聘标题</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add-recruitment-title" placeholder="请输入招聘标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-recruitment-dt" class="col-sm-4 control-label">发布日期</label>
+                        <div class="col-sm-10">
+                            <input type="datetime-local" class="form-control" id="add-recruitment-dt">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-recruitment-content" class="col-sm-4 control-label">招聘内容</label>
+                        <div class="col-sm-10">
+                            <textarea name="recruitmentContent" row="100" class="form-control" id="add-recruitment-content"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-recruitment-position" class="col-sm-4 control-label">招聘职位</label>
+                        <div class="col-sm-10">
+                            <input type="position" class="form-control" id="add-recruitment-position"></textarea>
+                        </div>
+                    </div>
+                    <!-- 图片 文件上传  可否用拖拽？ -->
+                    <div class="form-group">
+                        <label for="add-recruitment-img" class="col-sm-4 control-label">招聘img</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add-recruitment-img" placeholder="img">
+                        </div>
+                        <!--<div class="col-sm-10">-->
+                            <!--<input type="file" id="add-recruitment-img">-->
+                            <!--<p class="help-block">请上传文件</p>-->
+                        <!--</div>-->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <!-- disabled="disabled" -->
+                <button id="add-recruitment" type="button" class="btn btn-primary" onclick="addRecruitmentByCompanyId(this)" >发布</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    /**
+     * 发布招聘信息
+     * @param obj
+     */
+    function addRecruitmentByCompanyId(obj){
+        var companyId = getUrlSearch("companyId");
+        var recruitmentTitle = $("#add-recruitment-title").val();
+        var recruitmentContent = $("#add-recruitment-content").val();
+        var deliverTime = $("#add-recruitment-dt").val();
+        var position = $("#add-recruitment-position").val();
+        var recruitmentImg = $("#add-recruitment-img").val();
+
+        $.ajax({
+            url: "/pfo/recruitment/addRecruitmentByCompanyId",
+            data: {
+                "companyId": companyId,
+                "recruitmentContent": recruitmentContent,
+                // "deliverTime": deliverTime,
+                "position": position,
+                "recruitmentImg": recruitmentImg
+            },
+            method: "post",
+            success: function (data) {
+                alert("发布成功");
+            },
+            error: function (xhr) {
+                console.warn(xhr);
+            }
+        })
+
+        $(obj).attr({
+            "data-dismiss": "modal"
+        })
+    }
+</script>
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+<script>
+    // 获取地址栏参数
+    function getUrlSearch(name) {
+        // 为传参，返回空
+        if (!name) return null;
+        // 查询参数：先通过search取值，如果取不到值就通过hash来获取
+        var after = window.location.search;
+        after = after.substr(1) || window.location.hash.split('?')[1];
+        // 地址栏URL没有查询参数，返回空
+        if (!after) return null;
+        // 如果查询参数汇总没有"name"，返回空
+        if (after.indexOf(name) == -1) return null;
+
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+        // 当地址栏参数存在中文时，需要解码，不然会乱码
+        var r = decodeURI(after).match(reg);
+        // 如果url中"name"没有值，返回空
+        if (!r) return null;
+
+        return r[2];
+    }
+
+    var html = '';
+
+    function judgeLoginUser(data) {
+        var loginUserId;
+
+        $.get({
+            url:"/pfo/user/getUser",
+            dataType:"json",
+            success: function (data2) {
+                loginUserId = data2.data.userId
+                if (loginUserId == data.data.userId) {
+                    $("#editCompanyInfo").css("display", "block");
+                    $("#add-recruitment-info").css("display", "block");
+                    $("#add-paper-info").css("display", "block");
+                } else {
+                    $("#editCompanyInfo").css("display", "none");
+                    $("#add-recruitment-info").css("display", "none");
+                    $("#add-paper-info").css("display", "none");
+                }
+            }
+        })
+    }
+
+    // 渲染页面  公司详情信息
+    function renderCompanyInHTML(data) {
+        var companyInfo = data.data;
+        $(".crumbs-end").text(companyInfo.companyName);
+        $(".company-describe img").attr({
+            "src": companyInfo.logo,
+            "alt": "公司logo"
+        });
+        $("#company-introduce").text(companyInfo.introduce)
+        $(".company-official-website a").attr({
+            "href": companyInfo.companyUrl,
+            "target": "_blank"
+        });
+        $(".company-website a").attr({
+            "href": "../user/user.html?userId=" + companyInfo.userId,
+            "target": "_self"
+        })
+
+    }
+
+    var myDate = new Date();
+
+    // 获取公司详情信息
+    $.ajax({
+        url:"/pfo/company/queryCompanyById",
+        dataType: "json",
+        data: "companyId=" + getUrlSearch("companyId"),
+        success: function (data) {
+            console.log(data);
+            renderCompanyInHTML(data);
+            renderCompanyModal(data);
+            queryRecruitmentByCompany(getUrlSearch("companyId"));
+            judgeLoginUser(data)
+        }
+    })
+
+    // 获取公司招聘信息及报名人数
+    function queryExampleBycompanyId() {
+        var companyId = getUrlSearch("companyId");
+
+        $.ajax({
+            url: "/pfo/recruitment/queryExampleBycompanyId",
+            dataType: "json",
+            data: "companyId=" + companyId,
+            success: function (data) {
+                var exampleList = data.data;
+                // recruitmentId 列表
+                var riList = [];
+                // recruitmentTitle 列表
+                var rtList = [];
+                // 报名人数列表
+                var countList = [];
+                $.each(exampleList, function (i, val) {
+                    riList.push(val.recruitmentId);
+                    rtList.push(val.recruitmentTitle);
+                    countList.push(val.count);
+                })
+
+                showExampleWithCount(rtList, countList)
+            }
+        })
+    }
+
+    queryExampleBycompanyId();
+
+    // 获取公司招聘信息列表 只查询部分
+    function queryRecruitmentByCompany(companyId) {
+        $.ajax({
+            url:"/pfo/recruitment/queryByCompany",
+            dataType: "json",
+            data: "companyId=" + companyId,
+            success: function (data) {
+                console.log(data);
+                renderRecruitmentByCompany(data);
+            }
+        })
+    }
+
+    //  渲染公司招聘信息  卡片显示
+    function renderRecruitmentByCompany(data) {
+        var html = '';
+
+        var recruitmentList = data.data;
+        console.log("渲染公司招聘信息");
+        console.log(recruitmentList);
+        $.each(recruitmentList, function (i, val) {
+            console.log(val.recruitmentId);
+            html += '<li style="float: left">' +
+                '       <a class="recruitment-item" href="../recruit/recruit_detail.html?recruitmentId=' + val.recruitmentId +'">' +
+                '           <div class="recruitment-pic">' +
+                '               <img src="'+ val.recruitmentImg +'" alt="招聘信息图片">' +
+                '           </div>' +
+                '           <div class="recruitment-title" style="text-align: center; margin-top: 10px">'+ val.recruitmentTitle +'</div>' +
+                '       </a>' +
+                '   </li>';
+        })
+
+        $(".recruitment-list").html(html);
+    }
+
+    // 查看公司的全部招聘信息，链接跳转至招聘列表页面
+    function selectAllRecruitmentByCompany(obj) {
+        $(obj).attr({
+           "href": "../recruit/recruit_list2.html?companyId=" + getUrlSearch("companyId"),
+        });
+    }
+
+    getPaperListByCompanyId();
+
+    function getPaperListByCompanyId() {
+
+        var html = '';
+
+        /**
+         * 获取公司套题
+         */
+        $.ajax({
+            url:"/pfo/company/queryPaperListByCompanyId",
+            data: "companyId=" + getUrlSearch("companyId"),
+            dataTyp: "json",
+            success: function (data) {
+                console.log(data);
+                var paperList = data.dataList;
+                $.each(paperList, function (i, val) {
+                    html += '<li style="float: left" class="recruit-list-item">' +
+                        '       <a title="查看试题详情" href="/pfo/exam/queryPaperById?paperId='+ val.paperId +'" data-id="" data-v="1">' +
+                        '           <div class="content-item-brief">' +
+                        '               <h1>' + val.paperName +
+                        '                   <i class="v-tag"></i>' +
+                        '               </h1>' +
+                        '               <div class="web-logoimg">' +
+                        '                   <img src="' + val.paperImg +
+                        '                       " alt="笔试图片">' +
+                        '               </div>' +
+                        '           </div>' +
+                        '       </a>' +
+                        '    </li>';
+                });
+
+                $(".paper-list-box").html(html);
+            }
+        })
+    }
+</script>
+</body>
+</html>

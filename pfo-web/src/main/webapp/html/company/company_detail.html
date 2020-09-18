@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公司主页</title>
+    <script src="../../js/common/baseTopNavigation.js"></script>
+    <script src="../../js/common/baseTopNavigationJS.js"></script>
+    <script src="../../../resources/static/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="../../css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="../../../resources/static/css/bootstrap.css" >
+    <link rel="stylesheet" href="../../css/company/company_detail.css">
+
+</head>
+<body>
+    <!-- 公司主页 -->
+    <div class="container company-describe">
+        <div class="row">
+            <span>
+                <div class="crumbs-path">
+                    <a href="/">首页</a>
+                    <span>&gt;</span>
+                    <a href="/recommend">求职</a>
+                    <span>&gt;</span>
+                    <span class="crumbs-end">阿里巴巴</span>
+                </div>
+                <div class="company-website">
+                    <img src="https://uploadfiles.nowcoder.com/images/20180917/4107856_1537180998772_EA0EB791BBE9BECA5981335580CD0F58" alt="公司logo" class="img-circle">
+                </div>
+                <div class="company-website">
+                    <span>某公司信息描述...</span>
+                    <span><a href="#">访问公司官网</a></span>
+                </div>
+            </span>
+            <hr id="info-horizon"/>
+            <div id="link-option">
+            <span class="a-link"><a href="#">应聘感受</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+            <span class="a-link"><a href="#">分享面经</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+            <span class="a-link"><a href="#">笔试真题</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+            <span class="a-link"><a href="#">招聘信息</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 应聘感受 -->
+    <div class="container">
+        <div class="row">
+            <div class="module-head clearfix">
+                <h1>应聘感受</h1>
+            </div>
+            <div class="accept-feel">
+
+                <ul class="difficulty-list">
+                    <li>
+                        <div class="difficulty">
+                            <span itemid="item-label">笔试难度：</span>
+                            <span class="item-score">4.2</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="difficulty">
+                            <span class="item-label">面试难度：</span>
+                            <span class="item-score">4.2</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="difficulty">
+                            <span class="item-label">流程体验：</span>
+                            <span class="item-score">3.8</span>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 公司套题  管理员可以管理试题 -->
+    <!-- 普通用户登录不能修改题目，点击此处跳转在线笔试的笔试真题，选择条件为本公司 -->
+    <div class="container cmodule-box" data-target-block="4">
+        <div class="row module-head clearfix">
+            <h1>笔试真题</h1>
+        </div>
+        <div class="row module-body">
+            <div class="paper-mod">
+                <div class="paper-name">
+                    <!--<h2>笔试套卷</h2>-->
+                    <p class="paper-count">
+                        共22套
+                    </p>
+                </div>
+                <div class="paper-detail">
+                    <ul class="company-paper-list"></ul>
+                    <a href="/test/5937361/summary">阿里巴巴2017秋招客户端附加题</a>
+                    <a href="/test/5937284/summary">阿里巴巴2017秋招前端笔试题</a>
+                    <a href="/contestRoom?mutiTagIds=134" target="_blank">查看全部></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 查看本公司招聘时间表   模态框展示时间表   -->
+    <div class="container module-box" data-target-block="5">
+        <div class="row module-head clearfix">
+            <h1>招聘/内推消息汇总</h1>
+        </div>
+        <div class="row module-body">
+            <ul class="jobs-info-list">
+                <li class="jobs-info-view">
+                    <a href="/activity/campus2019/134" target="_blank">
+                        <!-- 跳转至招聘信息页面的招聘日程 -->
+                        <div class="info-view-main">
+                            <h2 style="color: lightskyblue">公司校园招聘日程</h2>
+                            <p>名企校招指南及招聘动态</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+
+</script>
+</html>

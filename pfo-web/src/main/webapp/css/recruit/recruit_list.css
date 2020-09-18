@@ -1,0 +1,213 @@
+body {
+    background: #eee;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+.module-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.module-head {
+    padding: 15px;
+    /*clear: both;*/
+}
+
+.module-head {
+    padding: 15px 20px 0;
+    line-height: normal;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+.module-head h1 {
+    margin-top: 12px;
+}
+
+.module-head h1, .module-head h2 {
+    font-size: 16px;
+    line-height: 16px;
+    float: left;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.module-head {
+    padding: 15px;
+}
+
+.module-head-oprt {
+    float: right;
+}
+
+.search-input-wrap {
+    border: 1px solid #ddd;
+    height: 38px;
+    line-height: 38px;
+    position: relative;
+    width: 260px;
+    background: #fff;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.search-input-wrap .ico-search {
+    background: url(https://static.nowcoder.com/fe/style/images/common/img/icons/ico-search.png) center center no-repeat;
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    width: 36px;
+    height: 36px;
+}
+
+.search-input-wrap input {
+    border: none;
+    margin-left: 36px;
+    width: 80%;
+}
+
+.btn {
+    display: inline-block;
+    text-align: center;
+    padding: 5px 10px;
+    /*width: 110px;*/
+    color: #fff;
+    font-size: 14px;
+    border-radius: 3px;
+    border: none 0;
+    cursor: pointer;
+    line-height: normal;
+    outline: 0;
+    white-space: nowrap;
+    background: #25bb9b;
+    float: right;
+}
+
+.share-tag-wrap {
+    background: #f5f5f5;
+    padding: 15px 15px 0;
+    clear: both;
+}
+
+.share-tag-wrap section {
+    margin-bottom: 10px
+}
+
+.share-tag {
+    padding: 0 5px;
+    height: 28px;
+    line-height: 28px;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 14px;
+    margin-right: 10px;
+    margin: 0 10px 5px 0
+}
+
+.share-tag.selected {
+    background: #25bb9b;
+    color: #fff;
+    text-align: center
+}
+
+.share-tag-label {
+    width: 50px;
+    padding: 0 10px;
+    line-height: 28px;
+    font-size: 14px;
+    float: left
+}
+
+.share-tag-box {
+    margin-left: 70px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd
+}
+
+.module-body {
+    padding-top: 0;
+}
+
+.menu-txt-box {
+    padding: 10px 0 0;
+    font-size: 14px;
+
+}
+
+.menu, .menu-txt {
+    float: left;
+    letter-spacing: -4px;
+    white-space: nowrap;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+.menu li, .menu-txt li {
+    letter-spacing: 0;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    margin-right: 1px;
+    position: relative;
+}
+
+.menu-txt a {
+    padding: 0 10px;
+    color: #888;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+.menu-box .menu-oprtbar, .menu-txt-box .menu-oprtbar {
+    float: right;
+}
+
+.reco-job-list {
+    clear: both;
+}
+
+.reco-job-list li {
+    clear: both;
+    border-bottom: 1px solid #ddd;
+    padding: 20px 0;
+
+}
+
+.job-list-header {
+    clear: both;
+    padding: auto;
+}
+
+.job-list-header ul li span {
+    margin: auto 50px;
+}
+
+.btn-sm {
+    font-size: 10px;
+    cursor: pointer;
+    background: #25bb9b;
+}
+
+/*.pagination {*/
+    /*position: relative;*/
+    /*text-align: center;*/
+    /*white-space: nowrap;*/
+    /*margin: 20px 0 0;*/
+    /*font-size: 12px;*/
+    /*font-weight: 700;*/
+    /*!*letter-spacing: -4px;*!*/
+/*}*/

@@ -1,0 +1,19 @@
+#topNavigation{
+    background-color:#6c757d;
+    margin: 0 auto;
+    display: block;
+    height: 56px;
+}
+/*悬浮状态信息框样式*/
+#Status{
+    display: none;
+    position:fixed;
+    margin:0 auto 0 auto;
+    left:0;
+    right:0;
+    top:70px;
+    bottom:0;
+    width:300px;
+    height:150px;
+    z-index: 30000;
+}

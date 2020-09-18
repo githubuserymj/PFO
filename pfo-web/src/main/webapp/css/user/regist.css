@@ -1,0 +1,51 @@
+body{
+    background-color:#eeeeee;
+}
+
+#regist-form{
+    background-color: white;
+    padding: 20px;
+    height: 620px;
+    margin-bottom: 100px;
+}
+
+#login-title{
+    text-align: center;
+    font-size: 30px;
+    margin-top: 20px;
+}
+
+.form-group{
+    font-size: 0.7em;
+    margin-bottom: 5px;
+}
+
+.form-group input{
+    height: 2em;
+}
+
+#btn-company-next{
+    width: 100%;
+}
+
+#btn-regist{
+    width: 100%;
+}
+#btn-companyRegist{
+    width: 100%;
+}
+
+#input-username-info,#input-phone-info,#input-verifyCode-info,#input-pwd-info,#input-again-pwd-info{
+    color: red;
+    font-size: 10px;
+}
+
+.warinfo{
+    font-size: 12px;
+    color: #999;
+}
+
+#mapBody{
+    width:100%;
+    height:100%;
+}

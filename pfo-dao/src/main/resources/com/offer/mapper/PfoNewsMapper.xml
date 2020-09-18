@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoNewsMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoNews" >
+    <id column="news_id" property="newsId" jdbcType="INTEGER" />
+    <result column="news_date" property="newsDate" jdbcType="TIMESTAMP" />
+    <result column="news_title" property="newsTitle" jdbcType="VARCHAR" />
+    <result column="news_type" property="newsType" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.offer.pojo.PfoNews" extends="BaseResultMap" >
+    <result column="news_content" property="newsContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    news_id, news_date, news_title, news_type
+  </sql>
+  <sql id="Blob_Column_List" >
+    news_content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.offer.pojo.PfoNewsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoNewsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_news
+    where news_id = #{newsId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pfo_news
+    where news_id = #{newsId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoNewsExample" >
+    delete from pfo_news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoNews" >
+    insert into pfo_news (news_id, news_date, news_title, 
+      news_type, news_content)
+    values (#{newsId,jdbcType=INTEGER}, #{newsDate,jdbcType=TIMESTAMP}, #{newsTitle,jdbcType=VARCHAR}, 
+      #{newsType,jdbcType=VARCHAR}, #{newsContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoNews" >
+    insert into pfo_news
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="newsId != null" >
+        news_id,
+      </if>
+      <if test="newsDate != null" >
+        news_date,
+      </if>
+      <if test="newsTitle != null" >
+        news_title,
+      </if>
+      <if test="newsType != null" >
+        news_type,
+      </if>
+      <if test="newsContent != null" >
+        news_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="newsId != null" >
+        #{newsId,jdbcType=INTEGER},
+      </if>
+      <if test="newsDate != null" >
+        #{newsDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="newsTitle != null" >
+        #{newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="newsType != null" >
+        #{newsType,jdbcType=VARCHAR},
+      </if>
+      <if test="newsContent != null" >
+        #{newsContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoNewsExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_news
+    <set >
+      <if test="record.newsId != null" >
+        news_id = #{record.newsId,jdbcType=INTEGER},
+      </if>
+      <if test="record.newsDate != null" >
+        news_date = #{record.newsDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.newsTitle != null" >
+        news_title = #{record.newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsType != null" >
+        news_type = #{record.newsType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsContent != null" >
+        news_content = #{record.newsContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update pfo_news
+    set news_id = #{record.newsId,jdbcType=INTEGER},
+      news_date = #{record.newsDate,jdbcType=TIMESTAMP},
+      news_title = #{record.newsTitle,jdbcType=VARCHAR},
+      news_type = #{record.newsType,jdbcType=VARCHAR},
+      news_content = #{record.newsContent,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_news
+    set news_id = #{record.newsId,jdbcType=INTEGER},
+      news_date = #{record.newsDate,jdbcType=TIMESTAMP},
+      news_title = #{record.newsTitle,jdbcType=VARCHAR},
+      news_type = #{record.newsType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoNews" >
+    update pfo_news
+    <set >
+      <if test="newsDate != null" >
+        news_date = #{newsDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="newsTitle != null" >
+        news_title = #{newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="newsType != null" >
+        news_type = #{newsType,jdbcType=VARCHAR},
+      </if>
+      <if test="newsContent != null" >
+        news_content = #{newsContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where news_id = #{newsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.offer.pojo.PfoNews" >
+    update pfo_news
+    set news_date = #{newsDate,jdbcType=TIMESTAMP},
+      news_title = #{newsTitle,jdbcType=VARCHAR},
+      news_type = #{newsType,jdbcType=VARCHAR},
+      news_content = #{newsContent,jdbcType=LONGVARCHAR}
+    where news_id = #{newsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoNews" >
+    update pfo_news
+    set news_date = #{newsDate,jdbcType=TIMESTAMP},
+      news_title = #{newsTitle,jdbcType=VARCHAR},
+      news_type = #{newsType,jdbcType=VARCHAR}
+    where news_id = #{newsId,jdbcType=INTEGER}
+  </update>
+
+  <!-- 获取所有推送消息 -->
+  <select id="queryAllNews" resultMap="ResultMapWithBLOBs">
+    select * from pfo_news
+  </select>
+
+  <!-- 任意条件添加推送消息 -->
+  <select id="queryNews" parameterType="com.offer.pojo.PfoNews" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    from pfo_news
+    <where>
+      <if test="newsId != null">
+        news_id = #{newsId,jdbcType=INT}
+      </if>
+      <if test="newsDate != null" >
+        AND news_date = #{newsDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="newsTitle != null" >
+        AND news_title = #{newsTitle,jdbcType=VARCHAR}
+      </if>
+      <if test="newsType != null" >
+        AND news_type = #{newsType,jdbcType=VARCHAR}
+      </if>
+      <if test="newsContent != null" >
+        AND news_content = #{newsContent,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

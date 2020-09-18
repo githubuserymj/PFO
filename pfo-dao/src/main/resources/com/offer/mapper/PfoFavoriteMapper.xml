@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoFavoriteMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoFavorite" >
+    <id column="favorite_id" property="favoriteId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="post_id" property="postId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    favorite_id, user_id, post_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoFavoriteExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_favorite
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pfo_favorite
+    where favorite_id = #{favoriteId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_favorite
+    where favorite_id = #{favoriteId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoFavoriteExample" >
+    delete from pfo_favorite
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoFavorite" >
+    insert into pfo_favorite (favorite_id, user_id, post_id
+      )
+    values (#{favoriteId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{postId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoFavorite" >
+    insert into pfo_favorite
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="favoriteId != null" >
+        favorite_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="postId != null" >
+        post_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="favoriteId != null" >
+        #{favoriteId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postId != null" >
+        #{postId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoFavoriteExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_favorite
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_favorite
+    <set >
+      <if test="record.favoriteId != null" >
+        favorite_id = #{record.favoriteId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.postId != null" >
+        post_id = #{record.postId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_favorite
+    set favorite_id = #{record.favoriteId,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      post_id = #{record.postId,jdbcType=BIGINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoFavorite" >
+    update pfo_favorite
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postId != null" >
+        post_id = #{postId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where favorite_id = #{favoriteId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoFavorite" >
+    update pfo_favorite
+    set user_id = #{userId,jdbcType=BIGINT},
+      post_id = #{postId,jdbcType=BIGINT}
+    where favorite_id = #{favoriteId,jdbcType=BIGINT}
+  </update>
+  <!--自定义接口实现-->
+  <select id="queryFavorite" parameterType="com.offer.pojo.PfoFavorite" resultMap="BaseResultMap">
+    SELECT *FROM pfo_favorite
+    <where>
+      <if test="favoriteId != null">
+        AND favorite_id = #{favoriteId}
+      </if>
+      <if test="userId != null">
+        AND user_id = #{userId}
+      </if>
+      <if test="postId != null">
+        AND post_id = #{postId}
+      </if>
+    </where>
+  </select>
+</mapper>

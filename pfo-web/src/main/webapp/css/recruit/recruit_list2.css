@@ -1,0 +1,238 @@
+body {
+    background: #eee;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+.module-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    background: #fff;
+    margin: auto;
+}
+
+.module-head {
+    /*padding: 15px 20px 0;*/
+    line-height: normal;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+.module-head h1 {
+    margin-top: 12px;
+}
+
+.module-head h1, .module-head h2 {
+    font-size: 16px;
+    line-height: 16px;
+    float: left;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.module-head {
+    padding: 15px;
+}
+
+.module-head-oprt {
+    float: right;
+}
+
+.search-input-wrap {
+    border: 1px solid #ddd;
+    height: 45px;
+    line-height: 38px;
+    position: relative;
+    width: 260px;
+    background: #fff;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.search-input-wrap .ico-search {
+    background: url(https://static.nowcoder.com/fe/style/images/common/img/icons/ico-search.png) center center no-repeat;
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    width: 36px;
+    height: 36px;
+}
+
+.search-input-wrap input {
+    border: none;
+    margin-left: 36px;
+    width: 80%;
+}
+
+.btn {
+    display: inline-block;
+    text-align: center;
+    padding: 5px 10px;
+    /*width: 110px;*/
+    color: #fff;
+    font-size: 14px;
+    border-radius: 3px;
+    border: none 0;
+    cursor: pointer;
+    line-height: normal;
+    outline: 0;
+    white-space: nowrap;
+    background: #25bb9b;
+    float: right;
+}
+
+.share-tag-wrap {
+    background: #f5f5f5;
+    padding: 15px 15px 0;
+    clear: both;
+}
+
+.share-tag-wrap section {
+    margin-bottom: 10px
+}
+
+.share-tag {
+    padding: 0 5px;
+    height: 28px;
+    line-height: 28px;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 14px;
+    margin-right: 10px;
+    margin: 0 10px 5px 0
+}
+
+.share-tag.selected {
+    background: #25bb9b;
+    color: #fff;
+    text-align: center
+}
+
+.share-tag-label {
+    width: 50px;
+    padding: 0 10px;
+    line-height: 28px;
+    font-size: 14px;
+    float: left
+}
+
+.share-tag-box {
+    margin-left: 70px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd
+}
+
+.module-body {
+    padding-top: 0;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+
+ol, ul {
+    list-style: none;
+}
+
+.career-talk-list {
+    margin: 15px 20px;
+}
+
+.career-talk-item {
+    display: block;
+    margin-bottom: 20px;
+    border: 1px solid #d4d4d4;
+    border-radius: 3px;
+    padding: 15px 20px;
+    background: #fff;
+    position: relative;
+}
+
+.career-talk-item .talk-item-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.recruitment-item-select {
+    cursor: pointer;
+    display: inline-block;
+    border: 1px solid #25bb9b;
+    /*width: 80px;*/
+    padding: 2px 10px 1px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #25bb9b;
+    margin-left: 10px;
+    text-align: center;
+}
+
+.recruitment-item-operator {
+    cursor: pointer;
+    display: inline-block;
+    border: 1px solid #eee;
+    /*width: 80px;*/
+    padding: 2px 10px 1px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #aeaeae;
+    margin-left: 10px;
+    text-align: center;
+    visibility: hidden;
+}
+
+.talk-item-oprt {
+    display: none;
+    position: absolute;
+    right: 10px;
+    bottom: 14px;
+    font-size: 14px;
+}
+
+.talk-item-hd {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.sign-new {
+    padding: 3px 8px;
+}
+
+.disTop, .sign-new, .tag-push {
+    background: #25bb9b;
+}
+
+.talk-item-bd {
+    font-size: 14px;
+}
+
+.college-item, .college-item2, .time-item, .time-item2 {
+    padding-left: 20px;
+    margin-right: 40px;
+    background: url(//static.nowcoder.com/images/img/careerTalk/ico-house.png) left center no-repeat;
+}
+
+.career-talk-item:hover .recruitment-item-operator {
+    visibility: visible;
+}
+
+
+
+/*.pagination {*/
+    /*position: relative;*/
+    /*text-align: center;*/
+    /*white-space: nowrap;*/
+    /*margin: 20px 0 0;*/
+    /*font-size: 12px;*/
+    /*font-weight: 700;*/
+    /*!*letter-spacing: -4px;*!*/
+/*}*/
+

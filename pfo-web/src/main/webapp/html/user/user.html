@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:width="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>用户中心</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <script src="/pfo/js/jquery.Jcrop.js"></script>
+
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/highcharts.js"></script>
+    <!--顶部导航栏-->
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+
+</head>
+<body>
+
+<!--顶部-->
+<div style="height: 850px;background-color: #eeeeee">
+<!--    个人详细信息-->
+    <div id="inforBody">
+<!--        头部简略信息-->
+        <div id="inforHead">
+            <div style="width: 80%;height:100%;float: left">
+                <div style="position:relative;width: 20%;height:100%;margin-left: 0;float: left;">
+                    <input id="uploadUserPhoto" type="file" hidden="hidden">
+                    <img id="userPhoto" class="img-fluid img-thumbnail rounded-circle" src="https://images.nowcoder.com/images/20190816/846402631_1565956032347_193E973C19D9E8AA76A1AFADA284FD99?x-oss-process=image/resize,m_mfit,h_100,w_100" alt="" style="width: 60px;height: 60px;position: absolute;top:50%; left:50%;transform: translate(-50%,-50%);">
+                    <img class="uploadLogo img-fluid img-thumbnail rounded-circle" src="/pfo/img/logo/upload.svg" hidden alt="" style="opacity:0.5;width: 60px;height: 60px;position: absolute;top:50%; left:50%;transform: translate(-50%,-50%);">
+
+                    <!-- 模态框 -->
+                    <div class="modal fade" id="uploadUserPhotoModal">
+                        <div class="modal-dialog" style="max-width: 870px">
+                            <div class="modal-content">
+
+                                <!-- 模态框头部 -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">上传裁剪用户头像</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- 模态框主体 -->
+                                <div class="modal-body">
+                                    <!--原图-->
+                                    <div style="width: 500px;height:400px;padding:10px;float: left;">
+                                        <img class="userPrePhoto" src="" alt="" style="max-width: 450px">
+                                    </div>
+                                    <!--剪切后-->
+                                    <div style="width: 300px;height: auto;padding:10px;float: left;margin-left: 10px">
+                                        <!--<img src="" alt="">-->
+                                        <div style="width: 300px;height: 300px;">
+                                            <canvas id="cut" width="200" height="200" style="border: 1px red solid"></canvas>
+                                        </div >
+                                        <div style="margin-bottom: 0">
+                                            <hr>
+                                            <strong>请设置裁剪大小</strong><br>
+                                            <span style="font-size: 10px">(裁剪规则:0&lt;x|y<=300)</span><br>
+                                            x：<input class="canvasWidth" type="text" style="width:30px" value="200" onchange="changeCanvasWidth()">px
+                                            y：<input class="canvasHeight" type="text" style="width:30px" value="200" onchange="changeCanvasHeight()">px
+                                            <button class="btn btn-primary" id="updateUserPhoto">裁剪并且上传</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="position:relative;width: 15%;height:100%;margin-left: 0;float: left;">
+                    <div href="#" style="display: flex;align-items: center;height:70%;font-size: 20px;color: #a1a1a1!important;">
+                        <div class="inforHead-userName">用户名</div>
+                    </div>
+                    <div style="height: 30%;">
+                        <span class="addFocus" onclick="addFocus()" style="cursor:pointer;padding:0 10px;border: 1px solid #d4d4d4;border-radius: 20px;font-size: 15px;color: #a1a1a1!important;">关注</span>
+                    </div>
+                </div>
+
+                <div style="float: left;width: 65%;height:100%;position: relative;">
+                    <div style="width: 100%;height:70%;">
+                        <div style="float: left;height:100%;display: flex;align-items: center;font-size: 1em">格言：
+                            <span class="inforHead-userSignature" style="color: #25bb9b">未知</span>
+                        </div>
+                        <div style="float: left;height:100%;display: flex;align-items: center;margin-left: 20px;font-size: 1em;">
+                            <div>
+                                类型：<span style="color: #25bb9b" class="inforHead-userType"></span>
+                            </div>
+                            <div style="margin-left: 20px">
+                                公司名称：<a href="" style="" class="inforHead-companyName">无</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="userLitInfo" style="position: absolute;width: 100%;height:30%;font-size: 0.8em">
+                        <ul>
+                            <li>性别：<span class="inforHead-userSex" style="color: #25bb9b">未知</span></li>
+                            <li>生日：<span class="inforHead-userBirth" style="color: #25bb9b">未知</span></li>
+                            <li>邮箱：<span class="inforHead-userEmail" style="color: #25bb9b">未知</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="width: 20%;height:100%;display: flex;">
+                <button id="editUserInfo" class="btn btn-primary" style="background: #25bb9b;border: none;text-decoration: none;width: 80px;height: 40px;margin: auto">编辑</button>
+            </div>
+        </div>
+        <!--        详细信息-->
+        <div style="width:100%;height: 600px;margin-top:17px;">
+<!--            左边-->
+            <div class="leftStyle" style="border: 1px solid #e0e0e0">
+                <div style="width:100%;height: 90%;padding: 0;">
+                    <!-- 导航区 -->
+                    <!-- Tab panes -->
+                        <ul class="nav list-unstyled profile-menu flex-column" role="tablist" style="line-height: 40px;">
+                            <li class="nav-item"><a class="nav-link userHome" href="#userHome" data-toggle="pill"><div><img src="/pfo/img/logo/userhome.svg" alt=""></div><div>首页<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userfinishQuestions" href="#userfinishQuestions"  data-toggle="tab"><div><img src="/pfo/img/logo/userquestion.svg" alt=""></div><div>刷题<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userFinishPapers" href="#userFinishPapers" data-toggle="tab"><div><img src="/pfo/img/logo/userpaper.svg" alt=""></div><div>试卷<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userPost" href="#userPost" data-toggle="tab"><div><img src="/pfo/img/logo/userPost.svg" alt=""></div><div>帖子<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userDiscuss" href="#userDiscuss" data-toggle="tab"><div><img src="/pfo/img/logo/userdiscuss.svg" alt=""></div><div>讨论<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userFavorite" href="#userFavorite" data-toggle="tab"><div><img src="/pfo/img/logo/usercollection.svg" alt=""></div><div>收藏<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userFocusUsers" href="#userFocusUsers" data-toggle="tab"><div><img src="/pfo/img/logo/userfocus.svg" alt=""></div><div>关注/粉丝<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userSignUp" href="#userSignUp" data-toggle="tab"><div><img src="/pfo/img/logo/userSignUp.svg" alt=""></div><div>报名<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userResume" href="#userResume" data-toggle="tab"><div><img src="/pfo/img/logo/userresume.svg" alt=""></div><div>我的简历<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                            <li class="nav-item"><a class="nav-link userSetting" href="#userSetting" data-toggle="tab"><div><img src="/pfo/img/logo/usersetting.svg" alt=""></div><div>设置<img src="/pfo/img/tools/chevron-right.svg" style="float: right;fill: #005cbf"> </div></a></li>
+                        </ul>
+                </div>
+            </div>
+<!--            右边-->
+            <div style="width:70%;height: 100%;border: 1px solid #e0e0e0;float: right;background: white;">
+                <!-- Tab panes -->
+                <div class="tab-content" style="height: 100%">
+                    <!--个人中心首页-->
+                    <div id="userHome" class="tab-pane active">
+
+                        <div style="width: 100%;height:50px;border-bottom: 1px solid #d4d4d4;margin-bottom: 10px">
+                            <div style="float: left;margin-top: 20px">
+                                <strong style="font-size: 16px">成就：</strong>
+                            </div>
+                        </div>
+
+                        <div style="text-align:center;width: 100%;height: 20%;">
+                            <div class="container">
+                                <div class="card" style="width: 30%;float: left;margin-left:25px;margin-right: 10px">
+                                    <div class="card-header bg" style="height:40px;font-size: 16px;float: left;">
+                                        <strong style="float: left;">收藏</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        帖子数（
+                                        <span class="userFavoritesNum"></span>
+                                        ）
+                                    </div>
+                                </div>
+                                <div class="card" style="width: 30%;float: left;margin-right: 10px">
+                                    <div class="card-header bg" style="height:40px;font-size: 16px;float: left;">
+                                        <strong style="float: left;">粉丝</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        人数（
+                                      <span class="userFansNum"></span>
+                                        ）
+                                    </div>
+                                </div>
+                                <div class="card" style="width: 30%;margin-right: 10px">
+                                    <div class="card-header bg" style="height:40px;font-size: 16px;">
+                                        <strong style="float: left;">钱包</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        O币（
+                                        <span class="oCoin"></span>
+                                        ）
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="width: auto;height: auto;">
+                                <div id="container" style="width: 100%;height:100%;"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--用户做过的题-->
+                    <div id="userfinishQuestions" class="tab-pane" style="width: 100%;left:0;top:0; ">
+                        <div style="width: 100%;height:50px;border-bottom: 1px solid #d4d4d4;border-bottom: 2px solid #25bb9b;">
+                            <ul id="questionMenu" class="nav" role="tablist">
+                                <li class="nav-item" style="background: #25bb9b;"><a href="#tab1" class="nav-link quesTab" data-toggle="tab" style="color: #fff;">在线刷题</a></li>
+                                <li class="nav-item userWrongQuests"><a href="#tab2" class="nav-link quesTab" data-toggle="tab">错题集</a></li>
+                            </ul>
+                            <div id="questionBody" class="tab-content" style="padding: 10px 0;">
+                                <div id="tab1" class="tab-pane active" style="">
+<!--                                    刷题头部-->
+                                    <div class="questionBodyHead" style="margin: 5px 0 5px 5px;">
+                                        <h6>练习的试题(<span class="finishQuestionNum">0</span>)</h6>
+                                    </div>
+<!--                                    刷题详情-->
+                                    <div class="finishQuestionsContent">
+                                        <div class="row pre-scrollable" style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                            <table id="finishQuestions" class="table table-hover table-striped table-responsive-sm" >
+                                                <thead style="color: black;background:white;position:relative">
+                                                <tr>
+                                                    <th style="width: 56px">序号</th>
+                                                    <th style="width: 250px">题目</th>
+                                                    <th style="width: auto">你的回答</th>
+                                                    <th style="width: 106px">时间</th>
+                                                    <th style="width: 57px">操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody style="">
+                                                <!--做题记录-->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div id="tab2" class="tab-pane">
+                                    <!--                                    错题头部&ndash;&gt;-->
+                                    <div class="questionBodyHead" style="margin: 5px 0 5px 5px;">
+                                        <h6>出错的题目(<span class="wrongQuestionNum">0</span>)</h6>
+                                    </div>
+                                    <!--                                   出错题目详情-->
+                                    <div class="wrongQuestionsContent">
+                                        <div class="row pre-scrollable" style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                            <table id="wrongQuestions" class="table table-hover table-striped table-responsive-sm" >
+                                                <thead style="color: black;background:white;position:relative">
+                                                <tr>
+                                                    <th style="width: 56px">序号</th>
+                                                    <th style="width: 250px">题目</th>
+                                                    <th style="width: auto">你的回答</th>
+                                                    <th style="width: 106px">时间</th>
+                                                    <th style="width: 57px">操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody style="">
+                                                <!--错题记录-->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--用户做过的试卷-->
+                    <div id="userFinishPapers" class="tab-pane">
+                        <div style="width: 100%;height:50px;">
+                            <div style="float: left;padding: 10px">
+                                <strong style="font-size: 16px">我的试卷</strong>
+                            </div>
+                        </div>
+
+<!--                        试卷-->
+                        <div class="paperList">
+                            <div class="row pre-scrollable"  style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                <table class="table table-hover table-striped table-responsive-sm">
+                                    <thead style="background: #25bb9b;color: white;">
+                                    <tr>
+                                        <th style="width: 58px">序号</th>
+                                        <th style="width: auto">描述</th>
+                                        <th style="width: 60px">得分</th>
+                                        <th style="width: 170px">时间</th>
+                                        <th style="width: 60px">操作</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!--用户做卷详情-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--用戶的帖子-->
+                    <div id="userPost" class="tab-pane">
+                        <div style="width: 100%;height:50px;padding: 10px">
+                            <strong>我的帖子</strong>
+                        </div>
+                        <div class="postList" style="">
+                            <div class="row pre-scrollable" style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                <table id="post" class="table table-hover table-striped table-responsive-sm" >
+                                    <thead style="background: #25bb9b;color: white;position:relative">
+                                    <tr>
+                                        <th style="width: 58px">序号</th>
+                                        <th style="width: 200px">标题</th>
+                                        <th style="width: auto">内容</th>
+                                        <th style="width: 70px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody style="">
+                                        <!--帖子信息-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--用戶的互動-->
+                    <div id="userDiscuss" class="tab-pane">
+                        <div style="width: 100%;height:50px;padding: 10px">
+                            <strong>用户交流</strong>
+                        </div>
+                        <div class="discussList" style="">
+                            <div class="row pre-scrollable" style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                <table id="discussTable" class="table table-hover table-striped table-responsive-sm" >
+                                    <thead style="background: #25bb9b;color: white;position:relative">
+                                    <tr>
+                                        <th style="width: 58px">序号</th>
+                                        <th style="width: 200px">你的回答</th>
+                                        <th style="width: auto">时间</th>
+                                        <th style="width: 70px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody style="">
+                                    <!--对话-->
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--用户收藏-->
+                    <div id="userFavorite" class="tab-pane">
+                        <div style="width: 100%;height:50px;padding: 10px">
+                            <strong>用户收藏</strong>
+                        </div>
+
+                        <div class="paperList" style="">
+                            <div class="row pre-scrollable" style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                <table id="favorites" class="table table-hover table-striped table-responsive-sm" >
+                                    <thead style="background: #25bb9b;color: white;position:relative">
+                                    <tr>
+                                        <th style="width: 58px">序号</th>
+                                        <th style="width: 200px">标题</th>
+                                        <th style="width: auto">内容</th>
+                                        <th style="width: 60px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody style="">
+                                        <!--收藏信息-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--用户关注与粉丝-->
+                    <div id="userFocusUsers" class="tab-pane" >
+                        <div style="width: 100%;height:50px;border-bottom: 1px solid #d4d4d4;border-bottom: 2px solid #25bb9b;">
+                            <ul id="focusFansMenu" class="nav" role="tablist">
+                                <li class="nav-item focusMenu focusFans" style="background: #25bb9b;"><a href="#focus" class="nav-link quesTab" data-toggle="tab" style="color: #fff;">关注</a></li>
+                                <li class="nav-item fansMenu focusFans"><a href="#fans" class="nav-link quesTab" data-toggle="tab">粉丝</a></li>
+                            </ul>
+                            <div id="focusBody" class="tab-content" style="padding: 10px 0;">
+                                <div id="focus" class="tab-pane active" style="">
+                                    <!--                                    刷题头部-->
+                                    <div class="questionBodyHead" style="margin: 5px 0 5px 5px;">
+                                        <h6>关注数(<span class="focusNum">0</span>)</h6>
+                                    </div>
+                                    <!--                                    刷题详情-->
+                                    <div class="paperList" style="">
+                                        <div class="row pre-scrollable" style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                            <table id="focusTable" class="table table-hover table-striped table-responsive-sm" >
+                                                <thead style="color: black;background:white;position:relative">
+                                                <tr>
+                                                    <th style="width: 84px">用户</th>
+                                                    <th style="width: 141px">用户名</th>
+                                                    <th style="width: 222px">做题概况</th>
+                                                    <th style="width: auto">格言</th>
+                                                    <th style="width: 80px">操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody style="">
+                                                <!--关注的人-->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div id="fans" class="tab-pane">
+                                    <!--                                    错题头部&ndash;&gt;-->
+                                    <div class="fansHead" style="margin: 5px 0 5px 5px;">
+                                        <h6>粉丝数(<span class="fansNum">0</span>)</h6>
+                                    </div>
+                                    <!--                                   出错题目详情-->
+                                    <div class="fansContent">
+                                        <div class="row pre-scrollable" style="min-height:500px;width:100%;overflow:auto;margin: 0">
+                                            <table id="fansTable" class="table table-hover table-striped table-responsive-sm" >
+                                                <thead style="color: black;background:white;position:relative">
+                                                <tr>
+                                                    <th style="width: 84px">用户</th>
+                                                    <th style="width: 141px">用户名</th>
+                                                    <th style="width: 222px">做题概况</th>
+                                                    <th style="width: 200px">格言</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody style="">
+                                                <!--错题记录-->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- 报名表信息 -->
+                    <div id="userSignUp" class="tab-pane">
+                        <div style="width: 100%;height:50px; padding: 10px; border-bottom: solid 1px #e1e1e1; margin-bottom: 15px">
+                            <strong>报名列表</strong>
+                        </div>
+                        <div style="display: flex;align-items: center;;margin: 5px 0">
+                            <div style="width: 20%;text-align: center">图标</div>
+                            <div style="width: 20%;text-align: center">描述</div>
+                            <div style="width: 20%;text-align: center">职位</div>
+                            <div style="width: 20%;text-align: center">报名时间</div>
+                            <div style="width: 20%;text-align: center">公司</div>
+                        </div>
+                        <div class="signList" style="width: 100%">
+                            <div class="sign-up-list" style="list-style: none;margin-left: 0;margin-right: 0;padding: 10px;overflow-y: scroll;height:400px;">
+                                <!--报名信息-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--用户简历-->
+                    <div id="userResume" class="tab-pane" style="width: 100%;">
+                        <div style="width: 100%;height:50px;border-bottom: 1px solid #d4d4d4;">
+                            <div style="float: left;padding: 10px">
+                                <strong style="font-size: 16px;">我的简历</strong>
+                            </div>
+                            <div style="float: right">
+                                <button class="btn btn-primary addUserResume"  data-toggle="modal" data-target="#userResumeModal" style="background: #25bb9b;border: none;width: 100px;margin-top: 10px" >新建</button>
+                            </div>
+                            <!-- 模态框 -->
+                            <div class="modal fade" id="userResumeModal">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+
+                                        <!-- 模态框头部 -->
+                                        <div class="modal-header">
+                                            <strong class="modal-title">上传简历</strong>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+
+                                        <!-- 模态框主体 -->
+                                        <div class="modal-body">
+                                            <div style="margin-bottom: 1em">
+                                                <span>简历名称：</span>
+                                                <input class="userResumeTitle" type="text" style="width: 100%" placeholder="输入你的简历名称">
+                                            </div>
+                                            <div>
+                                                <span>简历文件（图片）</span>
+                                                <div style="width: 100%;height: auto;border: 1px solid #dee2e6;text-align: center">
+                                                    <input type="file" id="userResumeFile" hidden="hidden">
+                                                    <img class="uploadUserResumeLogo" src="/pfo/img/logo/uploadUserResume.svg" alt="" style="max-width: 100%;max-height: 100%">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 模态框底部 -->
+                                        <div class="modal-footer">
+                                            <span class="uploadUserResumeStatus" style="margin: 0 auto 0 0;font-size: 0.8em;color: red;"></span>
+                                            <button onclick="uploadUserResume()" type="button" class="btn btn-secondary" data-dismiss="modal">确定</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rusumeList" style="max-height: 470px;margin-top: 10px;overflow-y: scroll">
+                            <!--<div style="position: relative">-->
+                                <!--<div></div>-->
+                                <!--<div>Java开发工程师</div>-->
+                                <!--<div style="position: absolute;right: 0">-->
+                                    <!--<a href="userResume.html"><img src="/pfo/img/logo/watch.svg" alt=""></a>-->
+                                    <!--<a href="userResume.html"><img src="/pfo/img/logo/edit.svg" alt=""></a>-->
+                                    <!--<a href=""><img src="/pfo/img/logo/delete.svg" alt=""></a>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div>-->
+                                <!--<div></div>-->
+                                <!--<div>算法开发工程师</div>-->
+                                <!--<div>-->
+                                    <!--<a href="userResume.html"><img src="/pfo/img/logo/watch.svg" alt=""></a>-->
+                                    <!--<a href="userResume.html"><img src="/pfo/img/logo/edit.svg" alt=""></a>-->
+                                    <!--<a href=""><img src="/pfo/img/logo/delete.svg" alt=""></a>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div>-->
+                                <!--<div></div>-->
+                                <!--<div>前端工程师</div>-->
+                                <!--<div>-->
+                                    <!--<a href="userResume.html"><img src="/pfo/img/logo/watch.svg" alt=""></a>-->
+                                    <!--<a href="userResume.html"><img src="/pfo/img/logo/edit.svg" alt=""></a>-->
+                                    <!--<a href=""><img src="/pfo/img/logo/delete.svg" alt=""></a>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+
+                    <div id="userSetting" class="tab-pane" style="width: 100%;padding: 20px;">
+
+                        <div style="max-height: 550px;overflow:auto">
+                            <div class="changeUserBasicInfo">
+                                <div style="width: 100%;border-bottom: 1px solid #d4d4d4;margin-bottom: 20px;padding-bottom: 20px">
+                                    <strong style="font-size: 16px;">基本信息：</strong>
+                                    <button id="btn-updateUserBasicInfo" onclick="updateUserBasicInfo()" class="btn btn-primary" style="float: right;background: #25bb9b;border: none">保存</button>
+                                </div>
+                                <div style="padding: 20px 50px">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <label class="custom-control-inline">用户名</label>
+                                                    <input class="userName custom-control-inline" style="width: 180px;"></input>
+                                                </td>
+                                                <td>
+                                                    <label class="custom-control-inline">性别</label>
+                                                    <input class="userSex custom-control-inline" style="width: 200px;" value="未知"></input>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="custom-control-inline">生&#8195日</label>
+                                                    <input type="date" class="userBirth custom-control-inline" style="width: 180px;" ></input>
+                                                </td>
+                                                <td>
+                                                    <label class="custom-control-inline">邮箱</label>
+                                                    <input type="email" class="userEmail custom-control-inline" style="width: 200px;"></input>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <label class="custom-control-inline" style="display: flex">签名：</label>
+                                                    <textarea rows="3" cols="71" class="userSignature">用户个性签名</textarea>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="changeUserPhone">
+                                <div style="width: 100%;border-bottom: 1px solid #d4d4d4;margin-bottom: 10px">
+                                    <strong style="font-size: 16px">手机号：</strong>
+                                </div>
+                                <div style="padding: 20px 50px">
+                                    <div>
+                                        <label class="custom-control custom-control-inline">原手机号</label>
+                                        <div class="custom-control custom-control-inline userPhone" style="width: 225px;"></div>
+                                    </div>
+                                    <div>
+                                        <label  class="custom-control custom-control-inline">新手机号</label>
+                                        <input class="custom-control custom-control-inline newUserPhone"  placeholder="新手机号" style="width: 208px;">
+                                    </div>
+                                    <div class="input-group mb-3" style="margin-left: 25px;">
+                                        <input type="text" class="custom-control" placeholder="短信" style="width: 187px">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" style="background: #25bb9b;color: white;">获取验证码</span>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control">
+                                        <div style="display: flex;align-items:center;justify-content:center;background: #25bb9b;color: white;border: none;width: 292px;height:35px;border-radius: 3%">保存</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="changeUserPwd">
+                                <div style="width: 100%;border-bottom: 1px solid #d4d4d4;margin-bottom: 10px">
+                                    <strong style="font-size: 16px">用户密码：</strong>
+                                </div>
+                                <div style="padding: 20px 50px">
+                                    <div>
+                                        <label class="custom-control custom-control-inline">手机号</label>
+                                        <div class="custom-control custom-control-inline userPhone" placeholder="手机号" style="width: 225px;" readonly></div>
+                                    </div>
+                                    <div>
+                                        <label  class="custom-control custom-control-inline">新密码</label>
+                                        <input class="custom-control custom-control-inline newPassword"  placeholder="新密码" style="width: 225px;">
+                                    </div>
+
+                                    <div class="input-group mb-3" style="margin: 10px 25px;">
+                                        <div class="input-group-prepend">
+                                            <img class="imgCode" onclick="requestCodeImg()" style="color: white;"></span>
+                                        </div>
+                                        <input type="text" class="imgCodeValue custom-control" placeholder="图形验证码" style="width: 184px">
+                                    </div>
+
+                                    <div class="input-group mb-3" style="margin-left: 25px;">
+                                        <input id="smsCodeValue" type="text" class="custom-control smsCode" placeholder="短信" style="width: 187px">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text sendSmsCode" onclick="getSmsCode()" style="background: #25bb9b;color: white;">获取验证码</span>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control">
+                                        <div class="btn_changeUserPwd" style="display: flex;align-items:center;justify-content:center;background: #25bb9b;color: white;border: none;width: 292px;height:35px;border-radius: 3%">保存</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--底部栏-->
+<script src="/pfo/js/common/footer.js"></script>
+</body>
+
+<script src="/pfo/js/user/user.js"></script>
+
+<link rel="stylesheet" href="/pfo/css/bootstrap.css">
+<link rel="stylesheet" href="/pfo/css/jquery.Jcrop.css">
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+<link rel="stylesheet" href="/pfo/css/user/user.css">
+<link rel="stylesheet" href="/pfo/css/global.css">
+
+<script>
+    // Build the chart
+    Highcharts.chart('container', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: ''
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [{
+                name: '选择题',
+                y: 61.41,
+                sliced: true,
+                selected: true
+            }, {
+                name: '简答题',
+                y: 11.84
+            }, {
+                name: '编程题',
+                y: 10.85
+            }, {
+                name: '试卷',
+                y: 4.67
+            }, {
+                name: '其它',
+                y: 11.23
+            }]
+        }]
+    });
+</script>
+
+
+</html>

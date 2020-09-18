@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoMessage" >
+    <id column="message_id" property="messageId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="target_user_id" property="targetUserId" jdbcType="BIGINT" />
+    <result column="message_type" property="messageType" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.offer.pojo.PfoMessage" extends="BaseResultMap" >
+    <result column="message_text" property="messageText" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    message_id, user_id, deliver_time, target_user_id, message_type
+  </sql>
+  <sql id="Blob_Column_List" >
+    message_text
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.offer.pojo.PfoMessageExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoMessageExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_message
+    where message_id = #{messageId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_message
+    where message_id = #{messageId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoMessageExample" >
+    delete from pfo_message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoMessage" >
+    insert into pfo_message (message_id, user_id, deliver_time,
+    target_user_id, message_type, message_text
+    )
+    values (#{messageId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{deliverTime,jdbcType=TIMESTAMP},
+    #{targetUserId,jdbcType=BIGINT}, #{messageType,jdbcType=VARCHAR}, #{messageText,jdbcType=LONGVARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoMessage" useGeneratedKeys="true" keyProperty="messageId">
+    insert into pfo_message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="messageId != null" >
+        message_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time,
+      </if>
+      <if test="targetUserId != null" >
+        target_user_id,
+      </if>
+      <if test="messageType != null" >
+        message_type,
+      </if>
+      <if test="messageText != null" >
+        message_text,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="messageId != null" >
+        #{messageId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="deliverTime != null" >
+        #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="targetUserId != null" >
+        #{targetUserId,jdbcType=BIGINT},
+      </if>
+      <if test="messageType != null" >
+        #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="messageText != null" >
+        #{messageText,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoMessageExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_message
+    <set >
+      <if test="record.messageId != null" >
+        message_id = #{record.messageId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.deliverTime != null" >
+        deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.targetUserId != null" >
+        target_user_id = #{record.targetUserId,jdbcType=BIGINT},
+      </if>
+      <if test="record.messageType != null" >
+        message_type = #{record.messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.messageText != null" >
+        message_text = #{record.messageText,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update pfo_message
+    set message_id = #{record.messageId,jdbcType=BIGINT},
+    user_id = #{record.userId,jdbcType=BIGINT},
+    deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+    target_user_id = #{record.targetUserId,jdbcType=BIGINT},
+    message_type = #{record.messageType,jdbcType=VARCHAR},
+    message_text = #{record.messageText,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_message
+    set message_id = #{record.messageId,jdbcType=BIGINT},
+    user_id = #{record.userId,jdbcType=BIGINT},
+    deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+    target_user_id = #{record.targetUserId,jdbcType=BIGINT},
+    message_type = #{record.messageType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoMessage" >
+    update pfo_message
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="targetUserId != null" >
+        target_user_id = #{targetUserId,jdbcType=BIGINT},
+      </if>
+      <if test="messageType != null" >
+        message_type = #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="messageText != null" >
+        message_text = #{messageText,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where message_id = #{messageId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.offer.pojo.PfoMessage" >
+    update pfo_message
+    set user_id = #{userId,jdbcType=BIGINT},
+    deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+    target_user_id = #{targetUserId,jdbcType=BIGINT},
+    message_type = #{messageType,jdbcType=VARCHAR},
+    message_text = #{messageText,jdbcType=LONGVARCHAR}
+    where message_id = #{messageId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoMessage" >
+    update pfo_message
+    set user_id = #{userId,jdbcType=BIGINT},
+    deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+    target_user_id = #{targetUserId,jdbcType=BIGINT},
+    message_type = #{messageType,jdbcType=VARCHAR}
+    where message_id = #{messageId,jdbcType=BIGINT}
+  </update>
+
+  <!--自定义接口实现-->
+  <select id="queryPfoMessage" resultMap="BaseResultMap">
+    select * from pfo_message
+    <where>
+      <if test="messageId != null" >
+        and message_id = #{record.messageId,jdbcType=BIGINT}
+      </if>
+      <if test="userId != null" >
+        and user_id = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="deliverTime != null" >
+        and deliver_time = #{deliverTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="targetUserId != null" >
+        and target_user_id = #{targetUserId,jdbcType=BIGINT}
+      </if>
+      <if test="messageType != null" >
+        and message_type = #{messageType,jdbcType=VARCHAR}
+      </if>
+      <if test="messageText != null" >
+        and message_text = #{messageText,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

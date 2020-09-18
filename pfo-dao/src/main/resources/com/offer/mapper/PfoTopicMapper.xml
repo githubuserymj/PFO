@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoTopicMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoTopic" >
+    <id column="topic_id" property="topicId" jdbcType="INTEGER" />
+    <result column="topic_name" property="topicName" jdbcType="VARCHAR" />
+  </resultMap>
+  <!--嵌套结果集的方式，使用collection标签定义关联的集合类型的属性封装规则  -->
+  <resultMap id="TopicWithPosts" type="com.offer.pojo.PfoTopic">
+    <id column="topic_id" property="topicId" jdbcType="INTEGER" />
+    <result column="topic_name" property="topicName" jdbcType="VARCHAR" />
+    <!--
+         collection定义关联集合类型的属性的封装规则
+         ofType:指定集合里面元素的类型
+    -->
+    <collection column="id" property="postList" ofType="com.offer.pojo.PfoPost">
+      <!-- 定义这个集合中元素的封装规则 -->
+      <id column="post_id" property="postId" jdbcType="BIGINT" />
+      <result column="post_title" property="postTitle" jdbcType="VARCHAR" />
+      <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+      <result column="post_status" property="postStatus" jdbcType="BIT" />
+      <result column="topic_id" property="topicId" jdbcType="INTEGER" />
+      <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+      <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
+      <result column="o_coin" property="oCoin" jdbcType="INTEGER" />
+      <result column="origin_url" property="originUrl" jdbcType="VARCHAR" />
+      <result column="post_body" property="postBody" jdbcType="LONGVARCHAR" />
+    </collection>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    topic_id, topic_name
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoTopicExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_topic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pfo_topic
+    where topic_id = #{topicId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pfo_topic
+    where topic_id = #{topicId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoTopicExample" >
+    delete from pfo_topic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoTopic" >
+    insert into pfo_topic (topic_id, topic_name)
+    values (#{topicId,jdbcType=INTEGER}, #{topicName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoTopic" >
+    insert into pfo_topic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="topicId != null" >
+        topic_id,
+      </if>
+      <if test="topicName != null" >
+        topic_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="topicId != null" >
+        #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="topicName != null" >
+        #{topicName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoTopicExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_topic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_topic
+    <set >
+      <if test="record.topicId != null" >
+        topic_id = #{record.topicId,jdbcType=INTEGER},
+      </if>
+      <if test="record.topicName != null" >
+        topic_name = #{record.topicName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_topic
+    set topic_id = #{record.topicId,jdbcType=INTEGER},
+      topic_name = #{record.topicName,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoTopic" >
+    update pfo_topic
+    <set >
+      <if test="topicName != null" >
+        topic_name = #{topicName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where topic_id = #{topicId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoTopic" >
+    update pfo_topic
+    set topic_name = #{topicName,jdbcType=VARCHAR}
+    where topic_id = #{topicId,jdbcType=INTEGER}
+  </update>
+
+  <!-- 查询一个主题下的多个帖子-->
+  <select id="queryTopicWithPosts" resultMap="TopicWithPosts">
+    select p.*,t.*
+    from pfo_post p
+    left join pfo_topic t
+    on p.topic_id = t.topic_id
+    where t.topic_id=#{topicId,jdbcType=INTEGER}
+  </select>
+</mapper>

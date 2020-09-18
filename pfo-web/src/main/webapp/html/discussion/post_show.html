@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>讨论区-主页</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <script src="/pfo/js/jquery.sPage.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="/pfo/css/discussion/pfo_discuss.css">
+    <link rel="stylesheet" href="/pfo/css/discussion/rightbar.css">
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <link rel="stylesheet" href="/pfo/css/jquery.sPage.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/global.css" type="text/css">
+</head>
+<!--讨论区主体部分-->
+<body style="background-color:#eeebea;">
+<script>
+    <!--将数据库中对应字符解码为+&%-->
+    function reupdate(str){
+        str = str.replace(/%2B/g,"+")
+        str = str.replace(/%26/g,"&")
+        str = str.replace(/%25/g,"%")
+        return str
+    }
+</script>
+<script>
+    <!-- 将地址栏参数分开,根据参数名获取参数-->
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    //公共方法 获取cookies中userId
+    function getCookie(cname) {
+        //读取cookies
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+    //按最新最热最多回复排序
+    if (getQueryString("order")!=null) {
+        //接受URL地址参数
+        function showAllData() {
+
+            $(document).ready(papersLoad(1))
+            //数据获取
+            function papersLoad(currPage) {
+                $.get({
+                    url:"/pfo/post/queryRequiredByTagIdOrder",
+                    contentType: "application/json;charset=utf-8",
+                    dataType:"json",
+                    data:"currPage="+ currPage +"&pageSize=10&order="+getQueryString("order"),
+                    success:function (data) {
+                        showPosts(data)
+                        var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                        // 调用分页插件
+                        $("#postPage").sPage({
+                            page: data.currPage,//当前页码，必填
+                            total: data.totalSize,//数据总条数，必填
+                            pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                            showTotal: true,//是否显示总条数，默认关闭：false
+                            totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                            noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                            showSkip: true,//是否显示跳页，默认关闭：false
+                            showPN: true,//是否显示上下翻页，默认开启：true
+                            prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                            nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                            backFun: function (page) {
+                                //点击分页按钮回调函数，返回当前页码
+                                papersLoad(page)
+                            }
+                        });
+                    }
+                })
+            }
+        }
+
+
+
+
+    }
+    //根据标签id显示所有帖子主要信息
+    else if (getQueryString("tagId")!=null) {
+        //接受URL地址参数
+        $(document).ready(papersLoad(1))
+        //数据获取
+        function papersLoad(currPage) {
+            $.get({
+                url:"/pfo/post/queryRequiredByTagIdOrder",
+                contentType: "application/json;charset=utf-8",
+                dataType:"json",
+                data:"currPage="+ currPage +"&pageSize=10&tagId="+getQueryString("tagId"),
+                success:function (data) {
+                    showPosts(data)
+                    var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                    // 调用分页插件
+                    $("#postPage").sPage({
+                        page: data.currPage,//当前页码，必填
+                        total: data.totalSize,//数据总条数，必填
+                        pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                        showTotal: true,//是否显示总条数，默认关闭：false
+                        totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                        noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                        showSkip: true,//是否显示跳页，默认关闭：false
+                        showPN: true,//是否显示上下翻页，默认开启：true
+                        prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                        nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                        backFun: function (page) {
+                            //点击分页按钮回调函数，返回当前页码
+                            papersLoad(page)
+                        }
+                    });
+                }
+            })
+        }
+    }
+    //根据主题id显示所有帖子主要信息
+    else if (getQueryString("topicId")!=null) {
+        if (getQueryString("topicId")==0) {
+            $(document).ready(papersLoad(1))
+            //数据获取
+            function papersLoad(currPage) {
+                $.get({
+                    url:"/pfo/post/pageInfoRequired",
+                    contentType: "application/json;charset=utf-8",
+                    dataType:"json",
+                    data:"currPage="+ currPage +"&pageSize=10",
+                    success:function (data) {
+                        showPosts(data)
+                        var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                        // 调用分页插件
+                        $("#postPage").sPage({
+                            page: data.currPage,//当前页码，必填
+                            total: data.totalSize,//数据总条数，必填
+                            pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                            showTotal: true,//是否显示总条数，默认关闭：false
+                            totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                            noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                            showSkip: true,//是否显示跳页，默认关闭：false
+                            showPN: true,//是否显示上下翻页，默认开启：true
+                            prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                            nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                            backFun: function (page) {
+                                //点击分页按钮回调函数，返回当前页码
+                                papersLoad(page)
+                            }
+                        });
+                    }
+                })
+            }
+
+        }else{
+            //接受URL地址参数
+            $(document).ready(papersLoad(1))
+            //数据获取
+            function papersLoad(currPage) {
+                $.get({
+                    url:"/pfo/post/queryRequiredByTopicIdOrder",
+                    contentType: "application/json;charset=utf-8",
+                    dataType:"json",
+                    data:"currPage="+ currPage +"&pageSize=10&topicId=" + getQueryString("topicId"),
+                    success:function (data) {
+                        showPosts(data)
+                        var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                        // 调用分页插件
+                        $("#postPage").sPage({
+                            page: data.currPage,//当前页码，必填
+                            total: data.totalSize,//数据总条数，必填
+                            pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                            showTotal: true,//是否显示总条数，默认关闭：false
+                            totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                            noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                            showSkip: true,//是否显示跳页，默认关闭：false
+                            showPN: true,//是否显示上下翻页，默认开启：true
+                            prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                            nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                            backFun: function (page) {
+                                //点击分页按钮回调函数，返回当前页码
+                                papersLoad(page)
+                            }
+                        });
+                    }
+                })
+            }
+
+        }
+
+    }
+
+/*    else{
+        $(document).ready(papersLoad(1))
+        //数据获取
+        function papersLoad(currPage) {
+            $.get({
+                url:"/pfo/post/queryRequiredByScannerOrder",
+                contentType: "application/json;charset=utf-8",
+                dataType:"json",
+                data:"currPage="+ currPage +"&pageSize=10&scanner="+$("#search-message").val(),
+                success:function (data) {
+                    showPosts(data)
+                    var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                    // 调用分页插件
+                    $("#postPage").sPage({
+                        page: data.currPage,//当前页码，必填
+                        total: data.totalSize,//数据总条数，必填
+                        pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                        showTotal: true,//是否显示总条数，默认关闭：false
+                        totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                        noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                        showSkip: true,//是否显示跳页，默认关闭：false
+                        showPN: true,//是否显示上下翻页，默认开启：true
+                        prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                        nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                        backFun: function (page) {
+                            //点击分页按钮回调函数，返回当前页码
+                            papersLoad(page)
+                        }
+                    });
+                }
+            })
+        }
+
+    }*/
+</script>
+<div id="discussion-module" class="pfo-main">
+    <!--顶部图片-->
+    <div class="img-top">
+        <div id="demo" class="carousel slide" data-ride="carousel">
+            <!-- 指示符 -->
+            <ul class="carousel-indicators">
+                <li data-target="#demo" data-slide-to="0" class="active"></li>
+                <li data-target="#demo" data-slide-to="1"></li>
+                <li data-target="#demo" data-slide-to="2"></li>
+            </ul>
+            <!-- 轮播图片 -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img style="height: 80px;width: 100%;" src="https://uploadfiles.nowcoder.com/images/20190730/3985294_1564490888606_0C83743E799FFF59A9F56D088FD89BCB">
+                </div>
+                <div class="carousel-item">
+                    <img style="height: 80px;width: 100%;" src="https://uploadfiles.nowcoder.com/images/20190923/339694163_1569236069862_8F6132E99BB3A2974759D511D2632B0A">
+                </div>
+                <div class="carousel-item">
+                    <img style="height: 80px;width: 100%;" src="https://uploadfiles.nowcoder.com/images/20190730/3985294_1564490888606_0C83743E799FFF59A9F56D088FD89BCB">
+                </div>
+            </div>
+            <!-- 左右切换按钮 -->
+            <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </a>
+            <a class="carousel-control-next" href="#demo" data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </a>
+
+        </div>
+    </div>
+    <!--内容主体-->
+    <div class="pfo-content">
+        <div class="module-box">
+            <!--发布，搜索块-->
+            <div class="module-head" style="height: 45px;background-color:white;">
+                <div class="module-head-publish">
+                    <a class="btn btn-primary btn-b-publish" href="pfo_publish.html"><i class="ico-submit"></i>我要发布</a>
+                </div>
+                <h4>分享与求助</h4>
+                <div class="search-box">
+                    <div class="search-input-wrap">
+                        <label id="icon-search"><a href="javascript:void(0);" onclick="search1()"><img style="height: 20px;width: 20px;" id="img-search" src="/pfo/img/logo/search.svg"/></a></label>
+                        <input id="search-message" type="text" placeholder="搜索你感兴趣的内容" style="font-size: 10px;">
+                        <script>
+                            function search1(){
+                                $(document).ready(papersLoad(1))
+                                //数据获取
+                                //alert("开始搜索")
+                                // cPage 当前页 pSize 每页容量  sum总数据条数
+                                var cPage=""
+                                var pSize=""
+                                var sum=""
+                                var x=""
+                                var y=""
+                                function papersLoad(cPage) {
+                                    $.get({
+                                        // url:"/pfo/post/queryRequiredByScannerOrder",
+                                        url:"/pfo/post/ccc",
+                                        contentType: "application/json;charset=utf-8",
+                                        dataType:"json",
+                                        // data:"currPage="+ currPage +"&pageSize=10&scanner="+$("#search-message").val(),
+                                        data:"str="+$("#search-message").val(),
+                                        success:function (data) {
+                                            //alert(cPage)
+                                            //设置每页大小10条
+                                            pSize =10
+                                            showQuery(data)
+                                            function showQuery(data) {
+                                                var html =""
+                                                var aa=""
+                                                sum =data.data.length
+                                                x = (cPage-1)*pSize
+                                                y = cPage*pSize
+                                                var pageNums = Math.ceil(sum / pSize)
+                                                // alert(pageNums)
+                                                // alert("当前页"+cPage)
+                                                /**
+                                                 * 当前页为尾页时,需要判断尾页数据量,
+                                                 * 满足一页,修改判断条件
+                                                 * 不足一页,修改判断条件 sum%pSize为尾页数据量
+                                                 */
+                                                if(pageNums == cPage){
+                                                    if (sum%pSize==0){
+                                                        for (var i = x;i<(x+pSize);i++){
+                                                            alert("当前页"+cPage)
+                                                            //加载每个帖子相关的所有标签
+                                                            $.ajax({
+                                                                url:"/pfo/post/queryAllTagsByPostId",
+                                                                dataType:"json",
+                                                                data:"postId="+data.data[i].postId,
+                                                                async:false,
+                                                                success:function (data1) {
+                                                                    aa=""
+                                                                    if (null != data1.data){
+                                                                        for (var j = 0; j < data1.data.length; j++) {
+                                                                            //console.log(data1)
+                                                                            //console.log(data1.data[j].tagName)
+                                                                            aa += "<a class=\"tag-label\" href=\"/pfo/html/discussion/post_show.html?tagId="+data1.data[j].tagId+"\" target=\"_blank\">"
+                                                                            aa += data1.data[j].tagName
+                                                                            aa += "</a>"
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                            })
+                                                            //console.log(data.data[i].userPhoto)
+                                                            html += "<li class=\"li-context\" style='padding: 10px'>\n" +
+                                                                "                        <a class=\"head-pic\"  href=\"/pfo/html/user/user.html?userId="
+                                                            html+=data.data[i].userId +
+                                                                "\" data-card-index=\"1\"><img alt=\"头像\" src=\""
+                                                            html+=data.data[i].userPhoto +
+                                                                "\"></a>\n" +
+                                                                "                        <div class=\"discuss-detail\">\n" +
+                                                                "                            <div>\n" +
+                                                                "                                <a style='color: black;' href=\"/pfo/html/discussion/pfo_postInfo.html?postId="+data.data[i].postId+"\" target=\"_blank\">\n"
+                                                            html+=reupdate(data.data[i].postTitle);
+                                                            html+= aa
+                                                            html+=   "                                    <span class=\"disTop\"></span>\n" +
+                                                                "                                    <span class=\"tag-certify\">\n" +
+                                                                "                                        <img src=\"\"\n" +
+                                                                "                                             alt=\"\">\n" +
+                                                                "                                        <span></span>\n" +
+                                                                "                                    </span>\n" +
+                                                                "                                    <span class=\"tag-hot\">\n" +
+                                                                "                                        <img src=\"\" alt=\"\">\n" +
+                                                                "                                    <span></span>\n" +
+                                                                "                                    </span>\n" +
+                                                                "                                </a>\n" +
+                                                                "                            </div>\n" +
+                                                                "                            <div class=\"feed-foot\">\n" +
+                                                                "                                <div class=\"feed-origin\">\n" +
+                                                                "                                    <p class=\"feed-tip\">\n"
+
+                                                            html+="                                        <a href=\"/pfo/html/user/user.html?userId="
+                                                            html+=data.data[i].userId +
+                                                                "\" data-card-index=\"2\">\n"
+                                                            html+=data.data[i].userName
+                                                            html+="</a>\n" +
+                                                                "                                        <a href=\"/user/authentication\" class=\"\" \n" +
+                                                                "                                           data-tips-index=\"1\">"+
+                                                                "                                        &nbsp;&nbsp;\n"
+                                                            html+="</a>"+
+                                                                "                                        &nbsp;&nbsp;\n"
+                                                            html+=data.data[i].deliverTime
+                                                            html+=" 发表在&nbsp;"
+                                                            html += "<a href=\"/pfo/html/discussion/post_show.html?topicId="+data.data[i].topicId +"\">"
+                                                            html+= [data.data[i].topicName]
+
+                                                            html+=    "</a>&nbsp;&nbsp;\n" +
+                                                                "                                        11小时前回复\n" +
+                                                                "                                    </p>\n" +
+                                                                "                                </div>\n" +
+                                                                "                                <div class=\"feed-legend\">\n" +
+                                                                "                                    <span style='cursor: pointer' >回复<span class=\"feed-legend-num\">"
+                                                            html += data.data[i].commentCount;
+                                                            html += "                                </span></span>\n" +
+                                                                "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                                                "                                    <span style='cursor: pointer'>赞<span  class=\"feed-legend-num\">"
+                                                            html+=data.data[i].favorCount;
+                                                            html += "</span></span>\n"+
+                                                                "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                                                "                                    <span style='cursor: pointer'>浏览<span class=\"feed-legend-num\">"
+                                                            html += data.data[i].viewCount;
+                                                            html += "</span></span>\n" +
+                                                                "                                </div>\n" +
+                                                                "                            </div>\n" +
+                                                                "                        </div>\n" +
+                                                                "                    </li>"
+                                                        }
+                                                    } else{
+                                                        for (var i = x;i<(x+(sum%pSize));i++){
+                                                            //alert("当前页"+cPage)
+                                                            //加载每个帖子相关的所有标签
+                                                            $.ajax({
+                                                                url:"/pfo/post/queryAllTagsByPostId",
+                                                                dataType:"json",
+                                                                data:"postId="+data.data[i].postId,
+                                                                async:false,
+                                                                success:function (data1) {
+                                                                    aa=""
+                                                                    if (null != data1.data){
+                                                                        for (var j = 0; j < data1.data.length; j++) {
+                                                                            //console.log(data1)
+                                                                            //console.log(data1.data[j].tagName)
+                                                                            aa += "<a class=\"tag-label\" href=\"/pfo/html/discussion/post_show.html?tagId="+data1.data[j].tagId+"\" target=\"_blank\">"
+                                                                            aa += data1.data[j].tagName
+                                                                            aa += "</a>"
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                            })
+                                                            //console.log(data.data[i].userPhoto)
+                                                            html += "<li class=\"li-context\" style='padding: 10px'>\n" +
+                                                                "                        <a class=\"head-pic\"  href=\"/pfo/html/user/user.html?userId="
+                                                            html+=data.data[i].userId +
+                                                                "\" data-card-index=\"1\"><img alt=\"头像\" src=\""
+                                                            html+=data.data[i].userPhoto +
+                                                                "\"></a>\n" +
+                                                                "                        <div class=\"discuss-detail\">\n" +
+                                                                "                            <div>\n" +
+                                                                "                                <a style='color: black;' href=\"/pfo/html/discussion/pfo_postInfo.html?postId="+data.data[i].postId+"\" target=\"_blank\">\n"
+                                                            html+=reupdate(data.data[i].postTitle);
+                                                            html+= aa
+                                                            html+=   "                                    <span class=\"disTop\"></span>\n" +
+                                                                "                                    <span class=\"tag-certify\">\n" +
+                                                                "                                        <img src=\"\"\n" +
+                                                                "                                             alt=\"\">\n" +
+                                                                "                                        <span></span>\n" +
+                                                                "                                    </span>\n" +
+                                                                "                                    <span class=\"tag-hot\">\n" +
+                                                                "                                        <img src=\"\" alt=\"\">\n" +
+                                                                "                                    <span></span>\n" +
+                                                                "                                    </span>\n" +
+                                                                "                                </a>\n" +
+                                                                "                            </div>\n" +
+                                                                "                            <div class=\"feed-foot\">\n" +
+                                                                "                                <div class=\"feed-origin\">\n" +
+                                                                "                                    <p class=\"feed-tip\">\n"
+
+                                                            html+="                                        <a href=\"/pfo/html/user/user.html?userId="
+                                                            html+=data.data[i].userId +
+                                                                "\" data-card-index=\"2\">\n"
+                                                            html+=data.data[i].userName
+                                                            html+="</a>\n" +
+                                                                "                                        <a href=\"/user/authentication\" class=\"\" \n" +
+                                                                "                                           data-tips-index=\"1\">"+
+                                                                "                                        &nbsp;&nbsp;\n"
+                                                            html+="</a>"+
+                                                                "                                        &nbsp;&nbsp;\n"
+                                                            html+=data.data[i].deliverTime
+                                                            html+=" 发表在&nbsp;"
+                                                            html += "<a href=\"/pfo/html/discussion/post_show.html?topicId="+data.data[i].topicId +"\">"
+                                                            html+= [data.data[i].topicName]
+
+                                                            html+=    "</a>&nbsp;&nbsp;\n" +
+                                                                "                                        11小时前回复\n" +
+                                                                "                                    </p>\n" +
+                                                                "                                </div>\n" +
+                                                                "                                <div class=\"feed-legend\">\n" +
+                                                                "                                    <span style='cursor: pointer' >回复<span class=\"feed-legend-num\">"
+                                                            html += data.data[i].commentCount;
+                                                            html += "                                </span></span>\n" +
+                                                                "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                                                "                                    <span style='cursor: pointer'>赞<span  class=\"feed-legend-num\">"
+                                                            html+=data.data[i].favorCount;
+                                                            html += "</span></span>\n"+
+                                                                "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                                                "                                    <span style='cursor: pointer'>浏览<span class=\"feed-legend-num\">"
+                                                            html += data.data[i].viewCount;
+                                                            html += "</span></span>\n" +
+                                                                "                                </div>\n" +
+                                                                "                            </div>\n" +
+                                                                "                        </div>\n" +
+                                                                "                    </li>"
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    for (var i = x;i<y;i++){
+                                                        //加载每个帖子相关的所有标签
+                                                        $.ajax({
+                                                            url:"/pfo/post/queryAllTagsByPostId",
+                                                            dataType:"json",
+                                                            data:"postId="+data.data[i].postId,
+                                                            async:false,
+                                                            success:function (data1) {
+                                                                aa=""
+                                                                if (null != data1.data){
+                                                                    for (var j = 0; j < data1.data.length; j++) {
+                                                                        //console.log(data1)
+                                                                        //console.log(data1.data[j].tagName)
+                                                                        aa += "<a class=\"tag-label\" href=\"/pfo/html/discussion/post_show.html?tagId="+data1.data[j].tagId+"\" target=\"_blank\">"
+                                                                        aa += data1.data[j].tagName
+                                                                        aa += "</a>"
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        })
+                                                        //console.log(data.data[i].userPhoto)
+                                                        html += "<li class=\"li-context\" style='padding: 10px'>\n" +
+                                                            "                        <a class=\"head-pic\"  href=\"/pfo/html/user/user.html?userId="
+                                                        html+=data.data[i].userId +
+                                                            "\" data-card-index=\"1\"><img alt=\"头像\" src=\""
+                                                        html+=data.data[i].userPhoto +
+                                                            "\"></a>\n" +
+                                                            "                        <div class=\"discuss-detail\">\n" +
+                                                            "                            <div>\n" +
+                                                            "                                <a style='color: black;' href=\"/pfo/html/discussion/pfo_postInfo.html?postId="+data.data[i].postId+"\" target=\"_blank\">\n"
+                                                        html+=reupdate(data.data[i].postTitle);
+                                                        html+= aa
+                                                        html+=   "                                    <span class=\"disTop\"></span>\n" +
+                                                            "                                    <span class=\"tag-certify\">\n" +
+                                                            "                                        <img src=\"\"\n" +
+                                                            "                                             alt=\"\">\n" +
+                                                            "                                        <span></span>\n" +
+                                                            "                                    </span>\n" +
+                                                            "                                    <span class=\"tag-hot\">\n" +
+                                                            "                                        <img src=\"\" alt=\"\">\n" +
+                                                            "                                    <span></span>\n" +
+                                                            "                                    </span>\n" +
+                                                            "                                </a>\n" +
+                                                            "                            </div>\n" +
+                                                            "                            <div class=\"feed-foot\">\n" +
+                                                            "                                <div class=\"feed-origin\">\n" +
+                                                            "                                    <p class=\"feed-tip\">\n"
+
+                                                        html+="                                        <a href=\"/pfo/html/user/user.html?userId="
+                                                        html+=data.data[i].userId +
+                                                            "\" data-card-index=\"2\">\n"
+                                                        html+=data.data[i].userName
+                                                        html+="</a>\n" +
+                                                            "                                        <a href=\"/user/authentication\" class=\"\" \n" +
+                                                            "                                           data-tips-index=\"1\">"+
+                                                            "                                        &nbsp;&nbsp;\n"
+                                                        html+="</a>"+
+                                                            "                                        &nbsp;&nbsp;\n"
+                                                        html+=data.data[i].deliverTime
+                                                        html+=" 发表在&nbsp;"
+                                                        html += "<a href=\"/pfo/html/discussion/post_show.html?topicId="+data.data[i].topicId +"\">"
+                                                        html+= [data.data[i].topicName]
+
+                                                        html+=    "</a>&nbsp;&nbsp;\n" +
+                                                            "                                        11小时前回复\n" +
+                                                            "                                    </p>\n" +
+                                                            "                                </div>\n" +
+                                                            "                                <div class=\"feed-legend\">\n" +
+                                                            "                                    <span style='cursor: pointer' >回复<span class=\"feed-legend-num\">"
+                                                        html += data.data[i].commentCount;
+                                                        html += "                                </span></span>\n" +
+                                                            "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                                            "                                    <span style='cursor: pointer'>赞<span  class=\"feed-legend-num\">"
+                                                        html+=data.data[i].favorCount;
+                                                        html += "</span></span>\n"+
+                                                            "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                                            "                                    <span style='cursor: pointer'>浏览<span class=\"feed-legend-num\">"
+                                                        html += data.data[i].viewCount;
+                                                        html += "</span></span>\n" +
+                                                            "                                </div>\n" +
+                                                            "                            </div>\n" +
+                                                            "                        </div>\n" +
+                                                            "                    </li>"
+                                                    }
+                                                }
+
+                                                $('.common-list').html(html)
+                                            }
+                                            //alert("搜索结束")
+
+                                            // sum =data.data.length
+                                            //alert(sum)
+
+
+                                            // 调用分页插件
+                                            $("#postPage").sPage({
+                                                page: cPage,//当前页码，必填
+                                                total: sum,//数据总条数，必填
+                                                pageSize: pSize,//每页显示多少条数据，默认10条
+                                                showTotal: true,//是否显示总条数，默认关闭：false
+                                                totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                                                noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                                                showSkip: true,//是否显示跳页，默认关闭：false
+                                                showPN: true,//是否显示上下翻页，默认开启：true
+                                                prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                                                nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                                                backFun: function (page) {
+                                                    //点击分页按钮回调函数，返回当前页码
+                                                    papersLoad(page)
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                            }
+
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <!--帖子主题分类-->
+            <div class="discuss-tab-wrap">
+
+
+            </div>
+            <!-- 获取并显示所有主题-->
+            <script >
+                $.get({
+                    url:"/pfo/topic/showAllTopics",
+                    dataType:"json",
+                    success:function (data) {
+                        //console.log(data)
+                       // console.log(data.data.length)
+                        showTopics(data)
+                    }
+                })
+                function showTopics(data) {
+                    var html ="<a href=\"/pfo/html/discussion/post_show.html?topicId=0\" class=\"discuss-tab\" data-id='0'>全部</a>"
+                    for (var i = 0;i<data.data.length;i++){
+                        html += "<a href=\"/pfo/html/discussion/post_show.html?topicId="+data.data[i].topicId +"\" data-id='"
+                        html+=data.data[i].topicId +
+                            "' class=\"discuss-tab\">"
+                        html += data.data[i].topicName;
+                        html += "</a>"
+                    }
+                    $('.discuss-tab-wrap').html(html)
+                }
+            </script>
+            <!--最新最热等分类-->
+            <div class="menu-txt-box" style="background-color:white;">
+                <ul class="menu-txt clearfix">
+
+                    <li>
+                        <a href="/pfo/html/discussion/post_show.html?order=1" class="xx" data-id="1">最新发表</a>
+                    </li>
+                    <li class="menu-pipe">|</li>
+                    <li>
+                        <a href="/pfo/html/discussion/post_show.html?order=2" class="xx" data-id="2">最多浏览</a>
+                    </li>
+                    <li class="menu-pipe">|</li>
+                    <li>
+                        <a href="/pfo/html/discussion/post_show.html?order=3" class="xx" data-id="3">最多回复</a>
+                    </li>
+                </ul>
+            </div>
+            <!--帖子详情-->
+            <!--记号-->
+            <div class="module-body">
+                <ul class="common-list">
+                    <script >
+                        function showPosts(data) {
+                            var html =""
+                            var aa=""
+                            for (var i = 0;i<data.dataList.length;i++){
+                                //加载每个帖子相关的所有标签
+                                $.ajax({
+                                    url:"/pfo/post/queryAllTagsByPostId",
+                                    dataType:"json",
+                                    data:"postId="+data.dataList[i].postId,
+                                    async:false,
+                                    success:function (data1) {
+                                        aa=""
+                                        if (null != data1.data){
+                                            for (var j = 0; j < data1.data.length; j++) {
+                                                //console.log(data1)
+                                                //console.log(data1.data[j].tagName)
+                                                aa += "<a class=\"tag-label\" href=\"/pfo/html/discussion/post_show.html?tagId="+data1.data[j].tagId+"\" target=\"_blank\">"
+                                                aa += data1.data[j].tagName
+                                                aa += "</a>"
+                                            }
+                                        }
+                                    }
+
+                                })
+                                //console.log(data.dataList[i].userPhoto)
+                                html += "<li class=\"li-context\" style='padding: 10px'>\n" +
+                                    "                        <a class=\"head-pic\"  href=\"/pfo/html/user/user.html?userId="
+                                html+=data.dataList[i].userId +
+                                    "\" data-card-index=\"1\"><img alt=\"头像\" src=\""
+                                html+=data.dataList[i].userPhoto +
+                                    "\"></a>\n" +
+                                    "                        <div class=\"discuss-detail\">\n" +
+                                    "                            <div>\n" +
+                                    "                                <a style='color: black;' href=\"/pfo/html/discussion/pfo_postInfo.html?postId="+data.dataList[i].postId+"\" target=\"_blank\">\n"
+                                html+=reupdate(data.dataList[i].postTitle)
+                                html+= aa
+                                html+=   "                                    <span class=\"disTop\"></span>\n" +
+                                    "                                    <span class=\"tag-certify\">\n" +
+                                    "                                        <img src=\"\"\n" +
+                                    "                                             alt=\"\">\n" +
+                                    "                                        <span></span>\n" +
+                                    "                                    </span>\n" +
+                                    "                                    <span class=\"tag-hot\">\n" +
+                                    "                                        <img src=\"\" alt=\"\">\n" +
+                                    "                                    <span></span>\n" +
+                                    "                                    </span>\n" +
+                                    "                                </a>\n" +
+                                    "                            </div>\n" +
+                                    "                            <div class=\"feed-foot\">\n" +
+                                    "                                <div class=\"feed-origin\">\n" +
+                                    "                                    <p class=\"feed-tip\">\n"
+
+                                html+="                                        <a href=\"/pfo/html/user/user.html?userId="
+                                html+=data.dataList[i].userId +
+                                    "\" data-card-index=\"2\">\n"
+                                html+=data.dataList[i].userName
+                                html+="</a>\n" +
+                                    "                                        <a href=\"/user/authentication\" class=\"\" target=\"_blank\" data-title=\"人工智能运营茜\"\n" +
+                                    "                                           data-tips-index=\"1\">"+
+                                    "                                        &nbsp;&nbsp;\n"
+                                html+="</a>"+
+                                    "                                        &nbsp;&nbsp;\n"
+                                html+=data.dataList[i].deliverTime
+                                html+=" 发表在&nbsp;"
+                                html += "<a href=\"/pfo/html/discussion/post_show.html?topicId="+data.dataList[i].topicId +"\">"
+                                html+= [data.dataList[i].topicName]
+
+                                html+=    "</a>&nbsp;&nbsp;\n" +
+                                    "                                        11小时前回复\n" +
+                                    "                                    </p>\n" +
+                                    "                                </div>\n" +
+                                    "                                <div class=\"feed-legend\">\n" +
+                                    "                                    <span style='cursor: pointer' >回复<span class=\"feed-legend-num\">"
+                                html += data.dataList[i].commentCount;
+                                html += "                                </span></span>\n" +
+                                    "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                    "                                    <span style='cursor: pointer'>赞<span  class=\"feed-legend-num\">"
+                                html+=data.dataList[i].favorCount;
+                                html += "</span></span>\n"+
+                                    "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+                                    "                                    <span style='cursor: pointer'>浏览<span class=\"feed-legend-num\">"
+                                html += data.dataList[i].viewCount;
+                                html += "</span></span>\n" +
+                                    "                                </div>\n" +
+                                    "                            </div>\n" +
+                                    "                        </div>\n" +
+                                    "                    </li>"
+                            }
+                            $('.common-list').html(html)
+                        }
+
+                    </script>
+                    <script >
+                        <!-- 动态加载分页标签-->
+                        /*function getData(data){
+                            var html='<li>\n' +
+                                '                <a href="javascript:void(0);" aria-label="Previous">\n' +
+                                '                    <span aria-hidden="true">&laquo;</span>\n' +
+                                '                </a>\n' +
+                                '            </li>'
+                            var allPages = data.totalSize/data.pageSize
+                            if (data.totalSize%data.pageSize == 0){
+                                for (var i=1;i<=(allPages);i++){
+                                    html+='<li><a style="width: 100%; height: 100%;" href="javascript:void(0);" class="pg" onclick="toPage('+i+')">'
+                                    html+=i
+                                    html+='</a></li>'
+                                }
+                            }else{
+                                for (var i=1;i<=(allPages+1);i++){
+                                    html+='<li><a style="width: 100%; height: 100%;" href="javascript:void(0);" class="pg" onclick="toPage('+i+')">'
+                                    html+=i
+                                    html+='</a></li>'
+                                }
+                            }
+                            html+='<li>\n' +
+                                '                <a href="javascript:void(0);" aria-label="Next">\n' +
+                                '                    <span aria-hidden="true">&raquo;</span>\n' +
+                                '                </a>\n' +
+                                '            </li>'
+                            $('.pagination').html(html)
+                        }*/
+                    </script>
+                </ul>
+                <div class="pfo-pagination" >
+                    <ul class="pagination">
+                    </ul>
+                </div>
+                <!--分页-->
+                <div>
+                    <div id="postPage" class="Pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pfo-bar">
+        <!--右侧边话题栏-->
+        <div class="module-box" style="margin-top: 10px;">
+            <div class="module-head clearfix">
+                <h4>热门话题</h4>
+            </div>
+            <div class="module-body">
+                <div class="tags-box">
+                </div>
+            </div>
+            <!-- 获取帖子的所有标签并展示一部分-->
+            <script >
+                $.get({
+                    url:"/pfo/post/queryAllTagsWithPosts",
+                    dataType:"json",
+                    success:function (data) {
+                        //console.log(data)
+                        //console.log(data.data.length)
+                        showTags(data)
+                    }
+                })
+
+                function showTags(data) {
+                    var html =""
+                    for (var i = 0;i<data.data.length;i++){
+                        html += "<a class=\"tag-label\" href=\"/pfo/html/discussion/post_show.html?tagId="+data.data[i].tagId+"\" target=\"_blank\">"
+                        html += data.data[i].tagName
+                        html += "</a>"
+                    }
+                    $('.tags-box').html(html)
+                }
+            </script>
+        </div>
+
+        <!--右侧边热帖栏-->
+        <div class="module-box">
+            <div class="module-head">
+                <h4>近期热帖</h4>
+            </div>
+            <div class="module-body">
+                <ul class="list-module">
+                </ul>
+                <script>
+                    $.get({
+                        url:"/pfo/post/queryByRequiredOrder",
+                        dataType:"json",
+                        data:"order=2",
+                        success:function (data) {
+                            showHotPosts(data)
+                        }
+                    })
+                    function showHotPosts(data) {
+                        var html = ''
+                        for (var j = 0; j < 10; j++) {
+                            html+="<li style='border-bottom: 1px #e0e0e0 solid;\n" +
+                                "    border-radius: 3px; margin-bottom: 10px;'>\n" +
+                                "                        <div class=\"list-title\">\n" +
+                                "                            <a target=\"_blank\" class=\"list-name\" href=\"/pfo/html/discussion/pfo_postInfo.html?postId="
+                            html+=data.data[j].postId+
+                                "\">"
+
+                            html+=reupdate(data.data[j].postTitle)
+                            html+="</a>\n" +
+                                "                        </div>\n" +
+                                "                        <div class=\"list-legend\">\n" +
+                                "<span class=\"comm-num\">回复<a target=\"_blank\" href=\"/discuss/239271?type=6\">"
+
+                            html+=data.data[j].commentCount
+                            html+="</a>\n" +
+                                "</span>\n" +
+                                "                            发表于"
+
+                            html+=data.data[j].deliverTime
+                            html+=" </div>\n" +
+                                "                    </li>"
+                        }
+                        $(".list-module").html(html)
+                    }
+                </script>
+            </div>
+        </div>
+        <!--右侧边公司栏-->
+        <div class="module-box">
+            <div class="module-head clearfix">
+                <div class="module-head-oprt" style="float:right;">
+                    <span class="mho-page" >1/5</span>
+                    <!-- 提供上一页，下一页方法-->
+                    <a href="javascript:void(0);" onclick="nex()" title="上一页"><img src="https://static.easyicon.net/preview/122/1228872.gif" style="height: 15px; width: 15px;"/></a>
+                    <a href="javascript:void(0);" onclick="pre()" title="下一页"><img src="https://static.easyicon.net/preview/122/1228802.gif" style="height: 15px; width: 15px;"/></a>
+                </div>
+                <h4>公司主页</h4>
+            </div>
+            <div class="module-body">
+                <div class="member-list-wrapper">
+                    <ul class="member-list" style="margin-top: 0px;">
+                        <li>
+                            <a href="/community/134" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/7.png"></a>
+                            <a href="/community/134" target="_blank" class="member-name">阿里巴巴</a>
+                        </li>
+                        <li>
+                            <a href="/community/138" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190715/9398821_1563179715766_50.png"></a>
+                            <a href="/community/138" target="_blank" class="member-name">腾讯</a>
+                        </li>
+                        <li>
+                            <a href="/community/149" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/15.png"></a>
+                            <a href="/community/149" target="_blank" class="member-name">网易</a>
+                        </li>
+                        <li>
+                            <a href="/community/139" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/1.png"></a>
+                            <a href="/community/139" target="_blank" class="member-name">百度</a>
+                        </li>
+                        <li>
+                            <a href="/community/151" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/37.png"></a>
+                            <a href="/community/151" target="_blank" class="member-name">京东</a>
+                        </li>
+                        <li>
+                            <a href="/community/179" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190629/4107856_1561788892154_50x50.png"></a>
+                            <a href="/community/179" target="_blank" class="member-name">美团点评</a>
+                        </li>
+                        <li>
+                            <a href="/community/239" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/61.png"></a>
+                            <a href="/community/239" target="_blank" class="member-name">华为</a>
+                        </li>
+                        <li>
+                            <a href="/community/147" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/8.png"></a>
+                            <a href="/community/147" target="_blank" class="member-name">小米</a>
+                        </li>
+                        <li>
+                            <a href="/community/665" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190814/6658561_1565778328436_50x50.png"></a>
+                            <a href="/community/665" target="_blank" class="member-name">字节跳动</a>
+                        </li>
+                        <li>
+                            <a href="/community/144" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/9.png"></a>
+                            <a href="/community/144" target="_blank" class="member-name">google</a>
+                        </li>
+                        <li>
+                            <a href="/community/157" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/3.png"></a>
+                            <a href="/community/157" target="_blank" class="member-name">360公司</a>
+                        </li>
+                        <li>
+                            <a href="/community/153" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/38.png"></a>
+                            <a href="/community/153" target="_blank" class="member-name">携程</a>
+                        </li>
+                        <li>
+                            <a href="/community/659" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/62.png"></a>
+                            <a href="/community/659" target="_blank" class="member-name">搜狗</a>
+                        </li>
+                        <li>
+                            <a href="/community/142" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/35.png"></a>
+                            <a href="/community/142" target="_blank" class="member-name">新浪微博</a>
+                        </li>
+                        <li>
+                            <a href="/community/732" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/732.png"></a>
+                            <a href="/community/732" target="_blank" class="member-name">拼多多</a>
+                        </li>
+                        <li>
+                            <a href="/community/654" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190329/4107856_1553833522252_50x50.png"></a>
+                            <a href="/community/654" target="_blank" class="member-name">蘑菇街</a>
+                        </li>
+                        <li>
+                            <a href="/community/141" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/29.png"></a>
+                            <a href="/community/141" target="_blank" class="member-name">去哪儿</a>
+                        </li>
+                        <li>
+                            <a href="/community/146" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/4.png"></a>
+                            <a href="/community/146" target="_blank" class="member-name">微软</a>
+                        </li>
+                        <li>
+                            <a href="/community/167" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190617/4107856_1560766186846_60x60.png"></a>
+                            <a href="/community/167" target="_blank" class="member-name">欢聚时代</a>
+                        </li>
+                        <li>
+                            <a href="/community/148" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/21.png"></a>
+                            <a href="/community/148" target="_blank" class="member-name">搜狐</a>
+                        </li>
+                        <li>
+                            <a href="/community/160" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/33.png"></a>
+                            <a href="/community/160" target="_blank" class="member-name">完美世界</a>
+                        </li>
+                        <li>
+                            <a href="/community/150" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/41.png"></a>
+                            <a href="/community/150" target="_blank" class="member-name">唯品会</a>
+                        </li>
+                        <li>
+                            <a href="/community/711" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/711.png"></a>
+                            <a href="/community/711" target="_blank" class="member-name">深信服</a>
+                        </li>
+                        <li>
+                            <a href="/community/171" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/40.png"></a>
+                            <a href="/community/171" target="_blank" class="member-name">迅雷</a>
+                        </li>
+                        <li>
+                            <a href="/community/666" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/666.png"></a>
+                            <a href="/community/666" target="_blank" class="member-name">CVTE</a>
+                        </li>
+                        <li>
+                            <a href="/community/140" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/28.png"></a>
+                            <a href="/community/140" target="_blank" class="member-name">人人</a>
+                        </li>
+                        <li>
+                            <a href="/community/652" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/64.png"></a>
+                            <a href="/community/652" target="_blank" class="member-name">滴滴</a>
+                        </li>
+                        <li>
+                            <a href="/community/166" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/25.png"></a>
+                            <a href="/community/166" target="_blank" class="member-name">爱奇艺</a>
+                        </li>
+                        <li>
+                            <a href="/community/768" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/768.png"></a>
+                            <a href="/community/768" target="_blank" class="member-name">4399游戏</a>
+                        </li>
+                        <li>
+                            <a href="/community/173" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/14.png"></a>
+                            <a href="/community/173" target="_blank" class="member-name">网龙</a>
+                        </li>
+                        <li>
+                            <a href="/community/778" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/778.png"></a>
+                            <a href="/community/778" target="_blank" class="member-name">顺丰科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/889" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/889.png"></a>
+                            <a href="/community/889" target="_blank" class="member-name">vivo</a>
+                        </li>
+                        <li>
+                            <a href="/community/890" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/890.png"></a>
+                            <a href="/community/890" target="_blank" class="member-name">虎牙直播</a>
+                        </li>
+                        <li>
+                            <a href="/community/671" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190520/4107856_1558336915818_50x50.png"></a>
+                            <a href="/community/671" target="_blank" class="member-name">paypal</a>
+                        </li>
+                        <li>
+                            <a href="/community/708" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/708.png"></a>
+                            <a href="/community/708" target="_blank" class="member-name">大疆</a>
+                        </li>
+                        <li>
+                            <a href="/community/1051" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190604/4107856_1559633059934_50x50新.png"></a>
+                            <a href="/community/1051" target="_blank" class="member-name">ZOOM</a>
+                        </li>
+                        <li>
+                            <a href="/community/767" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/767.png"></a>
+                            <a href="/community/767" target="_blank" class="member-name">招商银行信用卡中心</a>
+                        </li>
+                        <li>
+                            <a href="/community/914" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/914.png"></a>
+                            <a href="/community/914" target="_blank" class="member-name">招银网络</a>
+                        </li>
+                        <li>
+                            <a href="/community/783" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190506/63_1557149228971_远景-50x50.png"></a>
+                            <a href="/community/783" target="_blank" class="member-name">远景</a>
+                        </li>
+                        <li>
+                            <a href="/community/794" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/794.png"></a>
+                            <a href="/community/794" target="_blank" class="member-name">平安科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/787" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/787.png"></a>
+                            <a href="/community/787" target="_blank" class="member-name">百词斩</a>
+                        </li>
+                        <li>
+                            <a href="/community/709" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/709.png"></a>
+                            <a href="/community/709" target="_blank" class="member-name">趋势科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/2150" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190515/63_1557920118443_广州速游-50x50.png"></a>
+                            <a href="/community/2150" target="_blank" class="member-name">广州速游</a>
+                        </li>
+                        <li>
+                            <a href="/community/710" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/710.png"></a>
+                            <a href="/community/710" target="_blank" class="member-name">好未来</a>
+                        </li>
+                        <li>
+                            <a href="/community/936" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190614/4107856_1560503663674_旷世50x50.png"></a>
+                            <a href="/community/936" target="_blank" class="member-name">旷视科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/760" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/760.png"></a>
+                            <a href="/community/760" target="_blank" class="member-name">吉比特</a>
+                        </li>
+                        <li>
+                            <a href="/community/1082" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190726/4107856_1564143693074_50x501.png"></a>
+                            <a href="/community/1082" target="_blank" class="member-name">寒武纪</a>
+                        </li>
+                        <li>
+                            <a href="/community/676" target="_blank" class="head-pic"><img src="//static.nowcoder.com/images/weblogo/color_logo/676.png"></a>
+                            <a href="/community/676" target="_blank" class="member-name">oppo</a>
+                        </li>
+                        <li>
+                            <a href="/community/1901" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190515/63_1557919617887_亿联网络-50x50.png"></a>
+                            <a href="/community/1901" target="_blank" class="member-name">亿联网络</a>
+                        </li>
+                        <li>
+                            <a href="/community/893" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190603/4107856_1559566468321_作业帮50x50.png"></a>
+                            <a href="/community/893" target="_blank" class="member-name">作业帮</a>
+                        </li>
+                        <li>
+                            <a href="/community/935" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190523/4107856_1558596566707_E3A7EFF01A5DFAB2B8EE9D0C722449A9.png"></a>
+                            <a href="/community/935" target="_blank" class="member-name">哔哩哔哩</a>
+                        </li>
+                        <li>
+                            <a href="/community/802" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759057618_9FB57843100827BB2E5F6099C25B2F1A"></a>
+                            <a href="/community/802" target="_blank" class="member-name">商汤科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/1179" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190527/63_1558942860516_竞技世界-50x50.png"></a>
+                            <a href="/community/1179" target="_blank" class="member-name">竞技世界</a>
+                        </li>
+                        <li>
+                            <a href="/community/952" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551758844626_CF202F4B1D542E780ED30E4CBF03F284"></a>
+                            <a href="/community/952" target="_blank" class="member-name">酷狗</a>
+                        </li>
+                        <li>
+                            <a href="/community/779" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759273163_D60C7D5B074148EDE6C5454CD353EF75"></a>
+                            <a href="/community/779" target="_blank" class="member-name">同程</a>
+                        </li>
+                        <li>
+                            <a href="/community/1803" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190419/63_1555663546665_早安科技-50x50.png"></a>
+                            <a href="/community/1803" target="_blank" class="member-name">早安科技有限公司</a>
+                        </li>
+                        <li>
+                            <a href="/community/781" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/781.png"></a>
+                            <a href="/community/781" target="_blank" class="member-name">新华三</a>
+                        </li>
+                        <li>
+                            <a href="/community/782" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190603/4107856_1559566323178_用友50x50.png"></a>
+                            <a href="/community/782" target="_blank" class="member-name">用友</a>
+                        </li>
+                        <li>
+                            <a href="/community/1049" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759641859_6ED789F3A9E1231C7F61593C6340915E"></a>
+                            <a href="/community/1049" target="_blank" class="member-name">Shopee</a>
+                        </li>
+                        <li>
+                            <a href="/community/801" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551781110181_55A4142AC3DEDEA4DF824CF9242CE4E2"></a>
+                            <a href="/community/801" target="_blank" class="member-name">图森未来</a>
+                        </li>
+                        <li>
+                            <a href="/community/803" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190711/4107856_1562836847255_50x50.png"></a>
+                            <a href="/community/803" target="_blank" class="member-name">三七互娱</a>
+                        </li>
+                        <li>
+                            <a href="/community/1059" target="_blank" class="head-pic"><img src="https://static.nowcoder.com/images/weblogo/color_logo/1059.png"></a>
+                            <a href="/community/1059" target="_blank" class="member-name">度小满</a>
+                        </li>
+                        <li>
+                            <a href="/community/1066" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555583863353_追一科技-50x50.png"></a>
+                            <a href="/community/1066" target="_blank" class="member-name">追一科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/2103" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190626/63_1561545862466_SHEIN-50x50.png"></a>
+                            <a href="/community/2103" target="_blank" class="member-name">SHEIN</a>
+                        </li>
+                        <li>
+                            <a href="/community/2618" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190730/63_1564481018260_乐融logo-50x50.png"></a>
+                            <a href="/community/2618" target="_blank" class="member-name">乐融</a>
+                        </li>
+                        <li>
+                            <a href="/community/2366" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190626/63_1561547146544_京信通信-50x50.png"></a>
+                            <a href="/community/2366" target="_blank" class="member-name">京信通信</a>
+                        </li>
+                        <li>
+                            <a href="/community/1088" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551758394129_0B4895B3DB41C3DE43603294F1937FDA"></a>
+                            <a href="/community/1088" target="_blank" class="member-name">iHandy</a>
+                        </li>
+                        <li>
+                            <a href="/community/2115" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555583817813_知道创宇-50x50.png"></a>
+                            <a href="/community/2115" target="_blank" class="member-name">知道创宇</a>
+                        </li>
+                        <li>
+                            <a href="/community/2117" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555583147054_创新奇智-50x50.png"></a>
+                            <a href="/community/2117" target="_blank" class="member-name">创新奇智</a>
+                        </li>
+                        <li>
+                            <a href="/community/1117" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555592616188_锐捷网络-50x50.png"></a>
+                            <a href="/community/1117" target="_blank" class="member-name">锐捷网络</a>
+                        </li>
+                        <li>
+                            <a href="/community/2148" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759440910_331CD866325DBA1C28D848A05AA952A9"></a>
+                            <a href="/community/2148" target="_blank" class="member-name">薇仕网络</a>
+                        </li>
+                        <li>
+                            <a href="/community/2156" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555573952233_保利威视-50x50.png"></a>
+                            <a href="/community/2156" target="_blank" class="member-name">保利威</a>
+                        </li>
+                        <li>
+                            <a href="/community/1133" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555583384797_尼毕鲁-50x50.png"></a>
+                            <a href="/community/1133" target="_blank" class="member-name">tap4fun</a>
+                        </li>
+                        <li>
+                            <a href="/community/2157" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551755629828_A331B17EFD516060FBBFADACC41625A7"></a>
+                            <a href="/community/2157" target="_blank" class="member-name">Morningstar</a>
+                        </li>
+                        <li>
+                            <a href="/community/1138" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190419/63_1555663489757_格力-50x50.png"></a>
+                            <a href="/community/1138" target="_blank" class="member-name">格力</a>
+                        </li>
+                        <li>
+                            <a href="/community/895" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551758955514_7876EC80CCF380FAC927E11E6CCFCB86"></a>
+                            <a href="/community/895" target="_blank" class="member-name">网易雷火</a>
+                        </li>
+                        <li>
+                            <a href="/community/902" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759181892_0FE8F5EC3C49F7DB96565BA1A9912193"></a>
+                            <a href="/community/902" target="_blank" class="member-name">思科</a>
+                        </li>
+                        <li>
+                            <a href="/community/2200" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555592493692_凡科互联网-50x50.png"></a>
+                            <a href="/community/2200" target="_blank" class="member-name">凡科</a>
+                        </li>
+                        <li>
+                            <a href="/community/155" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190710/4107856_1562753006348_盛趣游戏50.png"></a>
+                            <a href="/community/155" target="_blank" class="member-name">盛趣游戏</a>
+                        </li>
+                        <li>
+                            <a href="/community/923" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190731/4107856_1564558729533_50x50-2.png"></a>
+                            <a href="/community/923" target="_blank" class="member-name">流利说</a>
+                        </li>
+                        <li>
+                            <a href="/community/926" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759570406_321A7A4223DC6B4BFDEDEA518736D4DF"></a>
+                            <a href="/community/926" target="_blank" class="member-name">依图科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/929" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190403/382910_1554272846202_50x50.png"></a>
+                            <a href="/community/929" target="_blank" class="member-name">微众银行</a>
+                        </li>
+                        <li>
+                            <a href="/community/2721" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190819/63_1566199299319_新东方在线-50x50.png"></a>
+                            <a href="/community/2721" target="_blank" class="member-name">新东方在线</a>
+                        </li>
+                        <li>
+                            <a href="/community/164" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551758676435_21F068F7C01BAC5AD4660B830BE80F17"></a>
+                            <a href="/community/164" target="_blank" class="member-name">巨人网络</a>
+                        </li>
+                        <li>
+                            <a href="/community/165" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190819/63_1566199006680_网宿科技-50x50.png"></a>
+                            <a href="/community/165" target="_blank" class="member-name">网宿科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/679" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190627/63_1561608255196_优必选-50x50.png"></a>
+                            <a href="/community/679" target="_blank" class="member-name">优必选</a>
+                        </li>
+                        <li>
+                            <a href="/community/2231" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555575402722_IGG-50x50.png"></a>
+                            <a href="/community/2231" target="_blank" class="member-name">天盟数码IGG</a>
+                        </li>
+                        <li>
+                            <a href="/community/698" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190807/4107856_1565171197351_50x50.png"></a>
+                            <a href="/community/698" target="_blank" class="member-name">VIPKID</a>
+                        </li>
+                        <li>
+                            <a href="/community/1979" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190515/63_1557919717756_明朝互动-50x50.png"></a>
+                            <a href="/community/1979" target="_blank" class="member-name">明朝互动</a>
+                        </li>
+                        <li>
+                            <a href="/community/957" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190416/4107856_1555394978863_34DAA54EB7F792984D13EEB3A83DD2C2.png"></a>
+                            <a href="/community/957" target="_blank" class="member-name">pony.ai</a>
+                        </li>
+                        <li>
+                            <a href="/community/2493" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190626/63_1561546391179_百奥-50x50.png"></a>
+                            <a href="/community/2493" target="_blank" class="member-name">百奥</a>
+                        </li>
+                        <li>
+                            <a href="/community/958" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190306/9696957_1551841149310_AA8745CE3371C8212951E3F2C5ECD23A"></a>
+                            <a href="/community/958" target="_blank" class="member-name">联想</a>
+                        </li>
+                        <li>
+                            <a href="/community/2494" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190626/63_1561546787504_传音控股-50x50.png"></a>
+                            <a href="/community/2494" target="_blank" class="member-name">传音控股</a>
+                        </li>
+                        <li>
+                            <a href="/community/734" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759693747_6C1F48AA6CA6211A57E515AAF50ADFAD"></a>
+                            <a href="/community/734" target="_blank" class="member-name">ThoughtWorks</a>
+                        </li>
+                        <li>
+                            <a href="/community/735" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551781018766_C9F0FFD6585A5FE5A9B9D4DACD40C1A0"></a>
+                            <a href="/community/735" target="_blank" class="member-name">科大讯飞</a>
+                        </li>
+                        <li>
+                            <a href="/community/739" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551781652026_19F713E0A0EF6D35F1D5563C8BCFEBF6"></a>
+                            <a href="/community/739" target="_blank" class="member-name">七牛云</a>
+                        </li>
+                        <li>
+                            <a href="/community/1767" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/images/20190305/9696957_1551759499423_B8F350A21F80832C5DB7CA0CF68F1605"></a>
+                            <a href="/community/1767" target="_blank" class="member-name">学而思网络科技有限公司</a>
+                        </li>
+                        <li>
+                            <a href="/community/2283" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555583756198_星辉互动-50x50.png"></a>
+                            <a href="/community/2283" target="_blank" class="member-name">星辉游戏</a>
+                        </li>
+                        <li>
+                            <a href="/community/2284" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190419/63_1555644555447_奥唐智能科技-50x50.png"></a>
+                            <a href="/community/2284" target="_blank" class="member-name">奥唐智能科技</a>
+                        </li>
+                        <li>
+                            <a href="/community/1008" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190614/4107856_1560503230284_50x50.png"></a>
+                            <a href="/community/1008" target="_blank" class="member-name">贝壳</a>
+                        </li>
+                        <li>
+                            <a href="/community/2289" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555584011795_高凌信息-50x50.png"></a>
+                            <a href="/community/2289" target="_blank" class="member-name">高凌信息</a>
+                        </li>
+                        <li>
+                            <a href="/community/2290" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190418/63_1555584067261_深海游戏-50x50.png"></a>
+                            <a href="/community/2290" target="_blank" class="member-name">深海游戏</a>
+                        </li>
+                        <li>
+                            <a href="/community/1013" target="_blank" class="head-pic"><img src="https://uploadfiles.nowcoder.com/files/20190419/63_1555665143450_金蝶-50x50.png"></a>
+                            <a href="/community/1013" target="_blank" class="member-name">金蝶</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 公司的上一页下一页方法-->
+        <script type="text/javascript">
+            var i=1
+            //上一页
+            function pre() {
+                if (i<5) {
+
+                    i++
+                    $('.mho-page').text(i+"/5")
+
+                    $('.member-list').css("margin-top",(-360)*i+"px")
+
+                }
+            }
+            //下一页
+            function nex() {
+                if (i>1) {
+                    i--
+                    $('.mho-page').text(i+"/5")
+                    $('.member-list').css("margin-top",(-360)*(i-1)+"px")
+
+                }
+            }
+        </script>
+        <!--右侧边公司短评栏-->
+        <div class="module-box">
+            <div class="module-head clearfix">
+                <h4>最新公司短评</h4>
+            </div>
+            <div class="module-body">
+                <ul class="">
+                    <li style="border: 1px #e0e0e0 solid;border-radius: 3px; margin-bottom: 10px;">
+                        <div class="list-title"><a class="list-name" href="javascript:void(0);">
+                            远景面试体验超好，面试官都很和蔼，尤其是HR...
+                        </a></div>
+                        <div title="难度系数" class="stars-sm star-0"></div>
+                        <div class="list-legend">
+<span class="comm-num">
+16小时前
+</span>
+                            <a href="javascript:void(0);">远景</a>
+                            |  Java开发工程师
+                        </div>
+                    </li>
+                    <li style="border: 1px #e0e0e0 solid;border-radius: 3px; margin-bottom: 10px;">
+                        <div class="list-title"><a class="list-name" href="javascript:void(0);">
+                            因为投的是牛客网的SP场，所以面试比较早，但...
+                        </a></div>
+                        <div title="难度系数" class="stars-sm star-0"></div>
+                        <div class="list-legend">
+<span class="comm-num">
+19小时前
+</span>
+                            <a href="javascript:void(0);">远景</a>
+                            |  算法工程师
+                        </div>
+                    </li>
+                    <li style="border: 1px #e0e0e0 solid;border-radius: 3px; margin-bottom: 10px;">
+                        <div class="list-title"><a class="list-name" href="javascript:void(0);">
+                            虽然面试的人很多，但HR照顾到了现场的每一位...
+                        </a></div>
+                        <div title="难度系数" class="stars-sm star-0"></div>
+                        <div class="list-legend">
+<span class="comm-num">
+21小时前
+</span>
+                            <a href="javascript:void(0);">远景</a>
+                            |  算法实习生
+                        </div>
+                    </li>
+                    <li style="border: 1px #e0e0e0 solid;border-radius: 3px; margin-bottom: 10px;">
+                        <div class="list-title"><a class="list-name" href="javascript:void(0);">
+                            面试体验特别好，hr小姐姐和最后的大佬面都给...
+                        </a></div>
+                        <div title="难度系数" class="stars-sm star-0"></div>
+                        <div class="list-legend">
+<span class="comm-num">
+21小时前
+</span>
+                            <a href="javascript:void(0);">远景</a>
+                            |  测试开发工程师
+                        </div>
+                    </li>
+                    <li style="border: 1px #e0e0e0 solid;border-radius: 3px; margin-bottom: 10px;">
+                        <div class="list-title"><a class="list-name" href="javascript:void(0);">
+                            面试注重基础知识积累，还有算法基本功，好好准...
+                        </a></div>
+                        <div title="难度系数" class="stars-sm star-0"></div>
+                        <div class="list-legend">
+<span class="comm-num">
+22小时前
+</span>
+                            <a href="javascript:void(0);">远景</a>
+                            |  数据开发
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--右侧边广告栏-->
+        <div class="module-box side-topic-box" id="jsSideTopicList">
+            <div class="module-head">
+                <div class="module-head-oprt">
+                    <span class="mho-page topic-slide-progress"></span>
+                    <!-- 需要提供上一页，下一页方法-->
+                    <a href="javascript:void(0);" class="mho-pre js-topic-mho-pre" title="下一页" style="display: none;"></a>
+                    <a href="javascript:void(0);" class="mho-next js-topic-mho-next" title="上一页" style="display: none;"></a>
+                </div>
+                <h4>热门推荐</h4>
+            </div>
+            <div class="module-body">
+                <div class="topic-slide-box" style="height: auto;">
+                    <ul class="side-topic-list">
+                        <li>
+                            <a href="/jump?type=ad&amp;source=3&amp;url=https%3A%2F%2Fwww.nowcoder.com%2Fcourses%2Fsemester%2F2018algorithm-higher">
+                                <img style="border: 2px solid #e0e0e0;"  class="hot-img" src="https://uploadfiles.nowcoder.com/images/20190423/9398821_1555989398128_122C011886622D6C1B0D1B20377319E3"
+                                     alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/jump?type=ad&amp;source=3&amp;url=https%3A%2F%2Fwww.nowcoder.com%2Fcourses%2Fsemester%2Fsenior">
+                                <img style="border: 2px solid #e0e0e0;"  class="hot-img" src="https://uploadfiles.nowcoder.com/images/20190423/9398821_1555989407954_139ACD96C197A28067613BF15502BEAE"
+                                     alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/jump?type=ad&amp;source=3&amp;url=https%3A%2F%2Fwww.nowcoder.com%2Fcourses%2Fsemester%2Felementary">
+                                <img style="border: 2px solid #e0e0e0;"  class="hot-img" src="https://uploadfiles.nowcoder.com/images/20190422/9398821_1555915446029_F1C79D11C516B24C191471E50D9A35BD"
+                                     alt="">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 主题模块背景样式切换-->
+<script>
+    $("body").on("click",".discuss-tab",function () {
+        for (var j = 0; j < $(".discuss-tab-wrap").children().length; j++) {
+            $(".discuss-tab-wrap").children().eq(j).removeClass("selected")
+        }
+        $(this).addClass("selected")
+    })
+</script>
+<!-- 主题模块背景样式切换-->
+<script>
+    $().ready(function(){
+        for (var j = 0; j < $(".discuss-tab-wrap").children().length; j++) {
+            if(getQueryString("topicId")==$(".discuss-tab-wrap").children().eq(j).attr("data-id")){
+                //alert($(".discuss-tab-wrap").children().eq(j).attr("data-id"))
+                $(".discuss-tab-wrap").children().eq(0).removeClass("selected")
+                $(".discuss-tab-wrap").children().eq(j).addClass("selected")
+            }
+        }
+    });
+</script>
+<!-- 最新最热背景色切换-->
+<script>
+    $(".xx").click(function () {
+            if(getQueryString("order")==$(".menu-txt").children().eq(0).children().eq(0).attr("data-id")){
+                //alert($(".discuss-tab-wrap").children().eq(j).attr("data-id"))
+                //$(".menu-txt").children().eq(0).addClass("selected")
+                $(this).addClass("selected")
+            }else if (getQueryString("order")==$(".menu-txt").children().eq(2).children().eq(0).attr("data-id")){
+                //$(".menu-txt").children().eq(2).addClass("selected")
+                $(this).addClass("selected")
+            }else if(getQueryString("order")==$(".menu-txt").children().eq(4).children().eq(0).attr("data-id")){
+                //$(".menu-txt").children().eq(4).addClass("selected")
+                $(this).addClass("selected")
+            }
+
+
+    })
+    $().ready(function(){
+        if(getQueryString("order")==$(".menu-txt").children().eq(0).children().eq(0).attr("data-id")){
+            //alert($(".discuss-tab-wrap").children().eq(j).attr("data-id"))
+            $(".menu-txt").children().eq(0).children().eq(0).addClass("selected")
+            //$(this).addClass("selected")
+        }else if (getQueryString("order")==$(".menu-txt").children().eq(2).children().eq(0).attr("data-id")){
+            $(".menu-txt").children().eq(2).children().eq(0).addClass("selected")
+            //$(this).addClass("selected")
+        }else if(getQueryString("order")==$(".menu-txt").children().eq(4).children().eq(0).attr("data-id")){
+            $(".menu-txt").children().eq(4).children().eq(0).addClass("selected")
+            //$(this).addClass("selected")
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(papersLoad(1))
+    <!--数据获取-->
+    function papersLoad(currPage) {
+        $.get({
+            url:"/pfo/post/pageInfoRequiredOrder",
+            contentType: "application/json;charset=utf-8",
+            dataType:"json",
+            data:"currPage="+ currPage +"&pageSize=10&order="+getQueryString("order"),
+            success:function (data) {
+                showPosts(data)
+                var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                // 调用分页插件
+                $("#postPage").sPage({
+                    page: data.currPage,//当前页码，必填
+                    total: data.totalSize,//数据总条数，必填
+                    pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                    showTotal: true,//是否显示总条数，默认关闭：false
+                    totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                    noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                    showSkip: true,//是否显示跳页，默认关闭：false
+                    showPN: true,//是否显示上下翻页，默认开启：true
+                    prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                    nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                    backFun: function (page) {
+                        //点击分页按钮回调函数，返回当前页码
+                        papersLoad(page)
+                    }
+                });
+            }
+        })
+    }
+</script>
+<!-- 创建elasticSearch索引并添加数据-->
+<script>
+
+/*
+    $.get({
+        url:"/pfo/post/bbb",
+        dataType:"json",
+        data:"",
+        success:function (data) {
+            //alert("删除索引")
+        }
+    })
+    $.get({
+        url:"/pfo/post/aaa",
+        dataType:"json",
+        data:"",
+        success:function (data) {
+            //alert("创建索引")
+        }
+    })
+*/
+
+
+    $.get({
+        url:"/pfo/post/showAllPosts",
+        dataType:"json",
+        data:"",
+        success:function (data) {
+            //alert("数据导入ES成功")
+        }
+    })
+</script>
+
+<!--侧边悬浮工具栏-->
+<div class="suspension">
+    <div class="suspension-box">
+        <a href="#" class="a a-service "><i class="i"></i></a>
+        <a href="javascript:;" class="a a-service-phone "><i class="i"></i></a>
+        <a href="javascript:;" class="a a-qrcode"><i class="i"></i></a>
+
+
+        <a href="javascript:;" class="a a-cart"><i class="i"></i></a>
+        <a href="javascript:;" class="a a-top"><i class="i"></i></a>
+
+        <div class="d d-service">
+            <i class="arrow"></i>
+            <div class="inner-box">
+                <div class="d-service-item clearfix">
+                    <a href="#" class="clearfix"><span class="circle"><i class="i-qq"></i></span><h3>咨询在线客服</h3></a>
+                </div>
+            </div>
+        </div>
+        <div class="d d-service-phone">
+            <i class="arrow"></i>
+            <div class="inner-box">
+                <div class="d-service-item clearfix">
+                    <span class="circle"><i class="i-tel"></i></span>
+                    <div class="text">
+                        <p>服务热线</p>
+                        <p class="red number">4001-123-456</p>
+                    </div>
+                </div>
+                <div class="d-service-intro clearfix">
+                    <p><i></i>刷题神站</p>
+                    <p><i></i>题库免费</p>
+                    <p><i></i>百强公司</p>
+                    <p><i></i>笔试真题</p>
+                </div>
+            </div>
+        </div>
+        <div class="d d-qrcode">
+            <i class="arrow"></i>
+            <div class="inner-box">
+                <div class="qrcode-img"><img style="width: 150px;height: 150px;" src="/pfo/img/logo/PFO开发组群聊二维码.png" alt=""></div>
+                <p>微信服务号</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--悬浮设置-->
+<script type="text/javascript">
+    $(document).ready(function(){
+        /* ----- 侧边悬浮 ---- */
+        $(document).on("mouseenter", ".suspension .a", function(){
+            var _this = $(this);
+            var s = $(".suspension");
+            var isService = _this.hasClass("a-service");
+            var isServicePhone = _this.hasClass("a-service-phone");
+            var isQrcode = _this.hasClass("a-qrcode");
+            if(isService){ s.find(".d-service").show().siblings(".d").hide();}
+            if(isServicePhone){ s.find(".d-service-phone").show().siblings(".d").hide();}
+            if(isQrcode){ s.find(".d-qrcode").show().siblings(".d").hide();}
+        });
+        $(document).on("mouseleave", ".suspension, .suspension .a-top, .suspension .a-cart", function(){
+            $(".suspension").find(".d").hide();
+        });
+        $(document).on("mouseenter", ".suspension .a-top, .suspension .a-cart", function(){
+            $(".suspension").find(".d").hide();
+        });
+        $(document).on("click", ".suspension .a-top", function(){
+            $("html,body").animate({scrollTop: 0});
+        });
+        $(document).on("click", ".suspension .a-cart", function(){
+            $("html,body").animate({scrollTop: 0});
+        });
+        $(window).scroll(function(){
+            var st = $(document).scrollTop();
+            var $top = $(".suspension .a-top");
+            if(st > 400){
+                $top.css({display: 'block'});
+            }else{
+                if ($top.is(":visible")) {
+                    $top.hide();
+                }
+            }
+        });
+
+    });
+</script>
+
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+</body>
+</html>

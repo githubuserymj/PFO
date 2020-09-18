@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="pfo-commons" />
+        <module name="pfo-controller" />
+        <module name="pfo-dao" />
+        <module name="pfo-filter" />
+        <module name="pfo-model" />
+        <module name="pfo-service" />
+        <module name="pfo-util" />
+        <module name="pfo-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="pfo" target="1.8" />
+      <module name="pfo-commons" target="1.8" />
+      <module name="pfo-controller" target="1.8" />
+      <module name="pfo-dao" target="1.8" />
+      <module name="pfo-filter" target="1.8" />
+      <module name="pfo-model" target="1.8" />
+      <module name="pfo-service" target="1.8" />
+      <module name="pfo-util" target="1.8" />
+      <module name="pfo-web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

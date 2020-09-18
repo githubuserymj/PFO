@@ -1,0 +1,264 @@
+@charset "UTF-8";
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-rendering: optimizelegibility;
+    -moz-osx-font-smoothing: grayscale;
+    direction: ltr
+}
+
+body, html {
+    height: 100%
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #eeebea;
+    word-wrap: break-word;
+    word-break: break-word
+}
+
+strong {
+    font-weight: 700
+}
+
+em {
+    font-style: italic
+}
+
+p {
+    line-height: 1.4em
+}
+
+dd img, li img, p img {
+    vertical-align: middle
+}
+
+article, aside, details, figcaption, figure, footer, header, menu, nav, section {
+    display: block
+}
+
+audio, canvas, video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1
+}
+
+button, input, optgroup, option, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit
+}
+
+button, input {
+    *width: auto;
+    *overflow: visible;
+    line-height: normal
+}
+
+button::-moz-focus-inner, input::-moz-focus-inner {
+    padding: 0;
+    border: 0
+}
+
+button, input[type=button], input[type=submit] {
+    cursor: pointer;
+    -webkit-appearance: button
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+th {
+    text-align: inherit
+}
+
+fieldset, img {
+    border: 0
+}
+
+img {
+    -ms-interpolation-mode: bicubic
+}
+
+iframe {
+    display: block
+}
+
+blockquote, q {
+    quotes: none
+}
+
+blockquote {
+    position: relative;
+    color: #999;
+    font-weight: 300;
+    font-family: Avenir, 'Helvetica Neue', 'Microsoft Yahei', 'Hiragino Sans GB', 'Microsoft Sans Serif', 'WenQuanYi Micro Hei', sans-serif;
+    border-left: 2px solid #1abc9c;
+    padding: 10px 0 10px 10px;
+    margin: .8em 0
+}
+
+pre {
+    font-size: 14px;
+    position: relative;
+    border-left: 2px solid #1abc9c;
+    padding: 10px 0 10px 10px;
+    margin: .8em 0;
+    background: #fafafa;
+    word-break: break-word
+}
+
+abbr, acronym {
+    border: none 0;
+    font-variant: normal
+}
+
+del {
+    text-decoration: line-through
+}
+
+address, caption, cite, code, dfn, th, var {
+    font-style: normal;
+    font-weight: 400
+}
+
+ul,li,ol{
+    list-style:none;
+}
+
+caption, th {
+    text-align: left
+}
+
+q:after, q:before {
+    content: ''
+}
+
+sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative
+}
+
+:root sub, :root sup {
+    vertical-align: baseline
+}
+
+sup {
+    top: -.5em
+}
+
+sub {
+    bottom: -.25em
+}
+
+a, ins {
+    text-decoration: none
+}
+
+mark {
+    background: #fffdd1;
+    border-bottom: 1px solid #ffedce;
+    padding: 2px;
+    margin: 0 5px
+}
+
+code, pre {
+    font-family: Courier, 'Courier New', monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word
+}
+
+b, strong {
+    color: #000
+}
+
+a {
+    color: #333
+}
+
+a:link, a:visited {
+    text-decoration: none
+}
+
+a:hover {
+    color: #25bb9b
+}
+
+pre.prettyprint {
+    font-size: 14px
+}
+
+label.checkbox pre, label.radio pre {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 850px
+}
+
+pre.prettyprint {
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace !important;
+    line-height: 18px;
+    font-size: 13px
+}
+
+.level-color-0 {
+    color: #999 !important
+}
+
+.level-color-1 {
+    color: #a1a1a1 !important
+}
+
+.level-color-2 {
+    color: #c278e7 !important
+}
+
+.level-color-3 {
+    color: #418ac3 !important
+}
+
+.level-color-4 {
+    color: #10b4d2 !important
+}
+
+.level-color-5 {
+    color: #42c1a2 !important
+}
+
+.level-color-6 {
+    color: #e8ca2d !important
+}
+
+.level-color-7 {
+    color: #fc7123 !important
+}
+
+.level-color-8 {
+    color: #f34c54 !important
+}
+
+.level-color-9 {
+    color: #fe2424 !important
+}
+
+button{
+    background: #25bb9b;
+    text-align: center;
+    padding: 6px 10px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 3px;
+    border: none 0;
+    cursor: pointer;
+    line-height: normal;
+    outline: 0;
+    white-space: nowrap;
+}

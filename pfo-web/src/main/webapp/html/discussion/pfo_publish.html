@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>讨论区-发布帖子</title>
+
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/discussion/bootstrap.bundle.min.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="/pfo/css/discussion/pfo_discuss.css">
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <script src="/pfo/js/wangEditor.js"></script>
+    <link rel="stylesheet" href="/pfo/css/global.css" type="text/css">
+    <style>
+
+    </style>
+</head>
+<body style="background-color:#eeebea;">
+<script>
+    <!-- 将地址栏参数分开,根据参数名获取参数-->
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    if (getQueryString("postId") != null) {
+        $.post({
+            url:"/pfo/post/queryPostByPostId",
+            dateType:"json",
+            data:"postId="+getQueryString("postId"),
+            success:function (data) {
+                $("#tips").remove();
+                //alert(data.data[0].postTitle)
+                $("#title").val(reupdate(data.data[0].postTitle))
+                //alert(data.data[0].postBody)
+                editor.txt.html(reupdate(data.data[0].postBody))
+                $("#publish_commit").text("修改")
+                // showPost(data)
+            }
+        })
+    }
+
+</script>
+
+<script>
+
+
+    //公共方法 获取cookies中userId
+    function getCookie(cname) {
+        //读取cookies
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
+    //实现发布帖子,添加到数据库
+    function publish() {
+        if ($("#publish_commit").text()!="修改") {
+            //alert("添加")
+            var postTitle=$("#title").val()
+            var postBody=editor.txt.html()
+            //alert(postTitle)
+            //alert(postBody)
+            if (postTitle!=null && postTitle!=""){
+                postTitle=postTitle.replace(/\+/g, "%2B");
+                postTitle=postTitle.replace(/&/g, "%26");
+                postTitle=postTitle.replace(/%/g, "%25");
+            }
+            if (postBody!=null && postBody!=""){
+                postBody=postBody.replace(/\+/g, "%2B");
+                postBody=postBody.replace(/&/g, "%26");
+                postBody=postBody.replace(/%/g, "%25");
+            }
+            //alert(postTitle)
+            //alert(postBody)
+            $.post({
+                async:false,
+                url:"/pfo/post/addPost",
+                dataType:"json",
+                data:"postId=&postTitle="+postTitle+"&postBody="+postBody+"&userId="+getCookie('userId')+"&postStatus=1&topicId="+topicId,
+                success:function (data) {
+                    Result(data)
+                }
+            })
+            function Result(data) {
+                //alert(data.code)
+                if(data.code==0){
+                    postId=data.data
+                    //alert(editor.txt.html())
+                    //alert("添加成功")
+                    $("#StatusInfo").text("添加成功");
+                    $("#Status").show();
+                    setTimeout(function () {
+                        $("#Status").hide()
+                    },3000)
+                    //alert(editor.txt.html())
+                    window.location.href="/pfo/html/discussion/post_show.html?topicId=0"
+                }
+            }
+            for (var i in tagList) {
+                //alert(tagList[i])
+                $.ajax({
+                    url:"/pfo/post/addPostTags",
+                    dataType:"json",
+                    data:"id=&postId="+postId+"&tagId="+tagList[i],
+                    success:function (data) {
+                        if (data.code == 0) {
+                            //alert("添加成功")
+                        }else{
+                            //alert("标签添加失败")
+                            $("#StatusInfo").text("标签添加失败");
+                            $("#Status").show();
+                            setTimeout(function () {
+                                $("#Status").hide()
+                            },1000)
+                        }
+                    }
+                })
+            }
+        }else if ($("#publish_commit").text()=="修改"){
+            //alert("修改")
+            //alert(editor.txt.html())
+            var postTitle=$("#title").val()
+            var postBody=editor.txt.html()
+            //alert(postTitle)
+            //alert(postBody)
+            if (postTitle!=null && postTitle!=""){
+                postTitle=postTitle.replace(/\+/g, "%2B");
+                postTitle=postTitle.replace(/&/g, "%26");
+                postTitle=postTitle.replace(/%/g, "%25");
+            }
+            if (postBody!=null && postBody!=""){
+                postBody=postBody.replace(/\+/g, "%2B");
+                postBody=postBody.replace(/&/g, "%26");
+                postBody=postBody.replace(/%/g, "%25");
+            }
+            //alert(postTitle)
+            //alert(postBody)
+            $.post({
+                async:false,
+                url:"/pfo/post/updateById",
+                method:"post",
+                dataType:"json",
+                data:"postId="+getQueryString("postId")+"&postTitle="+postTitle+"&postBody="+postBody+"&userId="+getCookie('userId')+"&postStatus=1&topicId="+topicId,
+                success:function (data) {
+                    Resultx(data)
+                }
+            })
+            function Resultx(data) {
+                //alert(data.code)
+                if(data.code==0){
+                    //alert(editor.txt.html())
+                    //alert("修改成功")
+                    $("#StatusInfo").text("修改成功");
+                    $("#Status").show();
+                    setTimeout(function () {
+                        $("#Status").hide()
+                        window.location.href="/pfo/html/discussion/post_show.html?topicId=0"
+                    },2000)
+
+                }
+            }
+            for (var i in tagList) {
+                //alert(tagList[i])
+                $.post({
+                    url:"/pfo/post/addPostTags",
+                    dataType:"json",
+                    data:"id=&postId="+getQueryString("postId")+"&tagId="+tagList[i],
+                    success:function (data) {
+                        if (data.code == 0) {
+                            //alert("修改标签成功")
+                        }else{
+                            //alert("标签添加失败")
+                            $("#StatusInfo").text("标签添加失败");
+                            $("#Status").show();
+                            setTimeout(function () {
+                                $("#Status").hide()
+                            },1000)
+
+                        }
+                    }
+                })
+            }
+        }
+
+
+    }
+</script>
+
+<div id="post-body" style="margin-bottom: 50px">
+    <div id="post-title" class="container" style="width: 80%;margin: 20px auto"><input autocomplete="off" id="title" type="text" placeholder="请输入帖子标题" style="width: 100%;height:50px; font-size: 25px;"></div>
+    <div id="ed" class="container" style="width: 80%;"><p id="tips">请输入要发布的内容</p></div>
+    <div id="publish" class="container"  style="width: 80%;margin: 20px auto"><button class="btn container btn-primary" data-toggle="modal" data-target="#publishModalCenter" style="width: 100%">提交</button></div>
+</div>
+
+<!-- Modal -->
+<div style="z-index: 12000;" class="modal fade" id="publishModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 5px;">
+                <span class="modal-title" id="exampleModalCenterTitle">设置</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--模态框主体-->
+            <div class="modal-body">
+                <span style="display: block">主题模块</span>
+                <div class="dropdown">
+                    <button style="background-color:#eee; padding: 0px; text-align: left;color: gray; height: 30px; width: 90px; margin: 10px;" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                        <span style="margin-left: 10px;" id="pubTopic">选择主题</span>
+                    </button>
+                    <!-- 主题下拉框-->
+                    <div id="topicBox" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <script>
+                            $.ajax({
+                                url:"/pfo/topic/showAllTopics",
+                                dataType:"json",
+                                success:function (data) {
+                                    showInTopic(data);
+                                }
+                            })
+                            function showInTopic(data) {
+                                var html=""
+                                for (var i = 0; i < data.data.length; i++) {
+                                    html+="<a class=\"dropdown-item topic\" href=\"javascript:void(0);\" data-id='"
+                                    html+=data.data[i].topicId +
+                                        "'>"
+                                    html+=data.data[i].topicName +
+                                        "</a>"
+                                }
+                                $("#topicBox").html(html)
+
+                            }
+                        </script>
+                    </div>
+                </div>
+                <span style="display: block">贴上标签</span>
+                <div style="font-size: 10px;">
+                    <span style="display: block; margin: 10px;" id="" data-toggle="dropdown" class="">
+                        <input autocomplete="off" id="postTags" style="width: 80%; height: 30px; padding-left: 10px;" type="text" value="" placeholder="请选择标签，最多5个">
+                    </span>
+                    <div id="tagBox" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                        <script>
+                            $.ajax({
+                                url:"/pfo/post/queryAllTagsWithPosts",
+                                dataType:"json",
+                                success:function (data) {
+                                    showInTag(data);
+                                }
+                            })
+                            function showInTag(data) {
+                                var html=""
+                                for (var i = 0; i < data.data.length; i++) {
+                                    html+="<a class=\"dropdown-item tag\" href=\"javascript:void(0);\" data-id='"
+                                    html+=data.data[i].tagId +
+                                        "'>"
+                                    html+=data.data[i].tagName +
+                                        "</a>"
+                                }
+                                $("#tagBox").html(html)
+                            }
+                        </script>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 5px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">返回编辑</button>
+                <button id="publish_commit" type="button" class="btn btn-primary" onclick="publish()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var postId=""
+    var topicId=""
+    var tagList= new Array()
+    <!-- 将选中的主题放入span上显示-->
+    $("body").on("click",".topic",function () {
+        $("#pubTopic").text($(this).text())
+        //将topicId放入全局变量中
+        topicId=$(this).attr("data-id")
+        //alert(topicId)
+    })
+   /* <!-- 将选中的主题放入span上显示-->
+    $(".topic").click(function () {
+        // alert($(this).text())
+        $("#pubTopic").text($(this).text())
+    })*/
+    <!-- 将选中的标签放入input上显示-->
+   $("body").on("click",".tag",function () {
+       // alert($(this).text())
+       //input中value无数据
+       if ($("#postTags").attr("value")==""){
+           $("#postTags").attr("value",$(this).text())
+           tagList.push($(this).attr("data-id"))
+       } else{
+           //input中value已经有数据
+           $("#postTags").attr("value",$("#postTags").attr("value")+"  ||  "+$(this).text())
+           tagList.push($(this).attr("data-id"))
+
+       }
+
+   })
+    /*$(".tag").click(function () {
+        // alert($(this).text())
+        if ($("#postTags").attr("value")==""){
+            alert("gg")
+            $("#postTags").attr("value",$(this).text())
+        } else{
+            alert("hh")
+            $("#postTags").attr("value",$("#postTags").attr("value")+"  ||  "+$(this).text())
+        }
+    })*/
+</script>
+</body>
+
+
+<script>
+    <!--将数据库中对应字符解码为+&%-->
+    function reupdate(str){
+        str = str.replace(/%2B/g,"+")
+        str = str.replace(/%26/g,"&")
+        str = str.replace(/%25/g,"%")
+        return str
+    }
+</script>
+
+
+<!--底部导航栏 导入js样式-->
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+<!--wangEditor 导入样式-->
+<script>
+    var E = window.wangEditor
+    var editor = new E('#ed')
+    editor.customConfig.onfocus = function () {
+        //console.log("onfocus")
+        if($("#tips").text()=="请输入要发布的内容"){
+            $("#tips").remove();
+        }
+
+    }
+    //开启debug模式
+    editor.customConfig.debug = true;
+    // 关闭粘贴内容中的样式
+    editor.customConfig.pasteFilterStyle = false
+    // 忽略粘贴内容中的图片
+    editor.customConfig.pasteIgnoreImg = true
+    // 上传图片到服务器
+    editor.customConfig.uploadFileName = 'myFile'; //设置文件上传的参数名称
+    editor.customConfig.uploadImgServer = '/pfo/uploadImg'; //设置上传文件的服务器路径
+    editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024; // 将图片大小限制为 3M
+    //自定义上传图片事件
+    editor.customConfig.uploadImgHooks = {
+        customInsert:  function(insertImg, result, editor) {
+            // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+            // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+            // 插入图片到editor
+            editor.cmd.do('insertHtml', '<img alt="图片走丢了*_*" src="http://' + result.data[0] + '" style="max-width:100%;"/>')
+        },
+        before : function(xhr, editor, files) {
+            console.log("正在上传...请稍候");
+        },
+        success : function(xhr, editor, result) {
+            console.log("上传成功");
+        },
+        fail : function(xhr, editor, result) {
+            console.log("上传失败,原因是"+result);
+        },
+        error : function(xhr, editor) {
+            console.log("上传出错");
+        },
+        timeout : function(xhr, editor) {
+            console.log("上传超时");
+        }
+    }
+    editor.customConfig.menus=[
+
+        'head', // 标题
+
+        'bold', // 粗体
+
+        'fontSize', // 字号
+
+        'fontName', // 字体
+
+        'italic', // 斜体
+
+        'underline', // 下划线
+
+        'strikeThrough', // 删除线
+
+        'foreColor', // 文字颜色
+
+        'backColor', // 背景颜色
+
+        'link', // 插入链接
+
+        'list', // 列表
+
+        'justify', // 对齐方式
+
+        'quote', // 引用
+
+        'emoticon', // 表情
+
+        'image', // 插入图片
+
+        'table', // 表格
+
+        'video', // 插入视频
+
+        'code', // 插入代码
+
+        'undo', // 撤销
+
+        'redo' // 重复
+
+    ]
+    editor.create()
+    editor.$textElem.attr('contenteditable', true)
+    //editor.txt.html()
+
+</script>
+
+</html>

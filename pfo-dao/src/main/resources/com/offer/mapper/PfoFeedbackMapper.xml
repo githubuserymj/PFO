@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoFeedbackMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoFeedback" >
+    <id column="feedback_id" property="feedbackId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="post_id" property="postId" jdbcType="BIGINT" />
+    <result column="question_id" property="questionId" jdbcType="BIGINT" />
+    <result column="comment_id" property="commentId" jdbcType="BIGINT" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.offer.pojo.PfoFeedback" extends="BaseResultMap" >
+    <result column="feedback_message" property="feedbackMessage" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    feedback_id, user_id, post_id, question_id, comment_id, deliver_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    feedback_message
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.offer.pojo.PfoFeedbackExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_feedback
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_feedback
+    where feedback_id = #{feedbackId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_feedback
+    where feedback_id = #{feedbackId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoFeedbackExample" >
+    delete from pfo_feedback
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoFeedback" >
+    insert into pfo_feedback (feedback_id, user_id, post_id, 
+      question_id, comment_id, deliver_time, 
+      feedback_message)
+    values (#{feedbackId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{postId,jdbcType=BIGINT}, 
+      #{questionId,jdbcType=BIGINT}, #{commentId,jdbcType=BIGINT}, #{deliverTime,jdbcType=TIMESTAMP}, 
+      #{feedbackMessage,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoFeedback" >
+    insert into pfo_feedback
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="feedbackId != null" >
+        feedback_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="postId != null" >
+        post_id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="commentId != null" >
+        comment_id,
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time,
+      </if>
+      <if test="feedbackMessage != null" >
+        feedback_message,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="feedbackId != null" >
+        #{feedbackId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postId != null" >
+        #{postId,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="commentId != null" >
+        #{commentId,jdbcType=BIGINT},
+      </if>
+      <if test="deliverTime != null" >
+        #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="feedbackMessage != null" >
+        #{feedbackMessage,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoFeedbackExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_feedback
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_feedback
+    <set >
+      <if test="record.feedbackId != null" >
+        feedback_id = #{record.feedbackId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.postId != null" >
+        post_id = #{record.postId,jdbcType=BIGINT},
+      </if>
+      <if test="record.questionId != null" >
+        question_id = #{record.questionId,jdbcType=BIGINT},
+      </if>
+      <if test="record.commentId != null" >
+        comment_id = #{record.commentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.deliverTime != null" >
+        deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.feedbackMessage != null" >
+        feedback_message = #{record.feedbackMessage,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update pfo_feedback
+    set feedback_id = #{record.feedbackId,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      post_id = #{record.postId,jdbcType=BIGINT},
+      question_id = #{record.questionId,jdbcType=BIGINT},
+      comment_id = #{record.commentId,jdbcType=BIGINT},
+      deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+      feedback_message = #{record.feedbackMessage,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_feedback
+    set feedback_id = #{record.feedbackId,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      post_id = #{record.postId,jdbcType=BIGINT},
+      question_id = #{record.questionId,jdbcType=BIGINT},
+      comment_id = #{record.commentId,jdbcType=BIGINT},
+      deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoFeedback" >
+    update pfo_feedback
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postId != null" >
+        post_id = #{postId,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="commentId != null" >
+        comment_id = #{commentId,jdbcType=BIGINT},
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="feedbackMessage != null" >
+        feedback_message = #{feedbackMessage,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where feedback_id = #{feedbackId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.offer.pojo.PfoFeedback" >
+    update pfo_feedback
+    set user_id = #{userId,jdbcType=BIGINT},
+      post_id = #{postId,jdbcType=BIGINT},
+      question_id = #{questionId,jdbcType=BIGINT},
+      comment_id = #{commentId,jdbcType=BIGINT},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      feedback_message = #{feedbackMessage,jdbcType=LONGVARCHAR}
+    where feedback_id = #{feedbackId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoFeedback" >
+    update pfo_feedback
+    set user_id = #{userId,jdbcType=BIGINT},
+      post_id = #{postId,jdbcType=BIGINT},
+      question_id = #{questionId,jdbcType=BIGINT},
+      comment_id = #{commentId,jdbcType=BIGINT},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP}
+    where feedback_id = #{feedbackId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 查询全部反馈信息-->
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoFeedbackExample" >
+    <!--select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_feedback
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>-->
+    select * from pfo_feedback
+  </select>
+
+  <!-- 根据ID删除反馈信息-->
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from pfo_feedback
+    where feedback_id = #{feedbackId,jdbcType=BIGINT}
+  </delete>
+  <!-- 添加反馈信息-->
+  <insert id="addFeedback" parameterType="com.offer.pojo.PfoFeedback" >
+    insert into pfo_feedback (feedback_id, user_id, post_id,
+      question_id, comment_id, deliver_time,
+      feedback_message)
+    values (#{feedbackId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{postId,jdbcType=BIGINT},
+      #{questionId,jdbcType=BIGINT}, #{commentId,jdbcType=BIGINT}, #{deliverTime,jdbcType=TIMESTAMP},
+      #{feedbackMessage,jdbcType=LONGVARCHAR})
+  </insert>
+</mapper>

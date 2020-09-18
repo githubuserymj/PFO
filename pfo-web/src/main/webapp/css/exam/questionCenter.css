@@ -1,0 +1,125 @@
+.main {
+	margin-top: 50px;
+}
+.github-buttons {
+	padding-top: 10px;
+}
+h2 .label {
+	vertical-align:4px;
+}
+textarea {
+	height: 425px !important;
+	resize:none;
+	font-family:Menlo,Monaco,"Courier New",monospace;
+	font-size:11px;
+	line-height:15px;
+}
+#input {
+	height: 295px !important;
+	margin-bottom: 13px;
+}
+#variables {
+	height: 75px !important;
+}
+label.control-label {
+	font-weight:bold;
+}
+footer {
+ 
+}
+footer a {
+	margin-top:0;
+}
+.alert {
+    padding: 8px 35px 8px 14px;
+    margin-bottom: 18px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    background-color: #fcf8e3;
+    border: 1px solid #fbeed5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin-top: 22px;
+}
+
+.control-group {
+    font-size: 12px;
+}
+
+#quiz-detail{
+	float: right;
+}
+
+#quiz-detail span{
+	margin-right: 10px;
+}
+
+.ck{
+	position: relative;
+	float: right;
+	display:none;
+	margin-top: 2px;
+}
+
+.cnter-main {
+	max-width: 1110px;
+	min-width: 760px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#second-nav {
+	height: 20px;
+	line-height: 5px;
+	padding-left: 6px;
+}
+
+.quiz-item {
+	margin: 5px 0;
+}
+
+.tags-box {
+	margin-top: 40px;
+}
+
+.tag-label {
+	border-radius: 12px;
+	border: 1px solid #ddd;
+	display: inline-block;
+	padding: 4px 10px;
+	color: #333;
+	font-size: 12px;
+	margin-right: 2px;
+	background: #fff;
+	position: relative;
+}
+
+.qIdItem{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 5px;
+	line-height: 20px;
+	text-align: center;
+	background: #26b797;
+	color: #ffffff;
+}
+
+.sidebar-box{
+	margin-top: 5px;
+	margin-bottom: 20px;
+}
+
+.sidebar-box-bg{
+	background: #eae7e5;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#excelForm{
+	display: inline;
+}
+
+#uploadEventFile{
+	margin-bottom: 10px;
+}

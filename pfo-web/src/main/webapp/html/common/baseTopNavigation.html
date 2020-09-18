@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+
+
+
+</head>
+<body>
+<!--顶部导航栏部分-->
+<div id="topNavigation" style="width: 1366px">
+    <nav class="container navbar navbar-expand bg-secondary navbar-dark" style="height: 56px">
+        <!-- Brand -->
+        <a class="navbar-brand" href="/pfo/" style="font-size: 25px">
+            PFO<span style="font-size: 15px">&#32online</span>
+        </a>
+
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavigation-collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="topNavigation-collapsibleNavbar">
+            <ul class="navbar-nav" style="margin-top: 7px;">
+                <li class="nav-item">
+                    <a class="nav-link" href="/pfo/">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pfo/html/exam/exam_bank.html">题库</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pfo/html/discussion/post_show.html?topicId=0">讨论区</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pfo/html/recruit/recruit_recommend.html">求职</a>
+                </li>
+
+            </ul>
+            <!--&lt;!&ndash;搜索框&ndash;&gt;-->
+            <!--<form class="form-inline ml-auto">-->
+                <!--<div class="form-group">-->
+                    <!--<input type="text" class="form-control" placeholder="Search">-->
+                <!--</div>-->
+            <!--</form>-->
+            <ul class="navbar-nav" style="position: absolute;right: 100px">
+                <li style="display: flex">
+                    <!--            &lt;!&ndash;用户头像&ndash;&gt;-->
+                    <a id="userImg" class="navbar-brand" href="/pfo/html/user/user.html" style="margin-left: 20px;" hidden="hidden">
+                        <img class="ml-auto rounded-circle" src="https://images.nowcoder.com/images/20190816/846402631_1565956032347_193E973C19D9E8AA76A1AFADA284FD99?x-oss-process=image/resize,m_mfit,h_100,w_100" alt="Logo" style="width:40px;border: 2px white solid;">
+                    </a>
+                </li>
+                <li style="display: flex">
+                    <!--用户消息-->
+                    <div id="userMessage" class="navbar-brand">
+                        <div style="float: left">
+                            <img src="/pfo/img/logo/userMessage.svg" onclick="showUserMessage()" alt="" style="width: 1.7em">
+                        </div>
+                        <div id="userMessageNum" style="float: left;color: red">0</div>
+                    </div>
+                </li>
+                <li style="display: flex">
+                    <!--Navbar text-->
+                    <div id="userOption" class="navbar-text navbar-brand" style="font-size: 1rem">
+                        <!--登录或未登录操作-->
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+</div>
+<!--悬浮状态信息框-->
+<div id="Status">
+    <div style="text-align: center;display: flex;justify-content: center;z-index: 20000">
+        <div id="logInfo" class="alert alert-success alert-dismissible fade show" style="width: 200px">
+            <strong id="StatusInfo"></strong>
+        </div>
+    </div>
+</div>
+
+<!--编译器模态框-->
+<!-- 按钮：用于打开模态框 -->
+<div style="position: fixed;right:10px;top: 50%;">
+    <a href="#" data-toggle="tooltip" data-placement="left" title="JAVA编译器">
+        <img src="/pfo/img/tools/keybord.png" alt="JAVA编译器" data-toggle="modal" data-target="#onlineCodeMyModal">
+    </a>
+</div>
+<div>
+    <!-- 模态框 -->
+    <div class="modal fade" id="onlineCodeMyModal" style="color: white;">
+        <div id="onlineCodeDialog" class="modal-dialog" style="margin:10px 10px 10px auto;">
+            <div class="modal-content" style="background: #1c2022;height: 600px">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header" style="border-bottom: 1px white solid">
+                    <h4 class="modal-title">PFO JAVA在线编译</h4>
+                    <ul style="margin-left: 50px;list-style: none;">
+                        <li style="float: right;margin-right: 10px"><img data-dismiss="modal" style="width: 25px;height: 25px;float: right" src="/pfo/img/tools/close.png" alt="关闭"></li>
+                        <li style="float: right;margin-right: 10px"><img id="maxSize" style="margin-top:2px;width: 18px;height: 18px;float: right" src="/pfo/img/tools/maximize.png" alt="最大化"></li>
+                        <li style="float: right;margin-right: 10px"><img id="minSize" style="width: 22px;height: 22px;float: right" src="/pfo/img/tools/minimize.png" alt="最小化"></li>
+                    </ul>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <div>源码：</div>
+                    <textarea id="originCode" style="font-size:10px;color:white;width:100%;height: 50%;background: #111518;border: none;word-wrap:normal;" placeholder='例：
+public class HelloWorld {
+        public static void main(String[] args) {
+                System.out.println("Hello World");}
+}'></textarea>
+                    <div style="margin-top: 20px;">结果：<button class="btn btn-primary" onclick="javaComplier()" style="margin-bottom: 10px;float: right;height: 35px">编译</button></div>
+                    <textarea id="compileResult" style="font-size:10px;color:white;width:100%;height: 30%;background: #111518;border: none;word-wrap:normal;" disabled  placeholder="hello word!"></textarea>
+
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer" style="height:15px;border-top: 1px white solid">
+                    <span style="font-size: 5px">当前编译器为初级版，还存在一些问题，点击查看<a href="#">使用说明</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="/pfo/js/jquery-3.4.1.js"></script>
+<script src="/pfo/js/jquery.cookie.js"></script>
+
+<script src="/pfo/js/bootstrap.js"></script>
+<link rel="stylesheet" href="/pfo/css/bootstrap.css">
+<link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+<script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+
+</html>
+

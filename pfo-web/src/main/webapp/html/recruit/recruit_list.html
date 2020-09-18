@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>招聘信息列表</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="/pfo/css/recruit/recruit_list.css">
+    <link rel="stylesheet" href="/pfo/css/jquery.sPage.css" type="text/css">
+    <script src="/pfo/js/jquery.sPage.js"></script>
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="module-box">
+            <div class="module-head clearfix">
+                <h1>招聘信息列表</h1>
+                <div class="module-head-oprt">
+                    <div class="search-input-wrap focus">
+                        <label for="search" class="ico-search"></label>
+                        <input id="search" type="text"  class="js-search" placeholder="输入公司或者职位名字搜索" value="">&nbsp;
+                        <!--<a href="javascript:void(0);" class="btn btn-primary btn-sm btn-auto nc-req-auth js-publish-job">搜索</a>-->
+                    </div>
+                </div>
+            </div>
+            <!-- 地点职位筛选条件 -->
+            <div class="share-tag-wrap">
+                <section>
+                    <span class="share-tag-label">地点</span>
+                    <div class="share-tag-box">
+                        <a href="javascript:void(0);" class="share-tag  selected " onclick="selectByAddress(this)">全国</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="1" onclick="selectByAddress(this)">1</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="上海" onclick="selectByAddress(this)">上海</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="广州" onclick="selectByAddress(this)">广州</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="深圳" onclick="selectByAddress(this)">深圳</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="杭州" onclick="selectByAddress(this)">杭州</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="南京" onclick="selectByAddress(this)">南京</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="成都" onclick="selectByAddress(this)">成都</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="厦门" onclick="selectByAddress(this)">厦门</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="武汉" onclick="selectByAddress(this)">武汉</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="西安" onclick="selectByAddress(this)">西安</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="长沙" onclick="selectByAddress(this)">长沙</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="哈尔滨" onclick="selectByAddress(this)">哈尔滨</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="合肥" onclick="selectByAddress(this)">合肥</a>
+                        <a href="javascript:void(0);" class="share-tag   " data-val="其他" onclick="selectByAddress(this)">其他</a>
+                    </div>
+                </section>
+                <section>
+                    <span class="share-tag-label">类别</span>
+                    <div class="share-tag-box no-border">
+                        <a href="javascript:void(0);" class="share-tag  selected " onclick="selectByPosition(this)">全部</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="1" onclick="selectByPosition(this)">研发</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="2" onclick="selectByPosition(this)">测试</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="3" onclick="selectByPosition(this)">数据</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="4" onclick="selectByPosition(this)">算法</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="5" onclick="selectByPosition(this)">前端</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="6" onclick="selectByPosition(this)">产品</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="7" onclick="selectByPosition(this)">运营</a>
+                        <a href="javascript:void(0);" class="share-tag    " data-type="0" onclick="selectByPosition(this)">其他</a>
+                    </div>
+                </section>
+                <script>
+
+                </script>
+            </div>
+            <div class="module-body">
+                <form action="" method="post">
+                    <div class="menu-txt-box">
+                        <ul class="menu-txt clearfix">
+                            <li   class="selected"   >
+                                <a href="javascript:void(0)" onclick="orderBydeliverTime(this)">最新</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="job-list-header">
+                        <ul class="menu-txt clearfix">
+                            <li class="selected">
+                                <span class="reco-job-img"><b>logo</b></span>
+                                <span class="reco-job-title"><b>标题</b></span>
+                                <span class="reco-company-name"><b>公司名称</b></span>
+                                <span class="nk-txt-ellipsis job-address" data-title="" data-tips-index="1"><b>地点</b></span>
+                                <span class="reco-job-position"><b>职位</b></span>
+                                <span class="deliver-time"><b>发布时间</b></span>
+                                <span class="job-operation"><b>操作</b></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- 招聘信息列表 -->
+                    <ul class="reco-job-list">
+                    </ul>
+                    <!-- 分页 -->
+                    <div id="myPage" class="Pagination"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+<script type="text/javascript">
+    var n = 0;
+    var SortKey = {
+        key: '',
+        type: ''
+    }
+
+    var dataList;
+
+    // 获取地址栏参数
+    function getUrlSearch(name) {
+        // 为传参，返回空
+        if (!name) return null;
+        // 查询参数：先通过search取值，如果取不到值就通过hash来获取
+        var after = window.location.search;
+        after = after.substr(1) || window.location.hash.split('?')[1];
+        // 地址栏URL没有查询参数，返回空
+        if (!after) return null;
+        // 如果查询参数汇总没有"name"，返回空
+        if (after.indexOf(name) == -1) return null;
+
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+        // 当地址栏参数存在中文时，需要解码，不然会乱码
+        var r = decodeURI(after).match(reg);
+        // 如果url中"name"没有值，返回空
+        if (!r) return null;
+
+        return r[2];
+    }
+
+    // companydId 判断是否从公司主页跳转过来
+    var companyId = getUrlSearch("companyId")
+
+    if (companyId) {
+        console.log("companyId:" + getUrlSearch("companyId"))
+        $(document).ready(
+            // 当前页面加载所有该公司的招聘信息  含分页
+            queryRecruitmentByCompanyWithPage(1)
+        );
+    } else {
+        console.log("companyId 为空")
+        $(document).ready(
+            recruitmentLoad(1)
+        );
+    }
+
+    
+    // 加载所有招聘信息 关联公司表  含分页
+    function recruitmentLoad(currPage) {
+        $.ajax({
+            url: "/pfo/recruitment/queryRecruitmentsWithPage",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: 'currPage=' + currPage + '&pageSize=6&orderKey=' + SortKey.key + '&orderType=' + SortKey.type,
+            success: function (data) {
+                showRecruitments(data);
+                // 调用分页插件
+                $("#myPage").sPage({
+                    page: data.currPage,//当前页码，必填
+                    total: data.totalSize,//数据总条数，必填
+                    pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                    showTotal: true,//是否显示总条数，默认关闭：false
+                    totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                    noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                    showSkip: true,//是否显示跳页，默认关闭：false
+                    showPN: true,//是否显示上下翻页，默认开启：true
+                    prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                    nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                    backFun: function (page) {
+                        //点击分页按钮回调函数，返回当前页码
+                        recruitmentLoad(page)
+                    }
+                });
+            }
+        });
+    }
+
+    // 通过公司获取该公司的招聘信息  含分页
+    function queryRecruitmentByCompanyWithPage(currPage) {
+        $.ajax({
+            url: "/pfo/recruitment/queryRecruitmentByCompanyWithPage",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: 'currPage=' + currPage + '&pageSize=6&orderKey=' + SortKey.key + '&orderType=' + SortKey.type + '&companyId=' + companyId,
+            success: function (data) {
+                showRecruitments(data);
+                // 调用分页插件
+                $("#myPage").sPage({
+                    page: data.currPage,//当前页码，必填
+                    total: data.totalSize,//数据总条数，必填
+                    pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                    showTotal: true,//是否显示总条数，默认关闭：false
+                    totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                    noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                    showSkip: true,//是否显示跳页，默认关闭：false
+                    showPN: true,//是否显示上下翻页，默认开启：true
+                    prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                    nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                    backFun: function (page) {
+                        //点击分页按钮回调函数，返回当前页码
+                        recruitmentLoad(page)
+                    }
+                });
+
+                var companyName = $("#company_name").text();
+            }
+        });
+    }
+
+    //  渲染数据
+    function showRecruitments(data) {
+        var html = '';
+
+        dataList = data.dataList;
+
+        $.each(dataList, function (i, val) {
+            html += '<li class="clearfix">' +
+                '       <div class="reco-job-main">' +
+                '           <a id="reco-job-img" style="margin: auto 50px" href="#">' +
+                '               <img src="1" alt="" style="width: 20px; height: 20px" class="img-circle">' +
+                '           </a>' +
+                '           <span id="job-title" style="margin: auto 50px">招聘名称</span>' +
+                '           <span id="company_name" style="margin: auto 50px">'+ val.pfoCompany.companyName +'</span>' +
+                '           <span id="job-address" data-title="" data-tips-index="1" style="margin: auto 50px">???</span>' +
+                '           <span id="job-position" style="margin: auto 50px">'+ val.position +'</span>' +
+                '           <span id="deliver-time" style="margin: auto 50px">'+ val.deliverTime +'</span>' +
+                '           <span id="job-operator">' +
+                '               <a id="selectById" class="btn-success btn-sm" href="recruit_detail.html?id=' +val.recruitmentId+'">查看详情</a>' +
+                '               <button class="btn-danger btn-sm" style="display: none" onclick="deleteById(val.recruitmentId)">删除</button>' +
+                '           </span>' +
+                '       </div>' +
+                '    </li>';
+        });
+
+        console.log(data);
+        $(".reco-job-list").html(html);
+
+    }
+
+    /**
+     * 地点条件查询
+     * @param obj
+     */
+    function selectByAddress(obj) {
+        var $ele = $(obj);
+        var address = $ele.text().trim();
+        var html = '';
+
+        // 遍历地点
+        $.each(dataList, function (i, value) {
+            if ('全国' != address ) {
+                if (address == value.pfoCompany.companyAddress) {
+                    html += '<li class="clearfix">' +
+                        '       <div class="reco-job-main">' +
+                        '           <a id="reco-job-img" style="margin: auto 50px" href="#">' +
+                        '               <img src="1" alt="" style="width: 20px; height: 20px" class="img-circle">' +
+                        '           </a>' +
+                        '           <span id="job-title" style="margin: auto 50px">招聘名称</span>' +
+                        '           <span id="company_name" style="margin: auto 50px">'+ value.companyName +'</span>' +
+                        '           <span id="job-address" data-title="" data-tips-index="1" style="margin: auto 50px">'+ value.pfoCompany.companyAddress +'</span>' +
+                        '           <span id="job-position" style="margin: auto 50px">'+ value.position +'</span>' +
+                        '           <span id="deliver-time" style="margin: auto 50px">'+ value.deliverTime +'</span>' +
+                        '           <span id="job-operator">' +
+                        '               <a id="selectById" class="btn-success btn-sm" href="recruit_detail.html?id=' +value.recruitmentId+'">查看详情</a>' +
+                        '               <button class="btn-danger btn-sm" style="display: none" onclick="deleteById(value.recruitmentId)">删除</button>' +
+                        '           </span>' +
+                        '       </div>' +
+                        '    </li>';
+                }
+            } else {
+                html += '<li class="clearfix">' +
+                    '       <div class="reco-job-main">' +
+                    '           <a id="reco-job-img" style="margin: auto 50px" href="#">' +
+                    '               <img src="1" alt="" style="width: 20px; height: 20px" class="img-circle">' +
+                    '           </a>' +
+                    '           <span id="job-title" style="margin: auto 50px">招聘名称</span>' +
+                    '           <span id="company_name" style="margin: auto 50px">'+ value.pfoCompany.companyName +'</span>' +
+                    '           <span id="job-address" data-title="" data-tips-index="1" style="margin: auto 50px">其他</span>' +
+                    '           <span id="job-position" style="margin: auto 50px">'+ value.position +'</span>' +
+                    '           <span id="deliver-time" style="margin: auto 50px">'+ value.deliverTime +'</span>' +
+                    '           <span id="job-operator">' +
+                    '               <a id="selectById" class="btn-success btn-sm" href="recruit_detail.html?id=' +value.recruitmentId+'">查看详情</a>' +
+                    '               <button class="btn-danger btn-sm" style="display: none" onclick="deleteById(value.recruitmentId)">删除</button>' +
+                    '           </span>' +
+                    '       </div>' +
+                    '    </li>';
+            }
+        })
+
+        $(".reco-job-list").html(html);
+
+    }
+
+    // 职位条件查询
+    function selectByPosition(obj) {
+        var $ele = $(obj);
+        var position = $ele.text().trim();
+        var html = '';
+
+        /**
+         * 遍历职位
+         */
+        $.each(dataList, function (i, value) {
+            if (position != '全部') {
+                if (position == value.position) {
+                    html += '<li class="clearfix">' +
+                        '       <div class="reco-job-main">' +
+                        '           <a id="reco-job-img" style="margin: auto 50px" href="#">' +
+                        '               <img src="1" alt="" style="width: 20px; height: 20px" class="img-circle">' +
+                        '           </a>' +
+                        '           <span id="job-title" style="margin: auto 50px">招聘名称</span>' +
+                        '           <span id="company_name" style="margin: auto 50px">'+ value.pfoCompany.companyName +'</span>' +
+                        '           <span id="job-address" data-title="" data-tips-index="1" style="margin: auto 50px">???</span>' +
+                        '           <span id="job-position" style="margin: auto 50px">'+ value.position +'</span>' +
+                        '           <span id="deliver-time" style="margin: auto 50px">'+ value.deliverTime +'</span>' +
+                        '           <span id="job-operator">' +
+                        '               <a id="selectById" class="btn-success btn-sm" href="recruit_detail.html?id=' +value.recruitmentId+'">查看详情</a>' +
+                        '               <button class="btn-danger btn-sm" style="display: none" onclick="deleteById(value.recruitmentId)">删除</button>' +
+                        '           </span>' +
+                        '       </div>' +
+                        '    </li>';
+                }
+            } else {
+                console.log("全部");
+                html += '<li class="clearfix">' +
+                    '       <div class="reco-job-main">' +
+                    '           <a id="reco-job-img" style="margin: auto 50px" href="#">' +
+                    '               <img src="1" alt="" style="width: 20px; height: 20px" class="img-circle">' +
+                    '           </a>' +
+                    '           <span id="job-title" style="margin: auto 50px">招聘名称</span>' +
+                    '           <span id="company_name" style="margin: auto 50px">'+ value.pfoCompany.companyName +'</span>' +
+                    '           <span id="job-address" data-title="" data-tips-index="1" style="margin: auto 50px">其他</span>' +
+                    '           <span id="job-position" style="margin: auto 50px">'+ value.position +'</span>' +
+                    '           <span id="deliver-time" style="margin: auto 50px">'+ value.deliverTime +'</span>' +
+                    '           <span id="job-operator">' +
+                    '               <a id="selectById" class="btn-success btn-sm" href="recruit_detail.html?id=' +value.recruitmentId+'">查看详情</a>' +
+                    '               <button class="btn-danger btn-sm" style="display: none" onclick="deleteById(value.recruitmentId)">删除</button>' +
+                    '           </span>' +
+                    '       </div>' +
+                    '    </li>';
+            }
+        })
+
+        $(".reco-job-list").html(html);
+    }
+
+    /**
+     * 最新   按时间降序排序  待实现
+     * @param obj
+     */
+    function orderBydeliverTime(obj) {
+        $.get({
+            url: "http://localhost:8080/pfo/recruitment/queryRecruitmentOrderByDeliverTime",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+            }
+        })
+    }
+</script>
+</body>
+</html>

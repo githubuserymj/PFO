@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="pfo-web:war">
+    <output-path>$PROJECT_DIR$/pfo-web/target</output-path>
+    <root id="archive" name="pfo.war">
+      <element id="artifact" artifact-name="pfo-web:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PFO求职</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="/pfo/css/recruit/recruit_recommend.css">
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row" style="margin-top: 20px">
+        <!--顶部图片-->
+        <div class="img-top" style="width: 100%; margin-bottom: 10px">
+            <div id="demo" class="carousel slide" data-ride="carousel">
+
+                <!-- 指示符 -->
+                <ul class="carousel-indicators">
+                    <li data-target="#demo" data-slide-to="0" class="active"></li>
+                    <li data-target="#demo" data-slide-to="1"></li>
+                    <li data-target="#demo" data-slide-to="2"></li>
+                </ul>
+                <!-- 轮播图片 -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img style="height: 80px;width: 100%;" src="https://uploadfiles.nowcoder.com/images/20190730/3985294_1564490888606_0C83743E799FFF59A9F56D088FD89BCB">
+                    </div>
+                    <div class="carousel-item">
+                        <img style="height: 80px;width: 100%;" src="https://uploadfiles.nowcoder.com/images/20190923/339694163_1569236069862_8F6132E99BB3A2974759D511D2632B0A">
+                    </div>
+                    <div class="carousel-item">
+                        <img style="height: 80px;width: 100%;" src="https://uploadfiles.nowcoder.com/images/20190730/3985294_1564490888606_0C83743E799FFF59A9F56D088FD89BCB">
+                    </div>
+                </div>
+                <!-- 左右切换按钮 -->
+                <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </a>
+                <a class="carousel-control-next" href="#demo" data-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </a>
+
+                <div id="link-option" style="background: #fff">
+                    <!-- 推荐 -->
+                    <span class="a-link"><a href="#recruit-reco">推荐</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+                    <!-- 最新招聘 -->
+                    <span class="a-link"><a href="#recruit-recent">最新招聘</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+                    <!-- 公司主页 -->
+                    <span class="a-link"><a href="#company-list">公司主页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+                    <!-- 日历公司 -->
+                    <span class="a-link"><a href="recruit_calendar.html">日历公司招聘</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+                    <!-- 招聘地图 -->
+                    <span class="a-link"><a href="/pfo/html/common/companyRecruitmentInfoShowMap.html" target="_blank">招聘地图</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="nk-main with-banner-page clearfix">
+            <!-- 推荐  消息推送部分 算法实现  只展示几条数据  -->
+            <div class="module-box" id="recruit-reco">
+                <div class="module-head clearfix">
+                    <div class="topic-tab clearfix" id="jsListHeader" style="float:right;"></div>
+                    <h1>推荐</h1>
+                </div>
+                <div class="module-body" id="jsListContent">
+                    <div id="reco-list" class="p-reco-list" style="overflow:hidden;overflow-x:hidden;">
+                        <!--<div id="reco-list" class="topic-list clearfix" style="width:100000px;">-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最新招聘 -->
+            <div class="module-box" id="recruit-recent">
+                <div class="module-head clearfix">
+                    <h1>近期网招</h1>
+                </div>
+                <div class="module-body">
+                    <div id="latest-list" class="p-reco-list" style="overflow:hidden;">
+                        <!--<div id="latest-list" class="topic-list clearfix" style="width:100000px;">-->
+                        <!--</div>-->
+                    </div>
+                    <div class="more-recruitment">
+                        <a href="/pfo/html/recruit/recruit_list2.html" class="btn btn-primary btn-sm btn-auto nc-req-auth js-publish-job">更多招聘</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 公司列表 -->
+            <div class="module-box" id="company-list">
+                <div class="module-head clearfix js-part-intern">
+                    <h1>公司主页</h1>
+                </div>
+                <!-- 按公司名称搜索公司列表  es  待实现 -->
+                <div style="padding-right: 10px">
+                    <button class="btn btn-default" onclick="searchByCompanyName()" style="float: right">搜索</button>
+                    <input id="input-company-name" type="text" class="form-control col-sm-2" id="exampleInputName2" placeholder="输入公司名称搜索" style="float: right; margin-right: 10px">
+                </div>
+                <div class="city-tab-wrap">
+                    <span style="margin-right:20px;font-size:14px;">地点</span>
+                    <a href="javascript:void(0);"  class="selected city-tab"  data-city="全国" onclick="selectByAddress(this)">全国</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="北京" onclick="selectByAddress(this)">北京</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="上海" onclick="selectByAddress(this)">上海</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="广州" onclick="selectByAddress(this)">广州</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="深圳" onclick="selectByAddress(this)">深圳</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="杭州" onclick="selectByAddress(this)">杭州</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="南京" onclick="selectByAddress(this)">南京</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="成都" onclick="selectByAddress(this)">成都</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="厦门" onclick="selectByAddress(this)">厦门</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="武汉" onclick="selectByAddress(this)">武汉</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="西安" onclick="selectByAddress(this)">西安</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="长沙" onclick="selectByAddress(this)">长沙</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="哈尔滨" onclick="selectByAddress(this)">哈尔滨</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="合肥" onclick="selectByAddress(this)">合肥</a>
+                    <a href="javascript:void(0);"  class="city-tab" data-city="其他" onclick="selectByAddress(this)">其他</a>
+                </div>
+                <div class="module-body js-part-intern-content">
+                    <ul class="discuss-box">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+</body>
+<script type="text/javascript">
+    /**
+     * 获取推荐招聘信息 10条 --------
+     */
+    $.ajax({
+        url: "/pfo/recruitment/queryRecruitmentByRecommend",
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+            var recruitment =  data.data;
+            var html;
+            $.each(recruitment, function (i, val) {
+                html += '<a class="p-reco-item" href="recruit_detail.html?recruitmentId=' + val.recruitmentId +'">' +
+                    '       <div class="p-reco-pic">' +
+                    '           <img src="' + val.recruitmentImg +
+                    '               " alt="招聘信息图片">' +
+                    '       </div>' +
+                    '       <div class="p-reco-title">'+ val.recruitmentTitle +'</div>'
+                    '   </a>';
+            });
+
+            $("#reco-list").append(html);
+        }
+    })
+
+    function searchByCompanyName() {
+        var companyName = $("#input-company-name").val();
+        $.get({
+            url: "/pfo/company/queryCompany",
+            data: "companyName=" + companyName,
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                companyList = data.data;
+                var html = '';
+                $.each(companyList, function (i, val) {
+                    html += '<li class="item clearfix">' +
+                        '       <div class="spr-logo">' +
+                        '           <a href="../company/company_website.html?companyId=' +val.companyId+ '" title="点击访问'+ val.companyName +'主页">' +
+                        '               <img src="' + val.logo +'">' +
+                        '           </a>' +
+                        '       </div>' +
+                        '       <div class="discuss-info">' +
+                        '           <p>n条招聘信息</p>' +
+                        '           <p>n套题</p>' +
+                        '           <p>n人报名</p>' +
+                        '       </div>' +
+                        '    </li>';
+                })
+
+                $('.discuss-box').html(html);
+            }
+        })
+    }
+
+    /**
+     * 获取近期招聘信息  获取20条  不含分页
+     */
+    $(document).ready(loadLateastRecruitments());
+    function loadLateastRecruitments() {
+        $.ajax({
+            url:"/pfo/recruitment/queryRecruitmentRecently",
+            contentType:"application/json;charset=utf-8",
+            dataType:"json",
+            success: function (data) {
+                console.log(data);
+                var recruitment =  data.data;
+                var html;
+                $.each(recruitment , function (i, value) {
+                    html += '<a class="p-reco-item" href="recruit_detail.html?recruitmentId=' + value.recruitmentId +'" title="查看招聘详情">' +
+                        '       <div class="p-reco-pic">' +
+                        '           <img src="' + value.recruitmentImg +
+                        '               " alt="招聘信息图片">' +
+                        '       </div>' +
+                        '       <div class="p-reco-title">'+ value.recruitmentTitle +'</div>'
+                        '   </a>';
+                });
+
+                $("#latest-list").append(html);
+
+            }
+        })
+    }
+
+    var companyList;
+
+    <!-- 查看公司列表 -->
+    $(document).ready(loadCompanyList());
+    function loadCompanyList() {
+        $.get({
+            url: "/pfo/company/queryCompany",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                companyList = data.data;
+                var html = '';
+                $.each(companyList, function (i, val) {
+                    html += '<li class="item clearfix">' +
+                        '       <div class="spr-logo">' +
+                        '           <a href="../company/company_website.html?companyId=' +val.companyId+ '" title="点击访问'+ val.companyName +'主页">' +
+                        '               <img src="' + val.logo +'">' +
+                        '           </a>' +
+                        '       </div>' +
+                        '       <div class="discuss-info">' +
+                        '           <p>n条招聘信息</p>' +
+                        '           <p>n套题</p>' +
+                        '           <p>n人报名</p>' +
+                        '       </div>' +
+                        '    </li>';
+                })
+
+                $('.discuss-box').append(html);
+            }
+        })
+    }
+
+    /**
+     * 地点条件筛选单击事件
+     */
+    function selectByAddress(obj) {
+        var $ele = $(obj);
+        var address = $ele.text().trim(); // 选择当前的地点
+        // alert(address);
+        var html = '';
+        // 遍历地点
+        $.each(companyList, function (i, val) {
+            if ('全国' != address ) {
+                if (address == val.companyAddress) {
+                    html += '<li class="item clearfix">' +
+                        '       <div class="spr-logo">' +
+                        '           <a href="../company/company_website.html?recruitmentId=' +val.companyId+ '" title="点击访问'+ val.companyName +'主页">' +
+                        '               <img src="' + val.logo +'">' +
+                        '           </a>' +
+                        '       </div>' +
+                        '       <div class="discuss-info">' +
+                        '           <p>n条招聘信息</p>' +
+                        '           <p>n套题</p>' +
+                        '           <p>n人报名</p>' +
+                        '       </div>' +
+                        '    </li>';
+                }
+            } else if (address != val.companyAddress) {
+                html += '<li class="item clearfix">' +
+                    '       <div class="spr-logo">' +
+                    '           <a href="../company/company_website.html?recruitmentId=' + val.companyId + '" title="点击访问' + val.companyName + '主页">' +
+                    '               <img src="' + val.logo + '">' +
+                    '           </a>' +
+                    '       </div>' +
+                    '       <div class="discuss-info">' +
+                    '           <p>n条招聘信息</p>' +
+                    '           <p>n套题</p>' +
+                    '           <p>n人报名</p>' +
+                    '       </div>' +
+                    '    </li>';
+            } else {
+                html += '<li class="item clearfix">' +
+                    '       <div class="spr-logo">' +
+                    '           <a href="../company/company_website.html?recruitmentId=' + val.companyId + '" title="点击访问' + val.companyName + '主页">' +
+                    '               <img src="' + val.logo + '">' +
+                    '           </a>' +
+                    '       </div>' +
+                    '       <div class="discuss-info">' +
+                    '           <p>n条招聘信息</p>' +
+                    '           <p>n套题</p>' +
+                    '           <p>n人报名</p>' +
+                    '       </div>' +
+                    '    </li>';
+            }
+
+        })
+
+        $('.discuss-box').html(html);
+    }
+</script>
+</html>

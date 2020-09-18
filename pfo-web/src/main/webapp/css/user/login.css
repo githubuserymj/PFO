@@ -1,0 +1,39 @@
+body{
+    background-color:#eeeeee;
+}
+
+#login-form{
+    background-color: white;
+    padding: 1em 2em;
+    margin-bottom: 100px;
+}
+
+#login-title{
+    text-align: center;
+    font-size: 30px;
+}
+
+#btn-login{
+    width: 100%;
+}
+
+#input-user-info,#input-pwd-info{
+    color: red;
+    font-size: 10px;
+}
+
+.img-circle{
+    width:50px ;
+    height:50px;
+    margin-left: 5px;
+    margin-right: 5px;
+
+}
+
+.warinfo{
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 0;
+}
+
+

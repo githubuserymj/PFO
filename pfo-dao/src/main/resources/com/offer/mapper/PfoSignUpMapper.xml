@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoSignUpMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoSignUp" >
+    <id column="sign_up_id" property="signUpId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="signUpRslMap1" type="com.offer.pojo.PfoSignUp" >
+    <id column="sign_up_id" property="signUpId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <!-- 关联招聘信息 -->
+    <association property="recruitment" javaType="com.offer.pojo.PfoRecruitment">
+      <id column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+      <result column="company_id" property="companyId" jdbcType="BIGINT" />
+      <result column="recruitment_title" property="recruitmentTitle" jdbcType="VARCHAR" />
+      <result column="position" property="position" jdbcType="VARCHAR" />
+      <result column="recruitment_img" property="recruitmentImg" jdbcType="VARCHAR" />
+      <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+      <association property="pfoCompany" javaType="com.offer.pojo.PfoCompany">
+        <id column="company_id" property="companyId" jdbcType="BIGINT" />
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        <result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+        <result column="company_url" property="companyUrl" jdbcType="VARCHAR" />
+        <result column="logo" property="logo" jdbcType="VARCHAR" />
+      </association>
+    </association>
+    <!-- 关联用户信息 -->
+    <association property="user" javaType="com.offer.pojo.PfoUser">
+      <id column="user_id" property="userId" jdbcType="BIGINT" />
+      <result column="user_name" property="userName" jdbcType="VARCHAR" />
+      <result column="gender" property="gender" jdbcType="CHAR" />
+      <result column="user_photo" property="userPhoto" jdbcType="VARCHAR" />
+      <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+      <result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    sign_up_id, user_id, recruitment_id, deliver_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoSignUpExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_sign_up
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pfo_sign_up
+    where sign_up_id = #{signUpId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_sign_up
+    where sign_up_id = #{signUpId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoSignUpExample" >
+    delete from pfo_sign_up
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoSignUp" >
+    insert into pfo_sign_up (sign_up_id, user_id, recruitment_id, 
+      deliver_time)
+    values (#{signUpId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{recruitmentId,jdbcType=BIGINT}, 
+      #{deliverTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoSignUp" >
+    insert into pfo_sign_up
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="signUpId != null" >
+        sign_up_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="recruitmentId != null" >
+        recruitment_id,
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="signUpId != null" >
+        #{signUpId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="recruitmentId != null" >
+        #{recruitmentId,jdbcType=BIGINT},
+      </if>
+      <if test="deliverTime != null" >
+        #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoSignUpExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_sign_up
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_sign_up
+    <set >
+      <if test="record.signUpId != null" >
+        sign_up_id = #{record.signUpId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.recruitmentId != null" >
+        recruitment_id = #{record.recruitmentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.deliverTime != null" >
+        deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_sign_up
+    set sign_up_id = #{record.signUpId,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      recruitment_id = #{record.recruitmentId,jdbcType=BIGINT},
+      deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoSignUp" >
+    update pfo_sign_up
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="recruitmentId != null" >
+        recruitment_id = #{recruitmentId,jdbcType=BIGINT},
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where sign_up_id = #{signUpId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoSignUp" >
+    update pfo_sign_up
+    set user_id = #{userId,jdbcType=BIGINT},
+      recruitment_id = #{recruitmentId,jdbcType=BIGINT},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP}
+    where sign_up_id = #{signUpId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 获取所有报名信息 -->
+  <select id="queryAllSignUp" resultMap="BaseResultMap">
+    select * from pfo_sign_up
+  </select>
+
+  <!-- 任意条件查询报名信息  单表 -->
+  <select id="querySignUp" parameterType="com.offer.pojo.PfoSignUp" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pfo_sign_up
+    <where>
+      <if test="signUpId != null">
+        sign_up_id = #{signUpId, jdbcType=BIGINT}
+      </if>
+      <if test="userId != null">
+        AND user_id = #{userId, jdbcType=BIGINT}
+      </if>
+      <if test="recruitmentId != null" >
+        AND recruitment_id = #{recruitmentId,jdbcType=BIGINT}
+      </if>
+      <if test="deliverTime != null" >
+        AND deliver_time = #{deliverTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+
+  <!-- 分页  单表 -->
+  <select id="querySignUpWithPage" resultMap="BaseResultMap">
+    select
+    s.sign_up_id, s.user_id, s.recruitment_id, s.deliver_time
+    from
+    pfo_sign_up s
+    <where>
+    <if test="signUp.signUpId != null and signUp.signUpId != ''">
+      and s.sign_up_id = #{signUp.signUpId}
+    </if>
+    <if test="signUp.userId != null and signUp.userId != ''">
+      and s.user_id = #{signUp.userId}
+    </if>
+    <if test="signUp.recruitmentId != null and signUp.recruitmentId != ''">
+      and s.recruitment_id = #{signUp.recruitmentId}
+    </if>
+    <if test="signUp.deliverTime != null and signUp.deliverTime != ''">
+      and s.deliver_time = #{signUp.deliverTime}
+    </if>
+    </where>
+  </select>
+
+  <!-- 多条件分页查询(多表关联) -->
+  <select id="queryAllSignUpWithPage" resultMap="signUpRslMap1">
+    select
+    s.sign_up_id, s.user_id, s.recruitment_id, s.deliver_time,
+    u.user_name, u.gender, u.user_email, u.user_phone,
+    r.recruitment_content, r.position, r.recruitment_img
+    from
+    pfo_sign_up s, pfo_user u, pfo_recruitment r
+    where
+    s.user_id = u.user_id
+    and
+    s.recruitment_id = r.recruitment_id
+    <if test="signUp.signUpId != null and signUp.signUp != ''">
+      and s.sign_up_id = #{signUp.signUpId}
+    </if>
+    <if test="signUp.userId != null and signUp.userId != ''">
+      and s.user_id = #{signUp.userId}
+    </if>
+    <if test="signUp.recruitmentId != null and signUp.recruitmentId != ''">
+      and s.recruitment_id = #{signUp.recruitmentId}
+    </if>
+    <if test="signUp.deliverTime != null and signUp.deliverTime != ''">
+      and s.deliver_time = #{signUp.deliverTime}
+    </if>
+    <if test="orderMap != null and orderMap.size != 0">
+      order by
+      <foreach item="value" index="key" collection="orderMap.entrySet()" separator=",">
+        ${key} ${value}
+      </foreach>
+    </if>
+  </select>
+
+  <!-- 查看招聘信息的报名列表 详情页跳转至报名表页面  -->
+  <select id="queryByRecruitmentIdWithPage" resultMap="signUpRslMap1">
+    select
+    s.sign_up_id, s.user_id, s.recruitment_id, s.deliver_time,
+    u.user_name, u.gender, u.user_photo, u.user_email, u.user_phone,
+    r.position, r.recruitment_title, r.recruitment_img, r.company_id, r.deliver_time,
+    c.company_id, c.company_name, c.company_address, c.company_url, c.logo
+    from
+    pfo_sign_up s, pfo_user u, pfo_recruitment r, pfo_company c
+    where
+    s.user_id = u.user_id
+    and
+    s.recruitment_id = r.recruitment_id
+    and
+    r.company_id = c.company_id
+    and
+    r.recruitment_id = #{recruitmentId}
+    <if test="signUp.signUpId != null and signUp.signUpId != ''">
+      and s.sign_up = #{signUp.signUpId}
+    </if>
+    <if test="signUp.recruitmentId != null and signUp.recruitmentId != ''">
+      and s.recruitment_id = #{signUp.recruitmentId}
+    </if>
+    <if test="signUp.deliverTime != null and signUp.deliverTime != ''">
+      and s.deliver_time = #{signUp.deliverTime}
+    </if>
+    <if test="orderMap != null and orderMap.size != 0">
+      order by
+      <foreach item="value" index="key" collection="orderMap.entrySet()" separator=",">
+        ${key} ${value}
+      </foreach>
+    </if>
+  </select>
+
+  <!-- 根据用户获取报名信息，含分页 -->
+  <select id="queryByUserIdWithPage" resultMap="signUpRslMap1">
+    select
+    s.sign_up_id, s.user_id, s.recruitment_id, s.deliver_time,
+    u.user_name, u.gender, u.user_email, u.user_phone,
+    r.position, r.recruitment_title, r.recruitment_img, r.company_id, r.deliver_time,
+    c.company_name, c.logo, c.company_address, c.company_url
+    from
+    pfo_sign_up s, pfo_user u, pfo_recruitment r, pfo_company c
+    where
+    s.user_id = u.user_id
+    and
+    s.recruitment_id = r.recruitment_id
+    and
+    r.company_id = c.company_id
+    and
+    s.user_id = #{userId}
+    <if test="signUp.signUpId != null and signUp.signUpId != ''">
+      and s.sign_up = #{signUp.signUpId}
+    </if>
+    <if test="signUp.recruitmentId != null and signUp.recruitmentId != ''">
+      and s.recruitment_id = #{signUp.recruitmentId}
+    </if>
+    <if test="signUp.deliverTime != null and signUp.deliverTime != ''">
+      and s.deliver_time = #{signUp.deliverTime}
+    </if>
+    <if test="orderMap != null and orderMap.size != 0">
+      order by
+      <foreach item="value" index="key" collection="orderMap.entrySet()" separator=",">
+        ${key} ${value}
+      </foreach>
+    </if>
+  </select>
+
+  <!-- 获取招聘信息的报名人数  人数多到少排序 -->
+  <select id="queryByRecruitmentIdWithCount" resultType="java.util.HashMap">
+    select
+      s.recruitment_id, count(s.sign_up_id) signUpCount
+	from
+      pfo_sign_up s
+	GROUP BY
+      s.recruitment_id
+	ORDER BY
+      signUpCount desc
+    limit 10
+  </select>
+
+</mapper>

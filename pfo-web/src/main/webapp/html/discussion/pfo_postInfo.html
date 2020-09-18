@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>讨论区-帖子详情</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/wangEditor.css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="/pfo/css/discussion/pfo_discuss.css">
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <link rel="stylesheet" href="/pfo/css/global.css" type="text/css">
+
+    <script src="/pfo/js/wangEditor.js"></script>
+</head>
+<body style="background-color:#eeebea;">
+
+<script type="text/javascript">
+    $(function(){
+        $(".reportMd").click(function(){
+            $('#myModal').modal('show') //显示模态框
+        })
+
+        $("#sss-rep").click(function () {
+            $.ajax({
+                async:false,
+                url:"/pfo/feedback/addFeedback",
+                dataType:"json",
+                data:"postId="+getQueryString("postId")+"&userId="+getCookie("userId")+"&feedbackMessage="+$("#txtMessage").val(),
+                success:function (data) {
+                    if (data.code==0){
+                        alert("ha")
+                        $.ajax({
+                            url:"/pfo/message/addMessage",
+                            dataType:"json",
+                            data:"userId="+getCookie("userId")+"&targetUserId=60&messageText=新的举报信息&messageType=1",
+                            success:function (data2) {
+                                //alert(data2.code)
+                                if (data2.code==0){
+                                    alert("已发送至管理员!")
+                                }
+                            }
+                        })
+                        //$('#myModal').modal('show')
+                        window.open("post_show.html?topicId=0")
+                        window.location.href="about:blank";
+                        window.close();
+                        //alert("ahah")
+                    }
+                }
+            })
+        })
+    })
+
+</script>
+<!--将数据库中对应字符解码为+&%-->
+<script>
+    function reupdate(str){
+        str = str.replace(/%2B/g,"+")
+        str = str.replace(/%26/g,"&")
+        str = str.replace(/%25/g,"%")
+        return str
+    }
+</script>
+<script>
+    $(function(){
+        showAllData()
+        addViewCount()
+    })
+    //公共方法
+    function getCookie(cname) {
+        //读取cookies
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
+</script>
+<script>
+    var userid=''//当前帖子的作者ID
+    var userdata=''
+    <!-- 将地址栏参数分开,根据参数名获取参数-->
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    //根据地址栏的用户id显示帖子信息及用户信息
+    if (getQueryString("postId")!=null) {
+        //接受URL地址参数
+        function showAllData() {
+            // alert(getQueryString("postId"))
+            $.get({
+                async:false,
+                url: "/pfo/post/queryPostByPostId",
+                dataType: "json",
+                data: "postId=" + getQueryString("postId"),
+                success: function (data) {
+                    findUserId(data)
+                    showPosts(data)
+                    showUser(userdata)
+                }
+            })
+            //根据用户id显示用户信息
+
+            function findUserId(data){
+                $.get({
+                    async:false,
+                    url: "/pfo/user/queryUsers",
+                    dataType: "json",
+                    data: "userId=" + data.data[0].userId,
+                    success: function (data) {
+                        //showUser(data)
+                        userdata=data
+                        userid=data.data[0].userId
+                        //alert(userid)
+                        favor(data)
+                    }
+                })
+            }
+        }
+    }
+</script>
+<script>
+    <!--显示用户头像及姓名-->
+    function showUser(data) {
+        $(".lala").children(0).attr("src",data.data[0].userPhoto)
+        $("#haha").html(data.data[0].userName)
+    }
+</script>
+<!-- 浏览量+1-->
+<script>
+    function addViewCount() {
+        $.ajax({
+            url:"/pfo/post/updateViewCountByPostId",
+            dataType:"json",
+            data:"postId="+ getQueryString("postId"),
+            success:function (data) {
+                if (data.code==0){
+                    //history.go(0)
+                }
+            }
+        })
+    }
+</script>
+<!-- 收藏数-->
+<script>
+    <!-- 收藏数-->
+    function favor(){
+        $.ajax({
+            url:"/pfo/favorite/queryFavorite",
+            dataType:"json",
+            data:"postId="+ getQueryString("postId"),
+            success:function (data) {
+                if (data.code==0){
+                    if (data.data.length != null) {
+                        $("#save").html(data.data.length)
+                    }else{
+                        $("#save").html(0)
+                    }
+                    //history.go(0)
+                }
+            }
+        })
+    }
+
+</script>
+<!-- 收藏功能-->
+<script>
+
+    function addSave() {
+        $.ajax({
+            url:"/pfo/favorite/addFavorite",
+            dataType:"json",
+            data:"postId="+ getQueryString("postId")+"&userId="+getCookie('userId'),
+            success:function (data) {
+                if (data.code==0){
+                    //alert("收藏成功")
+                    $("#StatusInfo").text("收藏成功");
+                    $("#Status").show();
+                    setTimeout(function () {
+                        $("#Status").hide()
+                    },1000)
+                    favor()
+                    // $("#save").text(parseInt($("#save").text())+1)
+                }
+            }
+        })
+    }
+</script>
+<!-- 点赞功能-->
+<script>
+    function addFavor() {
+        // data-id=0表示未点赞,执行点赞操作,然后将data-id=1,表示已经点赞
+        if ($("#good").attr("data-id")==0){
+            $("#good").text(parseInt($("#good").text())+1)
+            $("#dFavor").attr("src","/pfo/img/logo/notgood.svg")
+            $.ajax({
+                url:"/pfo/post/updateFavorCountByPostIdUp",
+                dataType:"json",
+                data:"postId="+ getQueryString("postId"),
+                success:function (data) {
+                    if (data.code == 0) {
+                        //alert("点赞")
+                    }
+                }
+            })
+            $("#good").attr("data-id",1)
+        } else{
+            $("#good").text(parseInt($("#good").text())-1)
+            $("#dFavor").attr("src","/pfo/img/logo/good.svg")
+            $.ajax({
+                url:"/pfo/post/updateFavorCountByPostIdDown",
+                dataType:"json",
+                data:"postId="+ getQueryString("postId"),
+                success:function (data) {
+                    if (data.code == 0) {
+                        //alert("取消")
+                    }
+                }
+            })
+            $("#good").attr("data-id",0)
+        }
+
+    }
+</script>
+<!--帖子信息头部-->
+<script>
+    function showPosts(data) {
+        var html="<a href=\"/pfo/html/user/user.html?userId="
+            html+=userid +
+            "\" class=\"lala js-nc-card\"><img\n" +
+            "                            src=\""+
+            "\"\n" +
+            "                            alt=\"头像\"></a>"+
+            "                    <div class=\"post-detail\">\n" +
+            "                        <span>\n" +
+            "                        <a id=\"haha\" href='/pfo/html/user/user.html?userId="+userid+"' class=\"js-nc-card\n" +
+            "                        \" title=\"用户名\">" +
+            "</a>\n" +
+            "                        </span>\n" +
+            "                        <div class=\"post-legend\">\n" +
+            "                            <span class=\"post-time\">\n" +
+
+            "                            发布于  "
+        html+=data.data[0].deliverTime+
+            "\n" +
+            "                            </span>\n" +
+            "                            <span href=\"javascript:void(0);\" class=\"tag-label app-item-tag js-app-item\"\n" +
+            "                                  data-url=\"\">app内打开</span>\n" +
+            "                                <div class=\"feed-legend\">\n" +
+            "                                    <span style=\"cursor:pointer;\" class=\"js-post-like nc-req-auth\" onclick='addFavor()'><img id='dFavor' style='height: 16px;width: 16px;margin-right: 10px;margin-top: -5px;' src='/pfo/img/logo/good.svg' />赞 <span data-id='0' id=\"good\">"
+         html+=data.data[0].favorCount +
+            "</span></span>\n" +
+            "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+            "                                    <span style=\"cursor:pointer;\" class=\"js-post-follow nc-req-auth\" onclick='addSave()'>收藏 <span id=\"save\">" +
+
+            "</span></span>\n" +
+            "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+            "                                    <span style=\"cursor:pointer;\" class=\"nc-req-auth js-post-replay\">回复<span\n" +
+            "                                            class=\"feed-legend-num\">"
+        html+=nums +
+            "</span></span>\n" +
+            "                                    <span class=\"feed-legend-pipe\">|</span>\n" +
+            "                                    <span style=\"cursor:pointer; margin-right: 20px;\" <!--onclick='addViewCount()-->'>浏览<span class=\"\">"
+        html+=data.data[0].viewCount +
+            "</span></span>\n" +
+            "                                </div>\n" +
+            "                        </div>\n" +
+            "                    </div>"
+        $(".discuss-author").html(html)
+        $(".post-context").html(reupdate(data.data[0].postBody))
+        $(".discuss-title").html(reupdate(data.data[0].postTitle))
+    }
+</script>
+<div id="discussion-module" class="pfo-main">
+    <!--内容主体-->
+    <div class="pfo-content" style="margin-top: 0px">
+        <div class="module-box">
+            <div class="discuss-topic-head">
+                <h4 style="width: 93%;" class="discuss-title">
+                </h4>
+                <img class="reportMd" src="/pfo/img/logo/report.svg" style="height: 30px;width: 30px;float: right;margin: 20px 20px 0px 0px; cursor: pointer" >
+                <!--帖子头部作者信息-->
+                <div class="discuss-author clearfix">
+
+                </div>
+                <!--帖子主体内容-->
+                <div class="post-context">
+
+                </div>
+
+            </div>
+        </div>
+        <div>
+
+        </div>
+        <!--回帖展示模块-->
+        <div class="post-back">
+
+
+        </div>
+        <!--回帖功能-->
+        <div class="replyBack" hidden>
+            <div id="editor"></div>
+            <div id="publish" class="" style="margin: 20px auto"><button id="replyBac" class="btn container btn-primary" style="width: 100%">提交</button></div>
+        </div>
+    </div>
+    <div class="pfo-bar">
+        <!--右侧边话题栏-->
+        <div class="module-box">
+            <div class="module-head clearfix" style="margin-top: 0px">
+                <h4>热门话题</h4>
+                <a href="javascript:void(0);" class="mod-head-link">查看全部></a>
+            </div>
+            <div class="module-body">
+                <div class="tags-box">
+
+                </div>
+            </div>
+        </div>
+        <!--右侧边热帖栏-->
+        <div class="module-box">
+            <div class="module-head">
+                <h4>近期热帖</h4>
+            </div>
+            <div class="module-body">
+                <ul class="list-module">
+
+                </ul>
+                <script>
+                    $.get({
+                        async:false,
+                        url:"/pfo/post/queryByRequiredOrder",
+                        dataType:"json",
+                        data:"order=2",
+                        success:function (data) {
+                            showHotPosts(data)
+                        }
+                    })
+                    function showHotPosts(data) {
+                        var html = ''
+                        for (var j = 0; j < 10; j++) {
+                            html+="<li style=\"border-bottom: 1px #e0e0e0 solid;\n" +
+                                "    border-radius: 3px; margin-bottom: 10px;\">\n" +
+                                "                        <div class=\"list-title\">\n" +
+                                "                            <a class=\"list-name\" href=\"/pfo/html/discussion/pfo_postInfo.html?postId="
+                            html+=data.data[j].postId+
+                                "\">"
+
+                            html+=reupdate(data.data[j].postTitle)
+                            html+="</a>\n" +
+                                "                        </div>\n" +
+                                "                        <div class=\"list-legend\">\n" +
+                                "<span class=\"comm-num\">回复<a href=\"javascript:void(0);\">"
+
+                            html+=data.data[j].commentCount
+                            html+="</a>\n" +
+                                "</span>\n" +
+                                "                            发表于"
+
+                            html+=data.data[j].deliverTime
+                            html+=" </div>\n" +
+                                "                    </li>"
+                        }
+                        $(".list-module").html(html)
+                    }
+                </script>
+            </div>
+        </div>
+        <!--右侧边广告栏-->
+        <div class="module-box side-topic-box" id="jsSideTopicList">
+            <div class="module-head">
+                <div class="module-head-oprt">
+                    <span class="mho-page topic-slide-progress"></span>
+                    <!-- 需要提供上一页，下一页方法-->
+                    <a href="javascript:void(0);" class="mho-pre js-topic-mho-pre" title="下一页"
+                       style="display: none;"></a>
+                    <a href="javascript:void(0);" class="mho-next js-topic-mho-next" title="上一页"
+                       style="display: none;"></a>
+                </div>
+                <h4>热门推荐</h4>
+            </div>
+            <div class="module-body">
+                <div class="topic-slide-box" style="height: auto;">
+                    <ul class="side-topic-list">
+                        <li>
+                            <a href="/jump?type=ad&amp;source=3&amp;url=https%3A%2F%2Fwww.nowcoder.com%2Fcourses%2Fsemester%2F2018algorithm-higher">
+                                <img style="border: 2px solid #e0e0e0;" class="hot-img" src="https://uploadfiles.nowcoder.com/images/20190423/9398821_1555989398128_122C011886622D6C1B0D1B20377319E3"
+                                     alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/jump?type=ad&amp;source=3&amp;url=https%3A%2F%2Fwww.nowcoder.com%2Fcourses%2Fsemester%2Fsenior">
+                                <img style="border: 2px solid #e0e0e0;"  class="hot-img" src="https://uploadfiles.nowcoder.com/images/20190423/9398821_1555989407954_139ACD96C197A28067613BF15502BEAE"
+                                     alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/jump?type=ad&amp;source=3&amp;url=https%3A%2F%2Fwww.nowcoder.com%2Fcourses%2Fsemester%2Felementary">
+                                <img style="border: 2px solid #e0e0e0;"  class="hot-img" src="https://uploadfiles.nowcoder.com/images/20190422/9398821_1555915446029_F1C79D11C516B24C191471E50D9A35BD"
+                                     alt="">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--举报弹出框-->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="model-report">举报</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <br/>
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-offset-4 col-sm-4 control-label" style="font-weight: 600;">举报类型</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="type-t form-control" id="name" placeholder="请输入举报类型">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-offset-4 col-sm-4 control-label">举报说明*</label>
+                        <div class="col-sm-12">
+                            <textarea id="txtMessage" style ="width: 100%; min-height: 120px;" type="text" class="form-control" placeholder="请输入举报说明"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-5">
+                            <button id="sss-rep" class="">举报</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+</body>
+<!--富文本编辑器回复事件-->
+<script>
+
+    $("#replyBac").click(function () {
+        var replyC = editor.txt.html()
+        if (replyC!=null && replyC!=""){
+            replyC = replyC.replace(/\+/g, "%2B");
+            replyC = replyC.replace(/&/g, "%26");
+            replyC = replyC.replace(/%/g, "%25");
+        }
+        $.post({
+            async:false,
+            url:"/pfo/comment/addComment",
+            dataType:"json",
+            data:"userId="+getCookie("userId")+"&postId="+getQueryString("postId")+"&commentContent="+replyC,
+            success:function (data) {
+                if (data.code==0){
+                    //alert("评论成功")
+                    $("#StatusInfo").text("评论成功");
+                    $("#Status").show();
+                    setTimeout(function () {
+                        $("#Status").hide()
+                    },1000)
+                    //添加评论数
+                    $.ajax({
+                        async:false,
+                        url:"/pfo/post/updateCommentCountByPostId",
+                        dataType:"json",
+                        data:"postId="+getQueryString("postId"),
+                        success:function (data) {
+                            //alert("########回复+1")
+                        }
+                    })
+                    history.go(0)
+                }
+            }
+        })
+    })
+</script>
+<!--回复框及回复事件-->
+<script>
+    var nums=0
+    var reply_id=""
+    <!-- 回复框的显示与隐藏-->
+    //动态绑定click事件
+    $("body").on("click",".reply",function f() {
+        // alert("userId:"+$(this).attr("data-id")+"commentId:"+$(this).attr("data-cmt-id"))
+        reply_id=$(this).attr("data-cmt-id")
+        $(".reply-box").remove()
+        // $(".reply-box").remove()
+        $(this).parent().parent().parent().append("            <div class=\"reply-box js-sub-cmt-list\" style=\"\">\n" +
+            "                                    <div id=\"jsCpn_183_component_13\" class=\" \">\n" +
+            "                                        <div class=\"js-tips\" style=\"display: none;\"></div>\n" +
+            "                                        <div class=\"js-content\" style=\"\"></div>\n" +
+            "                                        <div class=\"js-pager-box\" style=\"display:none;\">\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"js-reply-box\" style=\"\">\n" +
+            "                                            <div id=\"jsCpn_184_component_10\" class=\" reply-editbox clearfix\"\n" +
+            "                                                 style=\"margin-top:10px;\">\n" +
+            "                                                <div class=\"reply-write\"><textarea placeholder=\"回复@"+$(this).attr("data-title")+"\"\n" +
+            "                                                                                   class=\"reply-input reply-input-textarea js-ipt\"\n" +
+            "                                                                                   style=\"resize: none; height: 32px; width: 541px;\"></textarea>\n" +
+            "                                                </div>\n" +
+            "                                                <div class=\"reply-action clearfix\"><a href=\"javascript:void(0);\"\n" +
+            "                                                                                      class=\"icon-emotion js-reply-emoji\"></a><a\n" +
+            "                                                        class=\"commentReply btn btn-primary reply-btn js-reply\"\n" +
+            "                                                        href=\"javascript:void(0);\">回复</a></div>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                    </div>\n" +
+            "                                </div>")
+    })
+    //    开始评论,触发评论事件(userId,commentId(replyId),commentContent)
+
+    $("body").on("click",".commentReply",function () {
+        // alert($(".reply-write").children(0).val())
+        $.get({
+            async:false,
+            url:"/pfo/comment/addComment",
+            dataType:"json",
+            data:"userId="+getCookie("userId")+"&replyId="+reply_id+"&commentContent="+$(".reply-write").children(0).val(),
+            success:function (data) {
+                if (data.code==0){
+                    //alert("评论成功")
+                    $("#StatusInfo").text("评论成功");
+                    $("#Status").show();
+                    setTimeout(function () {
+                        $("#Status").hide()
+                    },1000)
+                    $.ajax({
+                        async:false,
+                        url:"/pfo/post/updateCommentCountByPostId",
+                        dataType:"json",
+                        data:"postId="+getQueryString("postId"),
+                        success:function (data) {
+                            //alert("########回复+1")
+                        }
+                    })
+                    history.go(0)
+                }
+            }
+        })
+    })
+
+    $("body").on("click","#reply",function () {
+        $(".replyBack").removeAttr("hidden")
+        $(".w-e-text").focus()
+    })
+</script>
+<!--显示帖子标签-->
+<script >
+    $.get({
+        url:"/pfo/post/queryAllTagsWithPosts",
+        dataType:"json",
+        success:function (data) {
+            showTags(data)
+        }
+    })
+
+    function showTags(data) {
+        var html =""
+        for (var i = 0;i<data.data.length;i++){
+            html += "<a class=\"tag-label\" href=\"/pfo/html/discussion/post_show.html?tagId="+data.data[i].tagId+"\">"
+            html += data.data[i].tagName
+            html += "</a>"
+        }
+        $('.tags-box').html(html)
+    }
+
+
+
+</script>
+
+<!-- 添加回复数-->
+<!--显示一级评论,即帖子的评论-->
+<script>
+    $.get({
+        async:false,
+        url:"/pfo/comment/queryCommentFirstLevel",
+        dataType:"json",
+        data:"postId="+getQueryString("postId"),
+        success:function (data) {
+            showFirstComments(data)
+        }
+    })
+    function showFirstComments(data) {
+        var html="<div style='background: powderblue' class=\"module-head clearfix\">\n" +
+            "                        \n" +
+            "                        <h4 id=\"numOfComments\"></h4>\n" +
+            "                        <a id=\"reply\" style='margin-top: -10px;' class=\"btn btn-primary float-right nc-req-auth js-post-replay\" href=\"javascript:void(0);\"><i\n" +
+            "                                class=\"ico-submit\"></i>回帖</a>\n" +
+            "                    </div>"
+        $(".post-back").html(html)
+        for (var i = 0; i < data.data.length; i++) {
+            nums++
+            var name=""
+            var userlogo=""
+            var uuId=""
+            $.get({
+                async:false,
+                url: "/pfo/user/queryUsers",
+                dataType: "json",
+                data: "userId=" + data.data[i].userId,
+                success: function (xx) {
+                    uuId=xx.data[0].userId
+                    name=xx.data[0].userName
+                    userlogo=xx.data[0].userPhoto
+                }
+            })
+            html+= "<div class=\"answer-list-item clearfix\"\n" +
+                "                         data-mark-info=\"作者："
+            html+=name+"\">\n" +
+                "                        <div style='background: beige' class=\"answer-content clearfix\"><a class=\"answer-head\" \n" +
+                "                                                                href='/pfo/html/user/user.html?userId="+uuId+"'\n" +
+                "                                                                data-card-index=\"24\"><img style=\"width: 100%;height: 100%;\" alt=\"头像\"\n" +
+                "                                                                                          src=\""
+            html+=userlogo+"\"></a>\n" +
+                "                            <div class=\"answer-detail\"><p><a href='/pfo/html/user/user.html?userId="+uuId+"'\n" +
+                "                                                             data-card-uid=\"840135486\"\n" +
+                "                                                             class=\"js-copy-tip answer-name\"\n" +
+                "                                                             data-card-index=\"25\">"
+            html+=name +
+                "</a> <a\n" +
+                "                                    href=\"/user/authentication\" class=\"\" data-title=\"\"\n" +
+                "                                    data-tips-index=\"8\"><img class=\"identity-icon\" data-identity=\"1\"\n" +
+                "                                                             src=\"//static.nowcoder.com/nc/image/identity/5.png\"\n" +
+                "                                                             data-title=\"\" data-tips-index=\"9\"></a> <a\n" +
+                "                                    href=\"javascript:void(0);\"><img class=\"identity-icon\"\n" +
+                "                                                                    src=\"//uploadfiles.nowcoder.com/images/20190708/56_1562592127316_5889949873E3E23C8A0EC0CC8F6042A8\"></a><span\n" +
+                "                                    class=\"post-floor\">"+(i+1)+"#</span></p>\n" +
+                "                                <div class=\"answer-brief nc-post-content\">"
+            html+= data.data[i].commentContent+
+                "</div>\n" +
+                "                                <div class=\"answer-legend js-action\"><span\n" +
+                "                                        class=\"answer-time\"> "
+            html+=data.data[i].deliverTime +
+                "</span><a href=\"javascript:void(0);\"\n" +
+                "                                                                                             class=\"reply js-cmt-action\"\n" +
+                "                                                                                             data-action=\"reply\" data-cmt-id='"
+            html+=data.data[i].commentId +
+                "' data-id='"
+            html+=data.data[i].userId +
+                "' data-title='"
+            html+=name +
+                "'>回复(0)</a><a\n" +
+                "                                        href=\"javascript:void(0);\" class=\"js-cmt-action\" data-action=\"like\">赞(0)</a><a\n" +
+                "                                        href=\"javascript:void(0);\" class=\"\" data-action=\"share\">分享</a><a\n" +
+                "                                        href=\"javascript:void(0);\" class=\"js-cmt-action click-del\" data-action=\"report\">举报</a>\n" +
+                "                                </div>\n"
+            html+="<div class='secondLevelComments' id='"
+            html+=data.data[i].commentId+"'><div>"
+            html+="<div class='thirdLevelComments' id='"
+            html+=data.data[i].commentId+"'><div>"+
+                "                            </div>\n" +
+                "                        </div>\n" +
+                "                    </div>"+
+                "                    </div>"+
+                "                    </div>"+
+                "                    </div>"
+        }
+        $(".post-back").html(html)
+    }
+
+
+
+
+</script>
+<!--显示二级评论-->
+<script>
+    $.get({
+        async:false,
+        url:"/pfo/comment/queryCommentSecondLevel",
+        dataType:"json",
+        data:"postId="+getQueryString("postId"),
+        success:function (data) {
+            showSecondComments(data)
+        }
+    })
+
+    function showSecondComments(data) {
+        var html=""
+        for (var i = 0; i < data.data.length; i++) {
+            html=""
+            nums++
+            var replyId=""
+            var name=""
+            var uuId=""
+            replyId=data.data[i].replyId
+            $.get({
+                async:false,
+                url: "/pfo/user/queryUsers",
+                dataType: "json",
+                data: "userId=" + data.data[i].userId,
+                success: function (xx) {
+                    name=xx.data[0].userName
+                    uuId=xx.data[0].userId                }
+            })
+            html+="<div class=\"reply-list-item js-copy-mark\">\n" +
+                "                <div class=\"reply-main clearfix\">\n" +
+                "                <div class=\"reply-person\" style=\"margin-right:5px;\"><a href='/pfo/html/user/user.html?userId="+uuId+"'\n" +
+                "            data-card-index=\"41\">"
+            html+=name +
+                "</a> <a\n" +
+                "            href=\"/user/authentication\" class=\"\"></a> <a href=\"javascript:void(0);\"></a>：\n" +
+                "                </div>\n" +
+                "                <div class=\"reply-content\">"
+            html+=data.data[i].commentContent +
+                "                </div>\n" +
+                "                </div>\n" +
+                "                <div class=\"answer-legend reply-info js-sub-action\"><span class=\"reply-time\">"
+            html+=data.data[i].deliverTime +
+                "</span><a\n" +
+                "            href=\"javascript:void(0);\" id='a"
+            html+=data.data[i].userId +
+                "' class=\"reply secondC reply-answer js-cmt-action\" data-action=\"reply\" data-cmt-id='"
+            html+=data.data[i].commentId +
+                "' data-id='"
+            html+=data.data[i].userId +
+                "' data-title='"
+            html+=name +
+                "'>回复</a><a\n" +
+                "            href=\"javascript:void(0);\" class=\"reply-like js-cmt-action\" data-action=\"like\">赞(0)</a><a\n" +
+                "            href=\"javascript:void(0);\" class=\"js-cmt-action click-del\" data-action=\"report\">举报</a></div>\n" +
+                "            <div class=\"js-sub-reply\" style=\"display: none;\"></div>\n" +
+                "                </div>"+
+                "  <div class=\"thirdLevelComments\" id=\""
+            html+=data.data[i].commentId +
+                "\">\n" +
+                "    </div>"
+
+            document.getElementById(replyId).innerHTML=document.getElementById(replyId).innerHTML+html
+        }
+    }
+</script>
+<!--显示三级评论-->
+<script>
+    $.get({
+        async:false,
+        url:"/pfo/comment/queryCommentThirdLevel",
+        dataType:"json",
+        data:"postId="+getQueryString("postId"),
+        success:function (data) {
+            showThirdComments(data)
+        }
+    })
+    function showThirdComments(data){
+        var html=""
+        for (var i = 0; i < data.data.length; i++) {
+            html=""
+            nums++
+            var replyId=""
+            var name=""
+            var secname=""
+            var ss=""
+            replyId=data.data[i].replyId
+            $.get({
+                async:false,
+                url: "/pfo/user/queryUsers",
+                dataType: "json",
+                data: "userId=" + data.data[i].userId,
+                success: function (xx) {
+                    name=xx.data[0].userName
+                }
+            })
+            $.get({
+                async:false,
+                url: "/pfo/comment/queryUserId",
+                dataType: "json",
+                data: "replyId=" + replyId,
+                success: function (dd) {
+                    secname=dd.data[0].userId
+                }
+            })
+            //用于获取id为x(a1\2\3)的标签的data-title(所回复的用户名)
+            var x="a"+secname
+            if(document.getElementById(x)){
+                ss=$("#"+x+"").attr("data-title")
+            }
+            html+="<div class=\"reply-list-item js-copy-mark\">\n" +
+                "                <div class=\"reply-main clearfix\">\n" +
+                "                <div class=\"reply-person\" style=\"margin-right:5px;\"><a href=\"javascript:void(0)\"\n" +
+                "        class=\"js-copy-tip\"\n"+
+                "            data-card-index=\"41\">"
+            html+=name +"</a>回复<a>"+ss+
+                " <a\n" +
+                "            href=\"javascript:void(0);\" class=\"\"></a> <a href=\"javascript:void(0);\"></a>：\n" +
+                "                </div>\n" +
+                "                <div class=\"reply-content\">"
+            html+=data.data[i].commentContent +
+                "                </div>\n" +
+                "                </div>\n" +
+                "                <div class=\"answer-legend reply-info js-sub-action\"><span class=\"reply-time\">"
+            html+=data.data[i].deliverTime +
+                "</span><a\n" +
+                "            href=\"javascript:void(0);\" class=\"reply reply-answer js-cmt-action\" data-action=\"reply\" data-cmt-id='"
+            html+=data.data[i].commentId +
+                "' data-id='"
+            html+=data.data[i].userId +
+                "' data-title='"
+            html+=name +
+                "'>回复</a><a\n" +
+                "            href=\"javascript:void(0);\" class=\"reply-like js-cmt-action\" data-action=\"like\">赞(0)</a><a\n" +
+                "            href=\"javascript:void(0);\" class=\"js-cmt-action click-del\" data-action=\"report\">举报</a></div>\n" +
+                "            <div class=\"js-sub-reply\" style=\"display: none;\"></div>\n" +
+                "                </div>"+
+                "  <div class=\"thirdLevelComments\" id=\""
+            html+=data.data[i].commentId +
+                "\">\n" +
+                "    </div>"
+
+            document.getElementById(replyId).innerHTML=document.getElementById(replyId).innerHTML+html
+        }
+    }
+</script>
+<!--计算回帖数-->
+<script>
+    $("#numOfComments").html("共"+nums+"条回帖")
+</script>
+<!--wangEditor富文本编辑器配置-->
+<script>
+    var E = window.wangEditor
+    var editor = new E('#editor')
+    //开启debug模式
+    editor.customConfig.debug = true;
+    // 关闭粘贴内容中的样式
+    editor.customConfig.pasteFilterStyle = false
+    // 忽略粘贴内容中的图片
+    editor.customConfig.pasteIgnoreImg = true
+    // 上传图片到服务器
+    editor.customConfig.uploadFileName = 'myFile'; //设置文件上传的参数名称
+    editor.customConfig.uploadImgServer = '/pfo/uploadImg'; //设置上传文件的服务器路径
+    editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024; // 将图片大小限制为 3M
+    //自定义上传图片事件
+    editor.customConfig.uploadImgHooks = {
+        customInsert:  function(insertImg, result, editor) {
+            // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+            // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+            // 插入图片到editor
+            editor.cmd.do('insertHtml', '<img alt="图片走丢了*_*" src="http://' + result.data[0] + '" style="max-width:100%;"/>')
+        },
+        before : function(xhr, editor, files) {
+            console.log("正在上传...请稍候");
+        },
+        success : function(xhr, editor, result) {
+            console.log("上传成功");
+        },
+        fail : function(xhr, editor, result) {
+            console.log("上传失败,原因是"+result);
+        },
+        error : function(xhr, editor) {
+            console.log("上传出错");
+        },
+        timeout : function(xhr, editor) {
+            console.log("上传超时");
+        }
+    }
+    editor.create()
+    editor.$textElem.attr('contenteditable', true)
+    //editor.txt.html()
+
+</script>
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+</html>
+
+

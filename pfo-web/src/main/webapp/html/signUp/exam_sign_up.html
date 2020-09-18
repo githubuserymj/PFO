@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>笔试报名</title>
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+    <link rel="stylesheet" href="/pfo/css/signUp/exam_sign_up.css">
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="nk-main profile-page clearfix">
+            <div class="profile-info-wrapper">
+                <div class="profile-info-main">
+                    <!-- 头像 -->
+                    <a class="head-pic  js-self-avatar ">
+                        <img src="..." alt="头像" class="img-circle">
+                    </a>
+                    <div class="profile-info-cont">
+                        <ul class="profile-cont clearfix">
+                            <!-- 姓名 -->
+                            <li class="user-name">姓名</li>
+                            <!-- 性别 -->
+                            <li class="user-gender">性别</li>
+                            <!-- 电话 -->
+                            <li class="user-phone">电话</li>
+                            <!-- 邮箱 -->
+                            <li class="user-email">@qq.com &gt; </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="profile-oprt-box">
+                    <a class="btn btn-primary btn-sm" href="/profile/953281390/basicinfo#menubox"><i class="icon-pencil"></i>编辑</a>
+                </div>
+            </div>
+            <div class="nk-bar">
+                <div class="module-box">
+                    <ul class="profile-menu">
+                        <li><a>首页</a></li>
+                        <li><a>真题练习</a></li>
+                        <li><a>专项练习</a></li>
+                        <li><a>题库</a></li>
+                        <li><a>消息</a></li>
+                        <li><a>f</a></li>
+                        <li><a>g</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 公司用户获取报名表  用户获取自己的报名表 -->
+            <div class="nk-content profile-project">
+                <div class="module-box">
+                    <div class="module-head clearfix">
+                        <h1>我的报名列表</h1>
+                    </div>
+                    <div class="module-body">
+                        <!--<table class="table table-bordered table-hover">-->
+                            <!--<caption class="caption">-->
+                                <!--<th>招聘标题</th>-->
+                                <!--<th>发布时间</th>-->
+                                <!--<th>招聘职位</th>-->
+                                <!--<th>操作</th>-->
+                            <!--</caption>-->
+                            <!--<tbody>-->
+                            <!--<tr>-->
+                                <!--<td>1</td>-->
+                                <!--<td>2</td>-->
+                                <!--<td>3</td>-->
+                                <!--<td>-->
+                                    <!--<span id="job-operator">-->
+                                        <!--<a id="selectById" class="btn-success btn-sm" href="recruit_detail.html?id=1">查看</a>-->
+                                        <!--<button class="btn-danger btn-sm" onclick="deleteById(recruitmentId)">删除</button>-->
+                                    <!--</span>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/pfo/js/common/footer.js"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css">
+<script>
+    var userId;
+    var html = '';
+
+    function signUpLoad(currPage) {
+        /**
+         * 获取所有用户的报名信息  关联用户表，招聘信息表  含分页
+         */
+        $.ajax({
+            url: "http://localhost:8080/pfo/signUp/queryAllSignUpWithPage",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    $.ajax({
+        url: "http://localhost:8080/pfo/user/getUser",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+            var value = data.data;
+            if (value) {
+                console.log("用户已登录")
+                // 3 是公司用户
+                if (data.userType == 3) {
+                    // 渲染用户信息
+                    renderUserInfo(value);
+                    // 公司用户只能查看公司的招聘信息关联的报名列表
+                    signUpLoad(1);
+                } else {
+                    console.log("普通用户")
+                    userId = value.userId;
+                    console.log(userId)
+                    if (userId) {
+                        // 渲染用户信息
+                        renderUserInfo(value);
+                        queryByUserIdWithPage(userId);
+                    } else {
+                        console.log("还没登录")
+                    }
+                }
+            } else {
+                console.log(data.message);
+                html += '<div>' +
+                    '       <span>' +
+                    '           <h2>空空如也，你还没有登录,去' +
+                    '                <a href="../user/login.html">登录' +
+                    '           </h2>' +
+                    '       </span>' +
+                    '    </div>';
+                $(".module-body").append(html);
+            }
+        }
+
+    })
+
+    /**
+     *
+     * 根据userId 用户查看自己的报名信息 含分页
+     * @param userId
+     */
+    function queryByUserIdWithPage(userId) {
+        console.log(userId)
+        $.ajax({
+            // 根据用户id 获取报名表信息 含分页
+            url: "http://localhost:8080/pfo/signUp/queryByUserIdWithPage",
+            dataType: "json",
+            data: "userId=" + userId,
+            success: function (data) {
+                if (data.dataList.length == 0) {
+                    console.log("用户报名列表为空")
+                    html += '<div>' +
+                        '       <span>' +
+                        '           <h2>空空如也，你还没有报名哦</h2>' +
+                        '       </span>' +
+                        '    </div>';
+                    $(".module-body").append(html);
+                } else {
+                    var signUpList =  data.dataList;
+
+                    // 输出报名表结构
+                    html += '<table class="table table-bordered table-hover">' +
+                        '       <caption class="caption">' +
+                        '           <th>招聘标题</th>' +
+                        '           <th>发布时间</th>' +
+                        '           <th>招聘职位</th>' +
+                        '           <th>操作</th>' +
+                        '       </caption>' +
+                        '       <tbody>' +
+                        '       </tbody>' +
+                        '    </table>';
+
+                    $(".module-body").html(html);
+
+                    var str = '';
+
+                    // console.log(data.dataList);
+                    // 填充报名表内容
+                    $.each(signUpList, function (i, val) {
+                        html = '<tr>' +
+                            '       <td>招聘标题' + val.recruitment.recruitmentId + '</td>' +
+                            '       <td>'+ val.deliverTime +'</td>' +
+                            '       <td>'+ val.recruitment.position +'</td>' +
+                            '       <td>' +
+                            '           <a id="selectById" class="btn-success btn-sm" href="../recruit/recruit_detail.html?id=' + val.recruitmentId + '">查看</a>' +
+                            '           <button class="btn-danger btn-sm" onclick="deleteById(recruitmentId)">删除</button>' +
+                            '       </td>' +
+                            '   </tr>';
+
+                        $(".table tbody").append(html);
+                    })
+
+                }
+
+            }
+        })
+    }
+
+    /**
+     * 渲染用户数据
+     * @param val
+     */
+    function renderUserInfo(val) {
+        $(".head-pic img").attr({
+            "src": val.userPhoto
+        });
+        $(".user-name").text = val.userName;
+        $(".user-gender").text = val.gender;
+        $(".user-phone").text = val.userPhone;
+        $(".user-email").text = val.userEmail;
+
+    }
+
+    /**
+     * 删除报名表  signUp/deleteByPrimaryKey  signUpId
+     * @param recruitmentId
+     */
+    function deleteById(recruitmentId) {
+        $.post({
+            url:"http://localhost:8080/pfo/signUp/deleteById",
+            data: "id=" + recruitmentId,
+            success: function (data) {
+                console.log("删除成功");
+                signUpLoad(1);
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoExercisedMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoExercised" >
+    <id column="exercised_id" property="exercisedId" jdbcType="BIGINT" />
+    <result column="question_id" property="questionId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="finsih_time" property="finsihTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.offer.pojo.PfoExercised" extends="BaseResultMap" >
+    <result column="user_answer" property="userAnswer" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <!--做题记录与试题关联resultMap-->
+  <resultMap id="QEResultMap" type="com.offer.pojo.PfoExercised" extends="BaseResultMap">
+    <result column="user_answer" property="userAnswer" jdbcType="LONGVARCHAR" />
+    <!--映射关系，指定属性与属性的类型-->
+    <association property="question" javaType="com.offer.pojo.PfoQuestion">
+      <id column="question_id" property="questionId" jdbcType="BIGINT" />
+      <result column="question_content" property="questionContent" jdbcType="VARCHAR" />
+      <result column="question_type" property="questionType" jdbcType="VARCHAR" />
+      <result column="question_subject" property="questionSubject" jdbcType="VARCHAR" />
+      <result column="question_level" property="questionLevel" jdbcType="VARCHAR" />
+      <result column="standard_time" property="standardTime" jdbcType="INTEGER" />
+      <result column="answer" property="answer" jdbcType="VARCHAR" />
+      <result column="answer_analysis" property="answerAnalysis" jdbcType="VARCHAR" />
+      <result column="answer_note" property="answerNote" jdbcType="VARCHAR" />
+      <result column="weigh" property="weigh" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+
+  <!--多条件分页查询排序所有做题记录-->
+  <select id="queryAllExercised" resultMap="QEResultMap">
+    select pfo_exercised.exercised_id,pfo_exercised.question_id,pfo_exercised.user_id,pfo_exercised.state,pfo_exercised.user_answer,pfo_exercised.finsih_time,pfo_question.question_content,pfo_question.question_type,pfo_question.question_subject,
+    pfo_question.question_level,pfo_question.standard_time,pfo_question.answer,pfo_question.answer_analysis,pfo_question.answer_note,pfo_question.weigh
+    from
+    pfo_question,pfo_exercised
+    where
+      pfo_exercised.question_id=pfo_question.question_id
+    <if test="exercised.userId != null and exercised.userId != ''">
+      and pfo_exercised.user_id=#{exercised.userId}
+    </if>
+    <if test="exercised.exercisedId != null and exercised.exercisedId != ''">
+      and pfo_exercised.exercised_id=#{exercised.exercisedId}
+    </if>
+    <if test="exercised.questionId != null and exercised.questionId != ''">
+      and pfo_exercised.question_id=#{exercised.questionId}
+    </if>
+    <if test="exercised.state != null and exercised.state != ''">
+      and pfo_exercised.state=#{exercised.state}
+    </if>
+    <if test="exercised.finsihTime != null and exercised.finsihTime != ''">
+      and date_format(pfo_exercised.finsih_time, '%y%m%d') <![CDATA[ >= ]]> date_format(#{exercised.finsihTime}, '%y%m%d')
+    </if>
+    <if test="orderMap != null and orderMap.size != 0">
+      order by
+      <foreach item="value" index="key" collection="orderMap.entrySet()" separator=",">
+        ${key} ${value}
+      </foreach>
+    </if>
+
+  </select>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    exercised_id, question_id, user_id, state, finsih_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    user_answer
+  </sql>
+
+  <!--试题表与做题记录关联查询-->
+  <select id="queryAllExercisedWithQuestions" resultMap="QEResultMap">
+    select pfo_exercised.exercised_id,pfo_exercised.question_id,pfo_exercised.user_id,pfo_exercised.state,pfo_exercised.user_answer,pfo_exercised.finsih_time,pfo_question.question_content,pfo_question.question_type,pfo_question.question_subject,
+      pfo_question.question_level,pfo_question.standard_time,pfo_question.answer,pfo_question.answer_analysis,pfo_question.answer_note,pfo_question.weigh
+    from
+      pfo_question,pfo_exercised
+    where
+      pfo_exercised.question_id=pfo_question.question_id
+  </select>
+
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.offer.pojo.PfoExercisedExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_exercised
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoExercisedExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_exercised
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_exercised
+    where exercised_id = #{exercisedId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_exercised
+    where exercised_id = #{exercisedId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoExercisedExample" >
+    delete from pfo_exercised
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoExercised" >
+    insert into pfo_exercised (exercised_id, question_id, user_id, 
+      state, finsih_time, user_answer
+      )
+    values (#{exercisedId,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{state,jdbcType=INTEGER}, #{finsihTime,jdbcType=TIMESTAMP}, #{userAnswer,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoExercised" >
+    insert into pfo_exercised
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="exercisedId != null" >
+        exercised_id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="finsihTime != null" >
+        finsih_time,
+      </if>
+      <if test="userAnswer != null" >
+        user_answer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="exercisedId != null" >
+        #{exercisedId,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="finsihTime != null" >
+        #{finsihTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userAnswer != null" >
+        #{userAnswer,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoExercisedExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_exercised
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_exercised
+    <set >
+      <if test="record.exercisedId != null" >
+        exercised_id = #{record.exercisedId,jdbcType=BIGINT},
+      </if>
+      <if test="record.questionId != null" >
+        question_id = #{record.questionId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.finsihTime != null" >
+        finsih_time = #{record.finsihTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.userAnswer != null" >
+        user_answer = #{record.userAnswer,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update pfo_exercised
+    set exercised_id = #{record.exercisedId,jdbcType=BIGINT},
+      question_id = #{record.questionId,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      state = #{record.state,jdbcType=INTEGER},
+      finsih_time = #{record.finsihTime,jdbcType=TIMESTAMP},
+      user_answer = #{record.userAnswer,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_exercised
+    set exercised_id = #{record.exercisedId,jdbcType=BIGINT},
+      question_id = #{record.questionId,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      state = #{record.state,jdbcType=INTEGER},
+      finsih_time = #{record.finsihTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoExercised" >
+    update pfo_exercised
+    <set >
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="finsihTime != null" >
+        finsih_time = #{finsihTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userAnswer != null" >
+        user_answer = #{userAnswer,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where exercised_id = #{exercisedId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.offer.pojo.PfoExercised" >
+    update pfo_exercised
+    set question_id = #{questionId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      state = #{state,jdbcType=INTEGER},
+      finsih_time = #{finsihTime,jdbcType=TIMESTAMP},
+      user_answer = #{userAnswer,jdbcType=LONGVARCHAR}
+    where exercised_id = #{exercisedId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoExercised" >
+    update pfo_exercised
+    set question_id = #{questionId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      state = #{state,jdbcType=INTEGER},
+      finsih_time = #{finsihTime,jdbcType=TIMESTAMP}
+    where exercised_id = #{exercisedId,jdbcType=BIGINT}
+  </update>
+</mapper>

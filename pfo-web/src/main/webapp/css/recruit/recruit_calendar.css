@@ -1,0 +1,225 @@
+body {
+    background: #eee;
+}
+
+.nk-main {
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.nk-main {
+    padding-top: 70px;
+    padding-bottom: 250px;
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+.btn {
+    display: inline-block;
+    text-align: center;
+    padding: 10px 0;
+    width: 110px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 3px;
+    border: none 0;
+    cursor: pointer;
+    line-height: normal;
+    outline: 0;
+    white-space: nowrap;
+}
+
+.add-date {
+    position: relative;
+    width: 104px;
+    padding: 6px 0;
+    float: right;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background: #25bb9b;
+}
+
+#jsCpn_9_component_0 {
+    margin: 10px auto;
+}
+
+.nk-main table {
+    table-layout: fixed;
+}
+
+table {
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #f0f0f0;
+    font-size: 14px;
+    background: #fff;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.date-table {
+    background: #e9e9e9;
+    text-align: center;
+    padding: 12px 0;
+    border: 1px solid #e1e1e1;
+    border-bottom: none;
+}
+
+table td {
+    padding: 0;
+    text-align: left;
+    height: 40px;
+    vertical-align: top;
+}
+
+table td, table th {
+    border: 1px solid #e1e1e1;
+}
+
+.date-day {
+    font-size: 14px;
+    color: #c8c8c8;
+    font-weight: 700;
+    text-align: right;
+    padding: 0 18px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.prev-month {
+    float: left;
+}
+
+.next-month {
+    float: right;
+}
+
+.next-month, .prev-month {
+    font-size: 16px;
+    width: 120px;
+    cursor: pointer;
+}
+
+.current-date {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.current-date span {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.current-month {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+a:link, a:visited {
+    text-decoration: none;
+}
+
+.date-mark {
+    font-size: 14px;
+    color: #797979;
+    background: #fff;
+    border: 1px solid #a1a1a1;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 24px;
+    width: 48px;
+    text-align: center;
+    margin-left: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+table td, table th {
+    border: 1px solid #e1e1e1;
+}
+
+table th {
+    background: #f7f7f7;
+    text-align: center;
+    padding: 0;
+    height: 24px;
+    color: #a9a9a9;
+    white-space: nowrap;
+}
+
+table td {
+    padding: 0;
+    text-align: left;
+    height: 40px;
+    vertical-align: top;
+}
+
+td:hover .interview-add {
+    visibility: visible;
+}
+
+/*.otherMonth2:hover .interview-add {*/
+    /*visibility: hidden;*/
+/*}*/
+
+a:link, a:visited {
+    text-decoration: none;
+}
+
+.interview-add {
+    background: #e9e9e9;
+    font-size: 12px;
+    color: #6d6d6d;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    margin: 0;
+    display: block;
+    visibility: hidden;
+}
+
+.pop-box {
+    border-radius: 4px;
+    background: #fff;
+    z-index: 201;
+    border: 1px solid #dedede;
+    position: absolute;
+}
+
+.pop-title {
+    padding: 15px 20px;
+    overflow: hidden;
+    background: #f0f0f0;
+    border-radius: 4px 4px 0 0;
+}
+
+.pop-content {
+    padding: 20px;
+}
+
+.tooltip-arrow {
+
+}

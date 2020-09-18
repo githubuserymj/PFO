@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        /*body, html {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}*/
+        #mapBody{width:100%;height:100%;}
+        /*p{margin-left:5px; font-size:14px;}*/
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=x7wyDgxyo5ym4sdAs1NaClHMBQIdjnR2"></script>
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+    <title>地图</title>
+</head>
+<body>
+<!--首页导航栏-->
+<script src="/pfo/js/common/baseTopNavigation.js"></script>
+<div style="position: absolute;z-index: 1;margin: 20px 380px;">
+    <form action="#">
+        <div class="input-group mb-3">
+            <input id="province" type="text" placeholder="省份" style="width: 100px;margin-right: 10px" hidden="hidden">
+            <input id="city" type="text" placeholder="城市" style="width: 100px;margin-right: 10px" hidden="hidden">
+            <input id="district" type="text" placeholder="地区" style="width: 100px;margin-right: 10px" hidden="hidden">
+            <input id="address" type="text" class="form-control" placeholder="详细地址" id="address" style="width: 500px">
+            <div class="input-group-append">
+                <span id="searchAddress" class="input-group-text">搜索</span>
+            </div>
+            <input id="lng" name="lng" hidden="hidden">
+            <input id="lat" name="lat" hidden="hidden">
+        </div>
+    </form>
+</div>
+<!-- 按钮：用于打开模态框 -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mapModal">
+    打开模态框
+</button>
+
+<!-- 模态框 -->
+<div class="modal fade" id="mapModal">
+    <div class="modal-dialog" style="margin:auto 10px">
+        <div class="modal-content" style="width:1000px;height: 1000px">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">模态框头部</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                <div id="mapBody"></div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--地图body-->
+<div id="mapBody"></div>
+
+</body>
+</html>
+<script src="/pfo/js/jquery-3.4.1.js"></script>
+<script src="/pfo/js/bootstrap.js"></script>
+<link rel="stylesheet" href="/pfo/css/bootstrap.css">
+<link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css">
+<script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+
+<script type="text/javascript">
+    // 百度地图API功能
+    var map = new BMap.Map("mapBody",{minZoom: 4, maxZoom: 19});
+    //初始化地图，指明中心点和地图级别
+    map.centerAndZoom(new BMap.Point(120.644014,31.284756), 15);
+
+    // 开启鼠标滚轮缩放功能，仅对PC上有效
+    map.enableScrollWheelZoom(true);
+
+    // 添加带有定位的导航控件
+    var navigationControl = new BMap.NavigationControl({
+        // 靠左上角位置
+        anchor: BMAP_ANCHOR_TOP_LEFT,
+        // LARGE类型
+        type: BMAP_NAVIGATION_CONTROL_LARGE,
+        // 启用显示定位
+        enableGeolocation: true
+    });
+    map.addControl(navigationControl);
+    //根据定位初始化地图展示到当前地址
+    var geolocation = new BMap.Geolocation();
+    geolocation.getCurrentPosition(function(r){
+        if(this.getStatus() == BMAP_STATUS_SUCCESS){
+            var mk = new BMap.Marker(r.point);
+            map.addOverlay(mk);
+            map.panTo(r.point);
+        }
+        else {
+            console.log('failed'+this.getStatus());
+        }
+    },{enableHighAccuracy: true})
+
+
+    //右上角地区选择
+    var size = new BMap.Size(10, 20);
+    map.addControl(new BMap.CityListControl({
+        anchor: BMAP_ANCHOR_TOP_RIGHT,
+        offset: size,
+        // 切换城市之间事件
+        // onChangeBefore: function(){
+        //    alert('before');
+        // },
+        // 切换城市之后事件
+        // onChangeAfter:function(){
+        //   alert('after');
+        // }
+    }));
+
+
+
+    // 获取关键字搜索地址
+    $("#searchAddress").click(function theLocation() {
+        var local = new BMap.LocalSearch(map, {
+            renderOptions:{map: map}
+        });
+        local.search($("#address").val());
+
+    })
+
+
+    //增加跳动点
+    function addDancePoint(lng,lat) {
+        var point = new BMap.Point(lng, lat);
+//    可通过下面两个创建自定义标注
+//    var myIcon = new BMap.Icon("/jsdemo/img/fox.gif", new BMap.Size(300,157));
+//    var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+        var marker2 = new BMap.Marker(point);  // 创建标注
+        map.addOverlay(marker2);
+        marker2.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+        marker2.enableDragging();//可拖动
+    }
+
+    //给地图添加点击事件
+    map.addEventListener("click", function(e) {
+        var geocoder = new BMap.Geocoder();
+        geocoder.getLocation(e.point, function(rs) {
+            var lng = e.point.lng;
+            var lat = e.point.lat;
+            addDancePoint(lng,lat);
+            console.log("lng:"+lng);
+            console.log("lat:"+lat);
+            var province = rs.addressComponents.province;
+            var city = rs.addressComponents.city;
+            var district = rs.addressComponents.district;
+            var street = rs.addressComponents.street;
+            var streetNumber = rs.addressComponents.streetNumber;
+            var address = province+city+district+street+streetNumber;
+            console.log(rs.addressComponents); //结构化的地址描述(object)
+            $("#province").val(province);
+            $("#city").val(city);
+            $("#district").val(district);
+            $("#address").val(address);
+            $("#lng").val(lng);
+            $("#lat").val(lat);
+
+            console.log(street); //街道
+            console.log(streetNumber); //门牌号
+        });
+
+    });
+
+    //标注点
+    var data_info = [[120.644014,31.284756,"地址：北京市东城区王府井大街88号乐天银泰百货八层"],
+        [116.406605,39.921585,"地址：北京市东城区东华门大街"],
+        [116.412222,39.912345,"地址：北京市东城区正义路甲5号"]
+    ];
+    //信息窗口设置
+    var opts = {
+        width : 250,     // 信息窗口宽度
+        height: 400,     // 信息窗口高度
+        title : "信息窗口" , // 信息窗口标题
+        enableMessage:true//设置允许信息窗发送短息
+    };
+
+
+    //循环创建标注点
+    for(var i=0;i<data_info.length;i++){
+        var marker = new BMap.Marker(new BMap.Point(data_info[i][0],data_info[i][1]));  // 创建标注
+        var content = data_info[i][2];
+        map.addOverlay(marker);               // 将标注添加到地图中
+        addClickHandler(content,marker);
+    }
+    //添加点击事件，点击后打开某地址的信息提示框
+    function addClickHandler(content,marker){
+        marker.addEventListener("click",function(e){
+            openInfo(content,e)}
+        );
+    }
+    //打开信息提示框
+    function openInfo(content,e){
+        var p = e.target;
+        var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+        var sContent =
+            "<h4 style='margin:0 0 5px 0;padding:0.2em 0'>天安门</h4>" +
+            "<img style='float:right;margin:4px' id='imgDemo' src='https://www.jq22.com/img/logo.png' width='139' height='104' title='天安门'/>" +
+            "<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>天安门坐落在中国北京市中心,故宫的南侧,与天安门广场隔长安街相望,是清朝皇城的大门...</p>" +
+            "</div>";
+//        var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+        var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
+        map.openInfoWindow(infoWindow,point); //开启信息窗口
+    }
+
+    //增加标注点
+    function addPoint() {
+//        类似这种
+        var point_info = [[116.417854,39.921988,"地址：北京市东城区王府井大街88号乐天银泰百货八层"],
+            [116.406605,39.921585,"地址：北京市东城区东华门大街"],
+            [116.412222,39.912345,"地址：北京市东城区正义路甲5号"]
+        ];
+        for(var i=0;i<point_info.length;i++){
+            var marker = new BMap.Marker(new BMap.Point(data_info[i][0],data_info[i][1]));  // 创建标注
+            var content = data_info[i][2];
+            map.addOverlay(marker);               // 将标注添加到地图中
+            addClickHandler(content,marker);
+        }
+    }
+
+    //删除具体某个标注点
+    function deletePoint(){
+        var allOverlay = map.getOverlays();
+        for (var i = 0; i < allOverlay.length -1; i++){
+            if(allOverlay[i].getLabel().content == "我是id=1"){
+                map.removeOverlay(allOverlay[i]);
+                return false;
+            }
+        }
+    }
+
+    //增加右键菜单
+    var menu = new BMap.ContextMenu();
+    var txtMenuItem = [
+        {
+            text:'确定',
+            callback:function(){
+                //确定信息，传入
+                var address = $("#address").val();//详细地址
+                var lng = $("#lng").val();
+                var lat = $("#lat").val();
+                var detailedAddress = address+"|"+lng+"&"+lat;
+                alert(detailedAddress);
+            }
+        },
+
+    ];
+    for(var i=0; i < txtMenuItem.length; i++){
+        menu.addItem(new BMap.MenuItem(txtMenuItem[i].text,txtMenuItem[i].callback,100));
+    }
+    map.addContextMenu(menu);
+
+
+    // 用经纬度设置地图中心点
+    function theLocation(lng,lat){
+        map.clearOverlays();
+        var new_point = new BMap.Point(lng,lat);
+        var marker = new BMap.Marker(new_point);  // 创建标注
+        map.addOverlay(marker);              // 将标注添加到地图中
+        map.panTo(new_point);
+    }
+
+</script>

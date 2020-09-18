@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>试题广场</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Main CSS -->
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <script src="/pfo/js/exam/popper.min.js"></script>
+    <script src="/pfo/js/exam/moment-with-locales.min.js"></script>
+    <script src="/pfo/js/exam/moment-timezone-with-data-2012-2022.min.js"></script>
+    <script src="/pfo/js/exam/tempusdominus-bootstrap-4.js"></script>
+    <script src="/pfo/js/exam/highlight.min.js"></script>
+    <script src="/pfo/js/exam/base.js"></script>
+    <script src="/pfo/js/exam/jquery.form.js"></script>
+    <script src="/pfo/js/jquery.sPage.js"></script>
+    <script src="/pfo/js/jquery.Jcrop.js"></script>
+    <link rel="stylesheet" href="/pfo/css/jquery.Jcrop.css">
+    <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/pfo/css/exam/highlight.min.css">
+    <link rel="stylesheet" href="/pfo/css/exam/tempusdominus-bootstrap-4.css">
+    <link rel="stylesheet" href="/pfo/css/exam/base.css">
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/global.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/jquery.sPage.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/pfo/css/exam/nav.css">
+    <link rel="stylesheet" type="text/css" href="/pfo/css/exam/questionCenter.css">
+    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <div id="second-nav" class="container">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/pfo/html/exam/exam_bank.html">公司历届套题</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pfo/html/exam/SpecialPractice.html">专项练习</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/pfo/html/exam/questionCenter.html">试题广场</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+    <div class="cnter-main container bg-white">
+        <!-- Main content area -->
+        <main class="container">
+            <div class="row">
+                <!-- Main content -->
+                <div id="qlist" class="col-md-8">
+                    <!-- 试题列表 -->
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a id="default-order" class="nav-link active" onclick="SetSortKey(this.id)"
+                               href="#">综合排序</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="ct" class="nav-link" onclick="SetSortKey(this.id)" href="#">创建时间
+                                <span class="badge">
+                            <img class="order-img" src="" alt="" width="18px" height="18px">
+                        </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="ot" class="nav-link" onclick="SetSortKey(this.id)" href="#">难度
+                                <span class="badge">
+                            <img class="order-img" src="" alt="" width="18px" height="18px">
+                        </span>
+                            </a>
+                        </li>
+
+                    </ul>
+                    <div class="quiz-box">
+
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="col-md-4">
+                    <div class="sidebar-box">
+                        <h4>关键字搜索</h4>
+                        <div class="form-inline my-2 my-lg-0">
+                            <input id="qContent" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                            <button id="qSearch" class=" my-2 my-sm-0">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-box">
+                        <div class="list-group list-group-root">
+                            <div class="list-group-item" href="#">
+                                职业方向:<br>
+                                <a href="#" onclick="setSubject(this.text)">Java</a>
+                                <a href="#" onclick="setSubject(this.text)">Python</a>
+
+                            </div>
+
+                            <a class="list-group-item" href="#">题型</a>
+                            <div class="list-group">
+                                <a class="list-group-item" onclick="setType(this.text)" href="#">单选题</a>
+                                <a class="list-group-item" onclick="setType(this.text)" href="#">不定项选择题</a>
+                                <a class="list-group-item" onclick="setType(this.text)" href="#">判断题</a>
+                                <a class="list-group-item" onclick="setType(this.text)" href="#">填空题</a>
+                                <a class="list-group-item" onclick="setType(this.text)" href="#">问答题</a>
+                                <a class="list-group-item" onclick="setType(this.text)" href="#">编程题</a>
+                            </div>
+                            <div class="list-group-item">
+                                难度：<br>
+                                <a onclick="setLevel(this)" href="#" data-level="1">基础</a>
+                                <a onclick="setLevel(this)" href="#" data-level="2">进阶</a>
+                                <a onclick="setLevel(this)" href="#" data-level="3">较难</a>
+                                <a onclick="setLevel(this)" href="#" data-level="4">困难</a>
+                                <a onclick="setLevel(this)" href="#" data-level="5">头皮发麻</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="paperSheet">
+
+                    </div>
+
+                    <div class="sidebar-box sidebar-box-bg">
+                        <h4>关于我们</h4>
+                        <p>Practice For Offer 笔试面试备战交流社区. <a href="#" class="readmore">了解更多 &raquo;</a></p>
+                    </div>
+
+                    <!-- 试卷创建模态框 -->
+                    <div class="modal fade" id="myModal">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+
+                                <!-- 模态框头部 -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">请输入试卷信息</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- 模态框主体 -->
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>试卷名:</label>
+                                        <input type="text" class="form-control" id="paperName"
+                                               placeholder="试卷名请以‘公司名称’+‘年份’+‘职位’+‘招聘场次’的格式命名，以方便用户检阅">
+
+                                        <label>开放时间:</label>
+                                        <div class='col-md-5'>
+                                            <div class="form-group">
+                                                <div class="input-group date" id="datetimepicker7"
+                                                     data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input"
+                                                           data-target="#datetimepicker7"/>
+                                                    <div class="input-group-append" data-target="#datetimepicker7"
+                                                         data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <label>关闭时间:</label>
+                                        <div class='col-md-5'>
+                                            <div class="form-group">
+                                                <div class="input-group date" id="datetimepicker8"
+                                                     data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input"
+                                                           data-target="#datetimepicker8"/>
+                                                    <div class="input-group-append" data-target="#datetimepicker8"
+                                                         data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <input id="uploadPaperPhoto" type="file" hidden="hidden">
+                                        <label style="position: absolute;top:23%; left:76%;">试卷封面:</label>
+                                        <img id="paperPhoto" class="img-fluid img-thumbnail rounded-lg" src="https://static.runoob.com/images/mix/img_avatar.png" alt="" style="width: 60px;height: 60px;position: absolute;top:35%; left:80%;transform: translate(-50%,-50%);">
+                                        <img class="uploadLogo img-fluid img-thumbnail rounded-lg" src="/pfo/img/logo/upload.svg" hidden alt="" style="opacity:0.5;width: 60px;height: 60px;position: absolute;top:35%; left:80%;transform: translate(-50%,-50%);">
+
+
+                                        <label>试卷描述:</label>
+                                        <textarea class="form-control" id="paperDescribe" rows="16" style="max-height: 100px"></textarea>
+                                    </div>
+
+                                    <button type="button" id="selectQuiz" onclick="createPaper()" data-dismiss="modal">
+                                        选择试题组卷
+                                    </button>
+                                </div>
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 图片裁减模态框 -->
+                    <div class="modal fade" id="uploadPaperPhotoModal">
+                        <div class="modal-dialog" style="max-width: 870px">
+                            <div class="modal-content">
+
+                                <!-- 模态框头部 -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">上传裁剪试题封面</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- 模态框主体 -->
+                                <div class="modal-body">
+                                    <!--原图-->
+                                    <div style="width: 476px;height:450px;padding:10px;float: left;border: 2px salmon solid;z-index: 30000;overflow: hidden">
+                                        <img class="paperPrePhoto" src="" alt="" style="max-width: 450px;">
+                                    </div>
+                                    <!--剪切后-->
+                                    <div style="width: 300px;height: auto;padding:10px;float: left;margin-left: 10px">
+                                        <div style="width: 300px;height: 300px;">
+                                            <canvas id="cut" width="200" height="200" style="border: 1px red solid"></canvas>
+                                        </div >
+                                        <div style="margin-bottom: 0">
+                                            <hr>
+                                            <strong>请设置裁剪大小</strong><br>
+                                            <span style="font-size: 10px">(裁剪规则:0&lt;x|y<=300)</span><br>
+                                            x：<input class="canvasWidth" type="text" style="width:30px" value="200" onchange="changeCanvasWidth()">px
+                                            y：<input class="canvasHeight" type="text" style="width:30px" value="200" onchange="changeCanvasHeight()">px
+                                            <button class="btn btn-primary" id="updatePaperPhoto">裁剪并且上传</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--试题创建模态框-->
+                    <div class="modal fade" id="excelModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- 模态框头部 -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">选择试题Excel</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- 模态框主体 -->
+                                <div class="modal-body">
+                                    <button class="btn btn-success btn-xs" id="uploadEventBtn" type="button" >选择文件</button>
+                                    <form id="excelForm" enctype="multipart/form-data" id="batchUpload" action="/pfo/question/uploadExcel" method="post" class="form-horizontal">
+                                        <input type="file" name="file" style="width:0px;height:0px;" id="uploadEventFile">
+                                        <input id="uploadEventPath" disabled="disabled" type="text" placeholder="请选择excel表" style="border: 1px solid #e6e6e6; height: 38px;width: 200px;">
+                                    </form>
+                                    <br>
+                                    <br>
+                                    <button type="button" class="btn btn-success btn-sm"  onclick="qExcel.uploadBtn()" >上传</button>
+                                </div>
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+        </main>
+
+        <!--分页-->
+        <div>
+            <div id="myPage" class="Pagination"></div>
+        </div>
+        <div class="leftNav-item">
+            <ul>
+                <li>
+                    <i class="fa fa-newspaper-o"></i>
+                    <a href="#" class="rota" data-toggle="modal" data-target="#myModal">选题组卷</a>
+                </li>
+                <li title="导入试题">
+                    <i class="fa fa-file-excel-o"></i>
+                    <a href="#" class="rota" data-toggle="modal" data-target="#excelModal">导入试题</a>
+                </li>
+                <li title="小额打赏">
+                    <i class="fa fa-money"></i><a href="javascript:;" class="rota">小额打赏</a>
+                </li>
+                <li title="返回顶部" class="for-top">
+                    <i class="fa fa-arrow-up"></i>
+                    <a href="javascript:;" class="rota">去顶部</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+<!--底部栏-->
+<script src="/pfo/js/common/footer.js" type="application/javascript"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css" type="text/css">
+<script type="text/javascript" src="/pfo/js/exam/nav.js"></script>
+
+<script>
+    var SortKey = {
+        key: 'level,score',
+        type: 'asc,asc'
+    }
+    var question={}
+    var isGenerating=false
+
+    $(document).ready(quizLoad(1))
+
+    <!--数据获取-->
+    function quizLoad(currPage) {
+
+        $.get({
+            url: "/pfo/question/queryAllQuestionsByConditions?currPage=" + currPage + "&orderKey=" + SortKey.key + "&orderType=" + SortKey.type,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: question,
+            success: function (data) {
+                showQuiz(data)
+                var pageNums = Math.ceil(data.totalSize / data.pageSize)
+
+                // 调用分页插件
+                $("#myPage").sPage({
+                    page: data.currPage,//当前页码，必填
+                    total: data.totalSize,//数据总条数，必填
+                    pageSize: data.pageSize,//每页显示多少条数据，默认10条
+                    showTotal: true,//是否显示总条数，默认关闭：false
+                    totalTxt: "共{total}条",//数据总条数文字描述，{total}为占位符，默认"共{total}条"
+                    noData: false,//没有数据时是否显示分页，默认false不显示，true显示第一页
+                    showSkip: true,//是否显示跳页，默认关闭：false
+                    showPN: true,//是否显示上下翻页，默认开启：true
+                    prevPage: "上一页",//上翻页文字描述，默认“上一页”
+                    nextPage: "下一页",//下翻页文字描述，默认“下一页”
+                    backFun: function (page) {
+                        //点击分页按钮回调函数，返回当前页码
+                        quizLoad(page)
+                    }
+                });
+            }
+        })
+    }
+
+    function showQuiz(data) {
+        var card = ''
+        for (var i = 0; i < data.dataList.length; i++) {
+            var content = JSON.parse(data.dataList[i].questionContent)
+            card += '<div class="card quiz-item"><div class="card-body">'
+            card += '<a href="'
+            card += '#'
+            card += '" class="card-title">'
+            card += content.title
+            card += '</a><p class="card-text">'
+            card += '描述: '+data.dataList[i].answerNote
+            card += '</p><div id="quiz-detail" class="qInfo'+data.dataList[i].questionId+'">科目: <span id="qSubject">'+data.dataList[i].questionSubject+'</span>'
+            card += '题型: <span id="qType">'+data.dataList[i].questionType+'</span>'
+            card += '难度: <span id="qLevel">'+data.dataList[i].questionLevel+'</span>'
+            card += '分值: <span id="qWeigh">'+data.dataList[i].weigh+'</span>'
+            card += '推荐用时: <span id="qStandardTime">'+ data.dataList[i].standardTime+'</span>'
+            card += '</div><div class="tags-box">'
+            for (var j = 0; j < data.dataList[i].tags.length; j++) {
+                var tag = data.dataList[i].tags[j]
+                card += '<a href="#" target="_blank" class="tag-label">'
+                card += tag.tagName
+                card += '</a>'
+            }
+            card += '</div><button class="ck" onclick="addQuiz(this)" data-id="' + data.dataList[i].questionId + '">添加</button></div></div>'
+
+        }
+
+        $('.quiz-box').html(card)
+
+        if(isGenerating){
+            /*为试题卡片绑定取id方法*/
+            /*$('.ck').bind("click", addQuiz())*/
+            $(".ck").toggle()
+        }
+
+    }
+
+    /*条件查询*/
+    function setSubject(key) {
+        question=null
+        question= {
+            questionSubject: key
+        }
+        quizLoad(1)
+    }
+    
+    function setType(key) {
+        question=null
+        question={
+            questionType:key
+        }
+        quizLoad(1)
+    }
+
+    function setLevel(key) {
+        question=null
+        question={
+            questionLevel:key.getAttribute("data-level")
+        }
+        quizLoad(1)
+    }
+
+    $('#qSearch').click(function () {
+        question=null
+        question={
+            questionContent: $('#qContent').val()
+        }
+        quizLoad(1)
+    })
+
+    var createTime = new Date()
+    var quizIdList = ''
+    var paper = {
+        paperName: null,
+        createTime: createTime,
+        openTime: null,
+        closeTime: null,
+        questionListId: '',
+        paperDescription: '自动创建',
+        paperImg: "https://static.runoob.com/images/mix/img_avatar.png"
+
+    }
+
+    /*时间选择器*/
+    $(function () {
+        $('#datetimepicker7').datetimepicker();
+        $('#datetimepicker8').datetimepicker({
+            useCurrent: false
+        });
+        $("#datetimepicker7").on("change.datetimepicker", function (e) {
+            paper.openTime = e.date
+            $('#datetimepicker8').datetimepicker('minDate', e.date);
+        });
+
+        $("#datetimepicker8").on("change.datetimepicker", function (e) {
+            paper.closeTime = e.date
+            $('#datetimepicker7').datetimepicker('maxDate', e.date);
+        });
+    });
+
+    /*试卷图片上传*/
+    //鼠标移到用户头像处触发的事件
+    $("#paperPhoto").bind(
+        'mouseenter',function (){
+            $(".uploadLogo").removeAttr("hidden");
+        }
+    )
+    //鼠标离开到'上传logo'触发的事件
+    $(".uploadLogo").bind(
+        'mouseleave',function (){
+            $(".uploadLogo").attr("hidden","hidden");
+        }
+    )
+    //点击'上传logo'触发的事件
+    $(".uploadLogo").click(function () {
+        $("#uploadPaperPhoto").click();
+    })
+    //用户选择图片时发生的事件
+    $("#uploadPaperPhoto").change(function () {
+        $("#uploadPaperPhotoModal").modal("show");
+        $(".paperPrePhoto").attr("src",URL.createObjectURL($(this)[0].files[0]));
+        $('.paperPrePhoto').Jcrop({
+            boxWidth:450,
+            onChange: updatePreview,
+            onSelect: updatePreview,
+        });
+
+    })
+    //裁剪过程中，每改变裁剪大小执行该函数
+    function updatePreview(c) {
+        var canvasWidth = $("#cut").css("height");
+        var canvasHeight = $("#cut").css("height");
+        console.log(canvasWidth+canvasHeight);
+        var image = new Image();
+        image.src=$(".paperPrePhoto").attr("src");
+        var cut = document.getElementById("cut");//获取2d画笔
+        var ctx = cut.getContext("2d");
+        if(parseInt(c.w) > 0) {
+            ctx.drawImage(image, c.x, c.y, c.w, c.h, 0, 0, parseInt(canvasWidth), parseInt(canvasHeight));
+        }
+    }
+
+    function changeCanvasWidth() {
+        var canvasWidth = $(".canvasWidth").val();
+        if(canvasWidth<=300 && canvasWidth>0){
+            $("#cut").width(canvasWidth);
+        }
+    }
+
+    function changeCanvasHeight() {
+        var canvasHeight = $(".canvasHeight").val();
+        if(canvasHeight<=300 && canvasHeight>0){
+            $("#cut").height($(".canvasHeight").val());
+        }
+    }
+
+    //将base64转换为文件
+    function dataURLtoFile(dataurl, filename) {
+        var arr = dataurl.split(',');
+        var mime = arr[0].match(/:(.*?);/)[1];
+        var bstr = atob(arr[1]);
+        var n = bstr.length;
+        var u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type:mime});
+    }
+
+    //上传图片
+    $("#updatePaperPhoto").click(function () {
+        var formData = new FormData();
+        var cut = document.getElementById("cut");
+        var imgUrl = cut.toDataURL("image/png");//canvas转化为base64编码
+        var imgFile = dataURLtoFile(imgUrl,"paperPhoto.png");
+        formData.append("myFile",imgFile);
+        $.ajax({
+            url:"/pfo/uploadImg",
+            type : 'post',
+            data : formData,
+            cache: false,   //上传文件无需缓存
+            processData: false,   // 用于对参数进行序列化处理，这里必须设为false
+            contentType:false,
+            success:function (resultData) {
+                if(resultData.data[0] != null){
+                    $("#paperPhoto").attr("src",'http://'+resultData.data[0]);
+                    $("#uploadPaperPhotoModal").modal('hide');
+                    paper.paperImg='http://'+resultData.data[0];
+                }else {
+                    console.warn("上传失败");
+                }
+            }
+        })
+
+    })
+
+    function removeQuiz(obj) {
+        obj.remove()
+    }
+    /*试卷信息*/
+    var typeCount = {
+        danNum:0,
+        buDingNum:0,
+        panNum:0,
+        tianNum:0,
+        wenNum:0,
+        bianNum:0
+    }
+    var score = 0
+    var comsumeTime = 0
+
+    function countType(str) {
+        if("单选题" == str){
+            typeCount.danNum++;
+        }else if("不定项选择题" == str){
+            typeCount.buDingNum++;
+        }else if("判断题" == str){
+            typeCount.panNum++;
+        }else if("填空题" == str){
+            typeCount.tianNum++;
+        }else if("问答题" == str){
+            typeCount.wenNum++;
+        }else if("编程题" == str){
+            typeCount.bianNum++;
+        }
+    }
+
+    /*记录已选试题的ID*/
+    function addQuiz(obj) {
+        var qid = obj.getAttribute("data-id")
+        var infodata = $('.qInfo' + qid + '')
+        var qType = infodata.children('#qType').text()
+        var qWeigh = infodata.children('#qWeigh').text()
+        var standardTime = infodata.children('#qStandardTime').text()
+
+        $('.quizSelected').append('<span class="qIdItem" onclick="removeQuiz(this)" data-id="'+qid
+            +'" data-qType="'+qType+'" data-qWeigh="'+qWeigh
+            +'" data-standardTime="'+standardTime+'">'+qid+'</span>')
+
+    }
+
+
+    function createPaper() {
+        isGenerating=true
+        $('.paperSheet').html('<div class="sidebar-box sidebar-box-bg"><h4>已选试题(点击已选试题取消选择)</h4><div class="quizSelected"></div></div>')
+        /*为试题卡片绑定取id方法*/
+        $(".ck").toggle()
+        $('.leftNav-item ul').append('<li title="完成"><i class="fa fa-check-square"></i><a href="#" onclick="genrating()" class="rota">完成</a></li>')
+
+    }
+
+    function genrating() {
+        isGenerating=false
+
+        $(".ck").toggle()
+        $('.leftNav-item ul li:last').remove()
+        $('.qIdItem').each(function () {
+            var quizId = this.getAttribute("data-id")
+            quizIdList += quizId+","
+            var qType = this.getAttribute('data-qType')
+            var qWeigh = this.getAttribute('data-qWeigh')
+            var standardTime = this.getAttribute('data-standardTime')
+            countType(qType)
+            console.log(parseInt(standardTime))
+            if(!isNaN(parseInt(qWeigh))){
+                score += parseInt(qWeigh)
+            }
+
+            if(!isNaN(parseInt(standardTime))){
+                comsumeTime += parseInt(standardTime)
+            }
+
+        })
+        quizIdList = quizIdList.slice(0, quizIdList.length - 1)
+
+
+
+
+        $('.paperSheet').html('')
+
+        paper.questionListId = quizIdList
+        paper.paperName = $('#paperName').val()
+        paper.paperDescription = typeCount.danNum+"道单选题,"+typeCount.buDingNum+"道不定项选择题;"+
+            typeCount.panNum+"道判断题,"+typeCount.tianNum+"道填空题,"+typeCount.wenNum+"道问答题;"+
+            typeCount.bianNum+"道编程题;"+"总分："+score+"分;推荐用时："+comsumeTime+"分钟#"+$('#paperDescribe').val()
+
+        genratePaper()
+    }
+
+    /*创建试卷*/
+    function genratePaper() {
+        $.ajax({
+            url: "/pfo/exam/addPaper",
+            method: "post",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(paper),
+            success: function (data) {
+                console.log(data)
+            }
+        })
+    }
+
+    var QuestionExcel = function(){
+        this.init = function(){
+            //模拟上传excel
+            $("#uploadEventBtn").unbind("click").bind("click",function(){
+                $("#uploadEventFile").click();
+            });
+            $("#uploadEventFile").bind("change",function(){
+                $("#uploadEventPath").attr("value",$("#uploadEventFile").val());
+            });
+        };
+        //点击上传按钮
+        this.uploadBtn = function(){
+            var uploadEventFile = $("#uploadEventFile").val();
+            if(uploadEventFile == ''){
+                alert("请选择excel,再上传");
+            }else if(uploadEventFile.lastIndexOf(".xls")<0){
+                //可判断以.xls和.xlsx结尾的excel
+                alert("只能上传Excel文件");
+            }else{
+                qExcel.sendAjaxRequest();
+            }
+        };
+        this.sendAjaxRequest = function(){
+            $('#excelForm').ajaxSubmit({
+                success : function(result) {
+                    alert( result);
+                },
+                error : function() {
+                    alert( "excel上传失败");
+                },
+                cache : false,
+                contentType : false,
+                processData : false
+            });
+        };
+    }
+    var qExcel;
+    $(function(){
+        qExcel = new QuestionExcel();
+        qExcel.init();
+    });
+
+</script>
+</body>
+</html>

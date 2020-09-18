@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoRecruitmentMapper" >
+  <resultMap id="BaseResultMap" type="com.offer.pojo.PfoRecruitment" >
+    <id column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="recruitment_title" property="recruitmentTitle" jdbcType="VARCHAR" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="recruitment_img" property="recruitmentImg" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.offer.pojo.PfoRecruitment" extends="BaseResultMap" >
+    <result column="recruitment_content" property="recruitmentContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <!-- 多对一   招聘信息所属的公司 -->
+  <resultMap id="recruitmentRslMap" type="com.offer.pojo.PfoRecruitment">
+    <id column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="recruitment_title" property="recruitmentTitle" jdbcType="VARCHAR" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="recruitment_img" property="recruitmentImg" jdbcType="VARCHAR" />
+    <result column="recruitment_content" property="recruitmentContent" jdbcType="LONGVARCHAR" />
+    <!-- 关联公司信息 -->
+    <association property="pfoCompany" javaType="com.offer.pojo.PfoCompany">
+      <id column="company_id" property="companyId" jdbcType="BIGINT" />
+      <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+      <result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+      <result column="company_url" property="companyUrl" jdbcType="VARCHAR" />
+      <result column="qualification" property="qualification" jdbcType="VARCHAR" />
+      <result column="logo" property="logo" jdbcType="VARCHAR" />
+      <result column="user_id" property="userId" jdbcType="BIGINT" />
+    </association>
+  </resultMap>
+
+  <!-- 多对一   招聘信息所属的公司 -->
+  <resultMap id="recruitmentRslMap2" type="com.offer.pojo.PfoRecruitment">
+    <id column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="recruitment_title" property="recruitmentTitle" jdbcType="VARCHAR" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="recruitment_img" property="recruitmentImg" jdbcType="VARCHAR" />
+    <result column="recruitment_content" property="recruitmentContent" jdbcType="LONGVARCHAR" />
+    <result column="paper_id" property="paperId" jdbcType="BIGINT" />
+    <!-- 关联公司信息 -->
+    <association property="pfoCompany" javaType="com.offer.pojo.PfoCompany">
+      <id column="company_id" property="companyId" jdbcType="BIGINT" />
+      <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+      <result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+      <result column="company_url" property="companyUrl" jdbcType="VARCHAR" />
+      <result column="qualification" property="qualification" jdbcType="VARCHAR" />
+      <result column="logo" property="logo" jdbcType="VARCHAR" />
+      <result column="user_id" property="userId" jdbcType="BIGINT" />
+      <!-- 公司关联用户表 （企业人员  一对一） -->
+      <association property="user" javaType="com.offer.pojo.PfoUser">
+        <id column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="CHAR" />
+        <result column="user_photo" property="userPhoto" jdbcType="VARCHAR" />
+        <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+        <result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+      </association>
+    </association>
+  </resultMap>
+
+  <!-- 多对一   招聘信息所属的公司 -->
+  <resultMap id="recruitmentRslMap3" type="com.offer.pojo.PfoRecruitment">
+    <id column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="recruitment_title" property="recruitmentTitle" jdbcType="VARCHAR" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="recruitment_img" property="recruitmentImg" jdbcType="VARCHAR" />
+    <result column="recruitment_content" property="recruitmentContent" jdbcType="LONGVARCHAR" />
+
+    <!-- 关联公司信息 -->
+    <association property="pfoCompany" javaType="com.offer.pojo.PfoCompany">
+      <id column="company_id" property="companyId" jdbcType="BIGINT" />
+      <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+      <result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+      <result column="company_url" property="companyUrl" jdbcType="VARCHAR" />
+      <result column="qualification" property="qualification" jdbcType="VARCHAR" />
+      <result column="logo" property="logo" jdbcType="VARCHAR" />
+      <result column="user_id" property="userId" jdbcType="BIGINT" />
+      <!-- 公司关联用户表 （企业人员  一对一） -->
+      <association property="user" javaType="com.offer.pojo.PfoUser">
+        <id column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="CHAR" />
+        <result column="user_photo" property="userPhoto" jdbcType="VARCHAR" />
+        <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+        <result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+      </association>
+    </association>
+
+    <!-- 关联报名表 -->
+    <collection property="signUpList" ofType="com.offer.pojo.PfoSignUp">
+      <id column="sign_up_id" property="signUpId" jdbcType="BIGINT" />
+      <result column="user_id" property="userId" jdbcType="BIGINT" />
+      <result column="recruitment_id" property="recruitmentId" jdbcType="BIGINT" />
+      <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    </collection>
+  </resultMap>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    recruitment_id, company_id, recruitment_title, deliver_time, position, recruitment_img
+  </sql>
+  <sql id="Blob_Column_List" >
+    recruitment_content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.offer.pojo.PfoRecruitmentExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_recruitment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoRecruitmentExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pfo_recruitment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pfo_recruitment
+    where recruitment_id = #{recruitmentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pfo_recruitment
+    where recruitment_id = #{recruitmentId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.offer.pojo.PfoRecruitmentExample" >
+    delete from pfo_recruitment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.offer.pojo.PfoRecruitment" >
+    insert into pfo_recruitment (recruitment_id, company_id, recruitment_title,
+      deliver_time, position, recruitment_img,
+      recruitment_content)
+    values (#{recruitmentId,jdbcType=BIGINT}, #{companyId,jdbcType=BIGINT}, #{recruitmentTitle,jdbcType=VARCHAR},
+      #{deliverTime,jdbcType=TIMESTAMP}, #{position,jdbcType=VARCHAR}, #{recruitmentImg,jdbcType=VARCHAR},
+      #{recruitmentContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.offer.pojo.PfoRecruitment" >
+    insert into pfo_recruitment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="recruitmentId != null" >
+        recruitment_id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="recruitmentTitle != null" >
+        recruitment_title,
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time,
+      </if>
+      <if test="position != null" >
+        position,
+      </if>
+      <if test="recruitmentImg != null" >
+        recruitment_img,
+      </if>
+      <if test="recruitmentContent != null" >
+        recruitment_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="recruitmentId != null" >
+        #{recruitmentId,jdbcType=BIGINT},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="recruitmentTitle != null" >
+        #{recruitmentTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverTime != null" >
+        #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="recruitmentImg != null" >
+        #{recruitmentImg,jdbcType=VARCHAR},
+      </if>
+      <if test="recruitmentContent != null" >
+        #{recruitmentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.offer.pojo.PfoRecruitmentExample" resultType="java.lang.Integer" >
+    select count(*) from pfo_recruitment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pfo_recruitment
+    <set >
+      <if test="record.recruitmentId != null" >
+        recruitment_id = #{record.recruitmentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.companyId != null" >
+        company_id = #{record.companyId,jdbcType=BIGINT},
+      </if>
+      <if test="record.recruitmentTitle != null" >
+        recruitment_title = #{record.recruitmentTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deliverTime != null" >
+        deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.position != null" >
+        position = #{record.position,jdbcType=VARCHAR},
+      </if>
+      <if test="record.recruitmentImg != null" >
+        recruitment_img = #{record.recruitmentImg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.recruitmentContent != null" >
+        recruitment_content = #{record.recruitmentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update pfo_recruitment
+    set recruitment_id = #{record.recruitmentId,jdbcType=BIGINT},
+    company_id = #{record.companyId,jdbcType=BIGINT},
+    recruitment_title = #{record.recruitmentTitle,jdbcType=VARCHAR},
+    deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+    position = #{record.position,jdbcType=VARCHAR},
+    recruitment_img = #{record.recruitmentImg,jdbcType=VARCHAR},
+    recruitment_content = #{record.recruitmentContent,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pfo_recruitment
+    set recruitment_id = #{record.recruitmentId,jdbcType=BIGINT},
+    company_id = #{record.companyId,jdbcType=BIGINT},
+    recruitment_title = #{record.recruitmentTitle,jdbcType=VARCHAR},
+    deliver_time = #{record.deliverTime,jdbcType=TIMESTAMP},
+    position = #{record.position,jdbcType=VARCHAR},
+    recruitment_img = #{record.recruitmentImg,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoRecruitment" >
+    update pfo_recruitment
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="recruitmentTitle != null" >
+        recruitment_title = #{recruitmentTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverTime != null" >
+        deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="position != null" >
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="recruitmentImg != null" >
+        recruitment_img = #{recruitmentImg,jdbcType=VARCHAR},
+      </if>
+      <if test="recruitmentContent != null" >
+        recruitment_content = #{recruitmentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where recruitment_id = #{recruitmentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.offer.pojo.PfoRecruitment" >
+    update pfo_recruitment
+    set company_id = #{companyId,jdbcType=BIGINT},
+      recruitment_title = #{recruitmentTitle,jdbcType=VARCHAR},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      position = #{position,jdbcType=VARCHAR},
+      recruitment_img = #{recruitmentImg,jdbcType=VARCHAR},
+      recruitment_content = #{recruitmentContent,jdbcType=LONGVARCHAR}
+    where recruitment_id = #{recruitmentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoRecruitment" >
+    update pfo_recruitment
+    set company_id = #{companyId,jdbcType=BIGINT},
+      recruitment_title = #{recruitmentTitle,jdbcType=VARCHAR},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      position = #{position,jdbcType=VARCHAR},
+      recruitment_img = #{recruitmentImg,jdbcType=VARCHAR}
+    where recruitment_id = #{recruitmentId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 获取所有招聘信息 -->
+  <select id="queryAllRecruitment" resultMap="ResultMapWithBLOBs">
+    select * from pfo_recruitment order by pfo_recruitment.deliver_time desc
+  </select>
+
+  <!-- 获取推荐招聘信息 -->
+  <select id="queryRecruitmentByRecommend" resultMap="BaseResultMap">
+    select r.*
+    from
+      pfo_recruitment r
+    where
+      r.recruitment_id in
+    <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+    order by
+      r.deliver_time desc
+  </select>
+
+  <!-- 近期招聘信息  单表 取前20条 -->
+  <select id="queryRecruitmentRecently" parameterType="com.offer.pojo.PfoRecruitment" resultMap="ResultMapWithBLOBs">
+    select * from pfo_recruitment
+    <where>
+      <if test="recruitmentId != null and recruitmentId != ''" >
+        AND recruitment_id = #{recruitmentId,jdbcType=BIGINT}
+      </if>
+      <if test="companyId != null and companyId != ''" >
+        AND company_id = #{companyId,jdbcType=BIGINT}
+      </if>
+      <if test="deliverTime != null and deliverTime != ''" >
+        AND deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="position != null and position != ''" >
+        AND position = #{position,jdbcType=VARCHAR}
+      </if>
+      <if test="recruitmentImg != null and recruitmentImg != ''" >
+        AND recruitment_img = #{recruitmentImg,jdbcType=VARCHAR}
+      </if>
+      <if test="recruitmentContent != null and recruitmentImg != ''" >
+        AND recruitment_content = #{recruitmentContent,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+    limit 20
+  </select>
+
+  <!-- 招聘详情页面 获取招聘详情 关联公司信息，用户信息 -->
+  <select id="queryByRecruitmentId2" parameterType="Integer" resultMap="recruitmentRslMap2">
+    select
+    r.recruitment_id, r.recruitment_title, r.recruitment_content, r.deliver_time, r.position, r.recruitment_img, r.paper_id,
+    c.company_id, c.company_name, c.company_address, c.introduce, c.company_url,
+    c.qualification, c.logo,
+    u.user_id, u.user_name, u.gender, u.user_photo, u.user_email, u.user_phone
+    from
+    pfo_recruitment r, pfo_company c, pfo_user u
+    where
+    r.company_id = c.company_id
+    and c.user_id = u.user_id
+    <if test="recruitment != null and recruitmentId != ''">
+      and r.recruitment_id = #{recruitmentId}
+    </if>
+  </select>
+
+  <!-- 展示招聘信息的报名人数 关联用户信息  招聘信息详情页-->
+  <select id="queryCountByRecruitmentId" parameterType="Integer" resultType="java.lang.Integer">
+    select
+    count(s.sign_up_id)
+    from
+    pfo_sign_up s, pfo_recruitment r
+    where
+    s.recruitment_id = r.recruitment_id
+    <if test="recruitment != null and recruitmentId != ''">
+      and r.recruitment_id = #{recruitmentId}
+    </if>
+  </select>
+
+  <!-- 展示公司所有的报名数 求职首页处 -->
+  <select id="queryCountByCompanyId" parameterType="Integer" resultType="java.lang.Integer">
+    select
+    count(s.sign_up_id)
+    from
+    pfo_sign_up s, pfo_recruitment r, pfo_company c
+    where s.recruitment_id = r.recruitment_id
+    and r.company_id = c.company_id
+    <if test="null != companyId and '' != companyId">
+      c.company_id = #{companyId}
+    </if>
+  </select>
+
+  <!-- 获取招聘信息的报名信息列表  -->
+  <select id="querySignUpInfoByRecruitmentId" parameterType="Integer" resultMap="recruitmentRslMap2">
+    select
+    r.recruitment_id, r.recruitment_title, r.deliver_time, r.position,
+    u.user_id, u.user_name, u.gender, u.user_photo, u.user_email, u.user_phone,
+    s.sign_up_id
+    from
+    pfo_recruitment r, pfo_user u, pfo_sign_up s
+    where
+    s.recruitment_id = r.recruitment_id
+    <if test="recruitment != null and recruitmentId != ''">
+      and r.recruitment_id = #{recruitmentId}
+    </if>
+  </select>
+
+  <!-- 根据查询公司所有的招聘信息 不分页 -->
+  <select id="queryByCompanyId" resultMap="recruitmentRslMap">
+    select
+    r.recruitment_id, r.recruitment_title, r.recruitment_content, r.deliver_time, r.position, r.recruitment_img,
+    c.company_id, c.company_name, c.company_address, c.introduce, c.company_url, c.user_id,  c.qualification, c.logo
+    from pfo_recruitment r, pfo_company c
+    where r.company_id = c.company_id
+    <if test="companyId != null and companyId != ''">
+      and r.company_id = #{companyId}
+    </if>
+    order by r.deliver_time
+  </select>
+
+  <!-- 多条件分页查询  单表 -->
+  <select id="queryRecruitmentsWithPage" resultMap="ResultMapWithBLOBs">
+    select
+    r.recruitment_id, r.recruitment_title, r.recruitment_content, r.deliver_time, r.position, r.recruitment_img,
+    from
+    pfo_recruitment r
+    <where>
+      <if test="recruitment.companyId != null and recruitment.companyId != ''">
+        and r.company_id = #{recruitment.companyId}
+      </if>
+      <if test="recruitment.recruitmentTitle != null and recruitment.recruitmentTitle != ''">
+        and r.recruitment_title = #{recruitment.recruitment_title}
+      </if>
+      <if test="recruitment.recruitmentId != null and recruitment.recruitmentId != ''">
+        and r.recruitment_id = #{recruitment.recruitmentId}
+      </if>
+      <if test="recruitment.recruitmentContent != null and recruitment.recruitmentContent != ''">
+        and r.recruitment_content = #{recruitment.recruitmentContent}
+      </if>
+      <if test="recruitment.deliverTime != null and recruitment.deliverTime != ''">
+        and r.deliver_time = #{recruitment.deliverTime}
+      </if>
+      <if test="recruitment.position != null and recruitment.position != ''">
+        and r.position like concat('%', #{recruitment.position}, '%')
+      </if>
+    </where>
+      order by r.deliver_time desc
+  </select>
+
+  <!-- 多条件分页查询 公司与招聘信息的关联  招聘列表 -->
+  <select id="queryAllRecruitmentsWithPage" resultMap="recruitmentRslMap">
+    select
+    r.recruitment_id, r.recruitment_title, r.recruitment_content, r.deliver_time, r.position, c.company_id,
+    c.company_name, c.company_address, c.introduce, c.company_url, c.qualification, c.logo, c.user_id
+    from
+    pfo_recruitment r, pfo_company c
+    where
+    r.company_id = c.company_id
+    <if test="recruitment.companyId != null and recruitment.companyId != ''">
+      and r.company_id = #{recruitment.companyId}
+    </if>
+    <if test="recruitment.recruitmentTitle != null and recruitment.recruitmentTitle != ''">
+      and r.recruitment_title = #{recruitment.recruitment_title}
+    </if>
+    <if test="recruitment.recruitmentId != null and recruitment.recruitmentId != ''">
+      and r.recruitment_id = #{recruitment.recruitmentId}
+    </if>
+    <if test="recruitment.recruitmentContent != null and recruitment.recruitmentContent != ''">
+      and r.recruitment_content = #{recruitment.recruitmentContent}
+    </if>
+    <if test="recruitment.deliverTime != null and recruitment.deliverTime != ''">
+      and r.deliver_time = #{recruitment.deliverTime}
+    </if>
+    <if test="recruitment.position != null and recruitment.position != ''">
+      and r.position = #{recruitment.position}
+    </if>
+      order by r.deliver_time desc
+  </select>
+
+  <!-- 招聘列表 公司名称或招聘职位模糊查询  -->
+  <select id="queryRecruitmentByCompanyWithPage" resultMap="recruitmentRslMap">
+    select
+    r.recruitment_id, r.recruitment_title, r.recruitment_content, r.deliver_time, r.position, c.company_id,
+    c.company_name, c.company_address, c.introduce, c.company_url, c.qualification, c.logo, c.user_id
+    from
+    pfo_recruitment r, pfo_company c
+    where
+    r.company_id = c.company_id
+    <if test="companyName != null">
+      and c.company_name like '%${companyName}%'
+    </if>
+    order by r.deliver_time desc
+  </select>
+
+  <!-- 根据公司获取所有的招聘信息及报名人数 -->
+  <select id="queryExampleBycompanyId" parameterType="java.lang.Long" resultType="java.util.HashMap">
+    select
+      r.recruitment_id, count(s.sign_up_id) signUpCount
+    from
+      pfo_recruitment r, pfo_sign_up s
+    where
+      s.recruitment_id = r.recruitment_id
+    <if test="companyId != null and companyId != ''">
+      and r.company_id = #{companyId}
+    </if>
+    GROUP BY
+      s.recruitment_id
+  </select>
+
+  <!-- 根据公司查询招聘信息信息  公司主页 -->
+  <select id="queryByCompany" parameterType="com.offer.pojo.PfoCompany" resultMap="recruitmentRslMap">
+    select
+    r.recruitment_id, r.recruitment_title, r.recruitment_content, r.deliver_time, r.position, r.recruitment_img, c.company_id,
+    c.company_name, c.company_address, c.introduce, c.company_url, c.qualification, c.logo, c.user_id
+    from pfo_recruitment r, pfo_company c
+    <where>
+      <if test="pfoCompany.companyId != null">
+        r.company_id = c.company_id
+      </if>
+      <if test="pfoCompany.companyId != null">
+        AND c.company_Id = ${pfoCompany.companyId}
+      </if>
+    </where>
+    order by r.deliver_time desc
+    limit 5
+  </select>
+</mapper>

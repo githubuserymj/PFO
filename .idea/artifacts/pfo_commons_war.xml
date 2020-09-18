@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="pfo-commons:war">
+    <output-path>$PROJECT_DIR$/pfo-commons/target</output-path>
+    <root id="archive" name="pfo-commons-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="pfo-commons:war exploded" />
+    </root>
+  </artifact>
+</component>

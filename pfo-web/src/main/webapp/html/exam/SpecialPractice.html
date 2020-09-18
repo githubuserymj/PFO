@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>专项练习</title>
+
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <script src="/pfo/js/exam/tagcloud.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/global.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css" type="text/css">
+
+    <style>
+        .exercise-box {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            border-radius: 5px 5px 0 0;
+            height: 600px;
+        }
+
+        .exercise-head {
+            padding: 20px;
+        }
+
+        .exercise-nav li a {
+            text-align: center;
+        }
+
+        #second-nav {
+            height: 20px;
+            line-height: 5px;
+            padding-left: 6px;
+        }
+
+        .exercise-body {
+            padding: 20px;
+            width: 96%;
+            padding: 2%;
+            float: none;
+        }
+
+        /*云标签样式*/
+        .fl {
+            float: left;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        .wrapper {
+            width: 100%;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .wrapper p {
+            padding-top: 150px;
+            line-height: 27px;
+            color: #999;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .tagcloud {
+            position: relative;
+            margin-top: -150px;
+        }
+
+        .tagcloud a {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            padding: 11px 30px;
+            color: #333;
+            font-size: 16px;
+            border: 1px solid #e6e7e8;
+            border-radius: 18px;
+            background-color: #f2f4f8;
+            text-decoration: none;
+            white-space: nowrap;
+            -o-box-shadow: 6px 4px 8px 0 rgba(151, 142, 136, .34);
+            -ms-box-shadow: 6px 4px 8px 0 rgba(151, 142, 136, .34);
+            -moz-box-shadow: 6px 4px 8px 0 rgba(151, 142, 136, .34);
+            -webkit-box-shadow: 6px 4px 8px 0 rgba(151, 142, 136, .34);
+            box-shadow: 6px 4px 8px 0 rgba(151, 142, 136, .34);
+            -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4,Direction=135, Color='#000000')"; /*兼容ie7/8*/
+            filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=125, Strength=9);
+            /*strength是阴影大小，direction是阴影方位，单位为度，可以为负数，color是阴影颜色 （尽量使用数字）使用IE滤镜实现盒子阴影的盒子必须是行元素或以行元素显示（block或inline-block;）*/
+        }
+
+        .tagcloud a:hover {
+            color: #3385cf;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <div id="second-nav" class="container">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/pfo/html/exam/exam_bank.html">公司历届套题</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/pfo/html/exam/SpecialPractice.html">专项练习</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pfo/html/exam/questionCenter.html">试题广场</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="exercise-box bg-white">
+        <div class="exercise-head">
+            <h6>专项练习</h6>
+        </div>
+
+        <div class="exercise-nav">
+            <!--条件展示-->
+            <ul id="ex-nav" class="nav nav-pills" role="tablist">
+                <li class="nav-item col-3">
+                    <a class="nav-link active" data-toggle="pill" href="#">知识点专项练习</a>
+                </li>
+                <li class="nav-item col-3">
+                    <a class="nav-link" data-toggle="pill" href="#menu1">备用</a>
+                </li>
+                <li class="nav-item col-3">
+                    <a class="nav-link" data-toggle="pill" href="#menu2">备用</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--练习知识点-->
+        <div class="exercise-body">
+            <div class="wrapper">
+                <p>没有发现任何关注内容<br/>此处为您显示检索历史</p>
+                <!--<div class="tagcloud fl">
+                    <a href="#">文献综述</a>
+                    <a href="#">对外投资</a>
+                    <a href="#">机器人</a>
+                    <a href="#">区块链</a>
+                    <a href="#">科技创新</a>
+                    <a href="#">计算机科学</a>
+                    <a href="#">自动驾驶</a>
+                    <a href="#">研究价值</a>
+                    <a href="#">模式识别</a>
+                    <a href="#">自然语言处理</a>
+                </div>-->
+                <div class="tagcloud">
+                    <a href="#">大数据时代</a>
+                    <a href="#">一带一路</a>
+                    <a href="#">智能控制</a>
+                    <a href="#">人工智能神经网络</a>
+                    <a href="#">计算机科学</a>
+                    <a href="#">自动驾驶</a>
+                </div>
+            </div><!--wrapper-->
+        </div>
+    </div>
+</div>
+
+<!--底部栏-->
+<script src="/pfo/js/common/footer.js" type="application/javascript"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css" type="text/css">
+
+<script type="text/javascript">
+    /*3D标签云*/
+
+
+    function showTags(data) {
+        var html = ''
+        for (var i = 0; i < data.data.length; i++) {
+            html += '<a href="#">'+data.data[i].tagName+'</a>'
+        }
+        $('.tagcloud').html(html)
+    }
+
+    $(document).ready(getTags())
+
+    function getTags(){
+        $.get({
+            url: "/pfo/question/queryAllQuestionTags",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                showTags(data)
+                tagcloud({
+                    selector: ".tagcloud",  //元素选择器
+                    fontsize: 16,       //基本字体大小, 单位px
+                    radius: 100,         //滚动半径, 单位px
+                    mspeed: "normal",   //滚动最大速度, 取值: slow, normal(默认), fast
+                    ispeed: "normal",   //滚动初速度, 取值: slow, normal(默认), fast
+                    direction: 135,     //初始滚动方向, 取值角度(顺时针360): 0对应top, 90对应left, 135对应right-bottom(默认)...
+                    keep: false          //鼠标移出组件后是否继续随鼠标滚动, 取值: false, true(默认) 对应 减速至初速度滚动, 随鼠标滚动
+                });
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

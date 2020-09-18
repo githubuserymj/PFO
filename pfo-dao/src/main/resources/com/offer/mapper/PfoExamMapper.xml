@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoExamMapper">
+    <resultMap id="BaseResultMap" type="com.offer.pojo.PfoExam">
+        <id column="exam_id" property="examId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="paper_id" property="paperId" jdbcType="BIGINT"/>
+        <result column="score" property="score" jdbcType="INTEGER"/>
+        <result column="total_time" property="totalTime" jdbcType="TIME"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--考试成绩表与试卷表的resultMap-->
+    <resultMap id="EPResultMap" type="com.offer.pojo.PfoExam">
+        <id column="exam_id" property="examId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="paper_id" property="paperId" jdbcType="BIGINT"/>
+        <result column="score" property="score" jdbcType="INTEGER"/>
+        <result column="total_time" property="totalTime" jdbcType="TIME"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP"/>
+        <!--映射关系，指定属性与属性的类型-->
+        <association property="pfoPaper" javaType="com.offer.pojo.PfoPaper">
+            <id column="paper_id" property="paperId" jdbcType="BIGINT"/>
+            <result column="paper_name" property="paperName" jdbcType="VARCHAR"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="open_time" property="openTime" jdbcType="TIMESTAMP"/>
+            <result column="close_time" property="closeTime" jdbcType="TIMESTAMP"/>
+            <result column="question_list_id" property="questionListId" jdbcType="VARCHAR"/>
+            <result column="paper_description" property="paperDescription" jdbcType="VARCHAR"/>
+            <result column="paper_img" property="paperImg" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <!--根据成绩id完成考试成绩表与试卷表关联查询-->
+    <select id="selectExamById" resultMap="EPResultMap" parameterType="java.lang.Long">
+    select exam_id,user_id,score,total_time,start_time,finish_time,
+      pfo_paper.paper_id,pfo_paper.paper_name,pfo_paper.create_time,
+      pfo_paper.open_time,pfo_paper.close_time,pfo_paper.question_list_id,
+      pfo_paper.paper_description,pfo_paper.paper_img
+    from
+      pfo_paper,pfo_exam
+    where
+      pfo_exam.paper_id=pfo_paper.paper_id
+      and pfo_exam.exam_id=#{examId}
+  </select>
+
+    <!--多条件查询全部成绩信息，考试成绩表与试卷表的关联查询-->
+    <select id="queryAllExamsWithPaperInfo" resultMap="EPResultMap">
+        select pfo_exam.exam_id,pfo_exam.user_id,pfo_exam.score,
+        pfo_exam.total_time,pfo_exam.start_time,pfo_exam.finish_time,
+        pfo_paper.paper_id,pfo_paper.paper_name,pfo_paper.create_time,
+        pfo_paper.open_time,pfo_paper.close_time,pfo_paper.question_list_id,
+        pfo_paper.paper_description,pfo_paper.paper_img
+        from
+        pfo_paper,pfo_exam
+        where
+          pfo_exam.paper_id=pfo_paper.paper_id
+        <if test="exam.userId != null and exam.userId != ''">
+            and pfo_exam.user_id=#{exam.userId}
+        </if>
+        <if test="exam.examId != null and exam.examId != ''">
+            and pfo_exam.exam_id=#{exam.examId}
+        </if>
+        <if test="exam.paperId != null and exam.paperId != ''">
+            and pfo_exam.paper_id=#{exam.paperId}
+        </if>
+        <if test="exam.score != null and exam.score != ''">
+            <choose>
+                <when test="exam.score == 95">
+                    and pfo_exam.score <![CDATA[ >= ]]> 90
+                </when>
+                <when test="exam.score == 85">
+                    and pfo_exam.score <![CDATA[ >= ]]> 80 and pfo_exam.score <![CDATA[ < ]]> 90
+                </when>
+                <when test="exam.score == 75">
+                    and pfo_exam.score<![CDATA[ >= ]]>70 and pfo_exam.score <![CDATA[ < ]]> 80
+                </when>
+                <when test="exam.score == 65">
+                    and pfo_exam.score<![CDATA[ >= ]]>60 and pfo_exam.score <![CDATA[ < ]]> 70
+                </when>
+                <when test="exam.score == 30">
+                    and pfo_exam.score <![CDATA[ < ]]> 60
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+        </if>
+        <if test="exam.startTime != null and exam.startTime != ''">
+            and date_format(pfo_exam.start_time, '%y%m%d') <![CDATA[ >= ]]> date_format(#{exam.startTime}, '%y%m%d')
+        </if>
+        <if test="exam.finishTime != null and exam.finishTime != ''">
+            and date_format(pfo_exam.finish_time, '%y%m%d') <![CDATA[ >= ]]> date_format(#{exam.finishTime}, '%y%m%d')
+        </if>
+        <if test="orderMap != null and orderMap.size != 0">
+            order by
+            <foreach item="value" index="key" collection="orderMap.entrySet()" separator=",">
+                ${key} ${value}
+            </foreach>
+        </if>
+    </select>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    exam_id, user_id, paper_id, score, total_time, start_time, finish_time
+  </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoExamExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from pfo_exam
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from pfo_exam
+        where exam_id = #{examId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pfo_exam
+    where exam_id = #{examId,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.offer.pojo.PfoExamExample">
+        delete from pfo_exam
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.offer.pojo.PfoExam" useGeneratedKeys="true" keyProperty="examId">
+    insert into pfo_exam (exam_id, user_id, paper_id, 
+      score, total_time, start_time, 
+      finish_time)
+    values (#{examId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{paperId,jdbcType=BIGINT}, 
+      #{score,jdbcType=INTEGER}, #{totalTime,jdbcType=TIME}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{finishTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="com.offer.pojo.PfoExam">
+        insert into pfo_exam
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="examId != null">
+                exam_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="paperId != null">
+                paper_id,
+            </if>
+            <if test="score != null">
+                score,
+            </if>
+            <if test="totalTime != null">
+                total_time,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="finishTime != null">
+                finish_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="examId != null">
+                #{examId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="paperId != null">
+                #{paperId,jdbcType=BIGINT},
+            </if>
+            <if test="score != null">
+                #{score,jdbcType=INTEGER},
+            </if>
+            <if test="totalTime != null">
+                #{totalTime,jdbcType=TIME},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.offer.pojo.PfoExamExample" resultType="java.lang.Integer">
+        select count(*) from pfo_exam
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update pfo_exam
+        <set>
+            <if test="record.examId != null">
+                exam_id = #{record.examId,jdbcType=BIGINT},
+            </if>
+            <if test="record.userId != null">
+                user_id = #{record.userId,jdbcType=BIGINT},
+            </if>
+            <if test="record.paperId != null">
+                paper_id = #{record.paperId,jdbcType=BIGINT},
+            </if>
+            <if test="record.score != null">
+                score = #{record.score,jdbcType=INTEGER},
+            </if>
+            <if test="record.totalTime != null">
+                total_time = #{record.totalTime,jdbcType=TIME},
+            </if>
+            <if test="record.startTime != null">
+                start_time = #{record.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.finishTime != null">
+                finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update pfo_exam
+        set exam_id = #{record.examId,jdbcType=BIGINT},
+        user_id = #{record.userId,jdbcType=BIGINT},
+        paper_id = #{record.paperId,jdbcType=BIGINT},
+        score = #{record.score,jdbcType=INTEGER},
+        total_time = #{record.totalTime,jdbcType=TIME},
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+        finish_time = #{record.finishTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoExam">
+        update pfo_exam
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="paperId != null">
+                paper_id = #{paperId,jdbcType=BIGINT},
+            </if>
+            <if test="score != null">
+                score = #{score,jdbcType=INTEGER},
+            </if>
+            <if test="totalTime != null">
+                total_time = #{totalTime,jdbcType=TIME},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where exam_id = #{examId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoExam">
+    update pfo_exam
+    set user_id = #{userId,jdbcType=BIGINT},
+      paper_id = #{paperId,jdbcType=BIGINT},
+      score = #{score,jdbcType=INTEGER},
+      total_time = #{totalTime,jdbcType=TIME},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP}
+    where exam_id = #{examId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,96 @@
+body {
+    background: #eee;
+}
+
+.rec-page {
+    font-size: 14px;
+}
+
+.main {
+    padding-top: 70px;
+    padding-bottom: 250px;
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.clearfix {
+    display: block;
+    zoom: 1;
+}
+
+.crumbs-path {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.content {
+    float: left;
+    width: 690px;
+    margin: 0 10px 0 0;
+}
+
+.bar {
+    width: 300px;
+    float: left;
+}
+
+.module-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.module-head {
+    padding: 15px 20px 0;
+    line-height: normal;
+    position: relative;
+}
+
+.module-head h1, .module-head h2 {
+    font-size: 16px;
+    line-height: 16px;
+    float: left;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.module-body {
+    padding: 20px;
+}
+
+.rec-job:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.rec-job {
+    line-height: 1.8;
+    border-bottom: 1px solid #f6f6f6;
+    padding: 0 10px 20px;
+    margin-bottom: 20px;
+}
+
+.module-head-oprt {
+    clear: both;
+}
+
+.btn {
+    display: inline-block;
+    text-align: center;
+    padding: 5px 10px;
+    /*width: 110px;*/
+    color: #fff;
+    font-size: 14px;
+    border-radius: 3px;
+    border: none 0;
+    cursor: pointer;
+    line-height: normal;
+    outline: 0;
+    white-space: nowrap;
+    background: #25bb9b;
+    float: right;
+}
+
+
+

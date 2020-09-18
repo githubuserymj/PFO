@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.offer.mapper.PfoQuestionMapper">
+    <resultMap id="BaseResultMap" type="com.offer.pojo.PfoQuestion">
+        <id column="question_id" property="questionId" jdbcType="BIGINT"/>
+        <result column="question_content" property="questionContent" jdbcType="VARCHAR"/>
+        <result column="question_type" property="questionType" jdbcType="VARCHAR"/>
+        <result column="question_subject" property="questionSubject" jdbcType="VARCHAR"/>
+        <result column="question_level" property="questionLevel" jdbcType="VARCHAR"/>
+        <result column="standard_time" property="standardTime" jdbcType="INTEGER"/>
+        <result column="answer" property="answer" jdbcType="VARCHAR"/>
+        <result column="answer_analysis" property="answerAnalysis" jdbcType="VARCHAR"/>
+        <result column="answer_note" property="answerNote" jdbcType="VARCHAR"/>
+        <result column="weigh" property="weigh" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="QTResultMap" type="com.offer.pojo.PfoQuestion" extends="BaseResultMap">
+        <collection property="tags" ofType="com.offer.pojo.PfoTag" column="{questionId=question_id}"
+                    select="selectTagsByQuestionId">
+            <id column="tag_id" property="tagId" jdbcType="BIGINT"/>
+            <result column="tag_name" property="tagName" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryAllQuestionsByConditions" resultMap="QTResultMap">
+        select
+        *
+        FROM
+        pfo_question
+        WHERE
+        1=1
+        <if test="Keys.questionId != null and Keys.questionId != ''">
+            and question_id=#{Keys.questionId}
+        </if>
+        <if test="Keys.questionContent != null and Keys.questionContent != ''">
+            and question_content like concat('%',#{Keys.questionContent},'%')
+        </if>
+        <if test="Keys.questionType != null and Keys.questionType != ''">
+            and question_type like #{Keys.questionContent}
+        </if>
+        <if test="Keys.questionSubject != null and Keys.questionType != ''">
+            and question_subject like concat('%',#{Keys.questionContent},'%')
+        </if>
+        <if test="Keys.questionLevel != null and Keys.questionLevel != ''">
+            and question_level = #{Keys.questionLevel}
+        </if>
+        <if test="Keys.weigh != null and Keys.weigh != ''">
+            and weigh = #{Keys.weigh}
+        </if>
+        <if test="orderMap != null and orderMap.size != 0">
+            order by
+            <foreach item="value" index="key" collection="orderMap.entrySet()" separator=",">
+                ${key} ${value}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectTagsByQuestionId" resultType="com.offer.pojo.PfoTag">
+    SELECT
+      pfo_tag.*
+    FROM
+      pfo_question_tag,pfo_tag
+    where
+      pfo_question_tag.tag_id=pfo_tag.tag_id
+    AND
+      pfo_question_tag.question_id = #{questionId}
+  </select>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    question_id, question_content, question_type, question_subject, question_level, standard_time, 
+    answer, answer_analysis, answer_note, weigh
+  </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.offer.pojo.PfoQuestionExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from pfo_question
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectQuestionsByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select * from pfo_question
+        where question_id in
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by
+        weigh asc,question_subject asc
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from pfo_question
+        where question_id = #{questionId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pfo_question
+    where question_id = #{questionId,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.offer.pojo.PfoQuestionExample">
+        delete from pfo_question
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.offer.pojo.PfoQuestion">
+    insert into pfo_question (question_id, question_content, question_type, 
+      question_subject, question_level, standard_time, 
+      answer, answer_analysis, answer_note, 
+      weigh)
+    values (#{questionId,jdbcType=BIGINT}, #{questionContent,jdbcType=VARCHAR}, #{questionType,jdbcType=VARCHAR}, 
+      #{questionSubject,jdbcType=VARCHAR}, #{questionLevel,jdbcType=VARCHAR}, #{standardTime,jdbcType=INTEGER}, 
+      #{answer,jdbcType=VARCHAR}, #{answerAnalysis,jdbcType=VARCHAR}, #{answerNote,jdbcType=VARCHAR}, 
+      #{weigh,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.offer.pojo.PfoQuestion">
+        insert into pfo_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionId != null">
+                question_id,
+            </if>
+            <if test="questionContent != null">
+                question_content,
+            </if>
+            <if test="questionType != null">
+                question_type,
+            </if>
+            <if test="questionSubject != null">
+                question_subject,
+            </if>
+            <if test="questionLevel != null">
+                question_level,
+            </if>
+            <if test="standardTime != null">
+                standard_time,
+            </if>
+            <if test="answer != null">
+                answer,
+            </if>
+            <if test="answerAnalysis != null">
+                answer_analysis,
+            </if>
+            <if test="answerNote != null">
+                answer_note,
+            </if>
+            <if test="weigh != null">
+                weigh,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionId != null">
+                #{questionId,jdbcType=BIGINT},
+            </if>
+            <if test="questionContent != null">
+                #{questionContent,jdbcType=VARCHAR},
+            </if>
+            <if test="questionType != null">
+                #{questionType,jdbcType=VARCHAR},
+            </if>
+            <if test="questionSubject != null">
+                #{questionSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="questionLevel != null">
+                #{questionLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="standardTime != null">
+                #{standardTime,jdbcType=INTEGER},
+            </if>
+            <if test="answer != null">
+                #{answer,jdbcType=VARCHAR},
+            </if>
+            <if test="answerAnalysis != null">
+                #{answerAnalysis,jdbcType=VARCHAR},
+            </if>
+            <if test="answerNote != null">
+                #{answerNote,jdbcType=VARCHAR},
+            </if>
+            <if test="weigh != null">
+                #{weigh,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.offer.pojo.PfoQuestionExample" resultType="java.lang.Integer">
+        select count(*) from pfo_question
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update pfo_question
+        <set>
+            <if test="record.questionId != null">
+                question_id = #{record.questionId,jdbcType=BIGINT},
+            </if>
+            <if test="record.questionContent != null">
+                question_content = #{record.questionContent,jdbcType=VARCHAR},
+            </if>
+            <if test="record.questionType != null">
+                question_type = #{record.questionType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.questionSubject != null">
+                question_subject = #{record.questionSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="record.questionLevel != null">
+                question_level = #{record.questionLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="record.standardTime != null">
+                standard_time = #{record.standardTime,jdbcType=INTEGER},
+            </if>
+            <if test="record.answer != null">
+                answer = #{record.answer,jdbcType=VARCHAR},
+            </if>
+            <if test="record.answerAnalysis != null">
+                answer_analysis = #{record.answerAnalysis,jdbcType=VARCHAR},
+            </if>
+            <if test="record.answerNote != null">
+                answer_note = #{record.answerNote,jdbcType=VARCHAR},
+            </if>
+            <if test="record.weigh != null">
+                weigh = #{record.weigh,jdbcType=INTEGER},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update pfo_question
+        set question_id = #{record.questionId,jdbcType=BIGINT},
+        question_content = #{record.questionContent,jdbcType=VARCHAR},
+        question_type = #{record.questionType,jdbcType=VARCHAR},
+        question_subject = #{record.questionSubject,jdbcType=VARCHAR},
+        question_level = #{record.questionLevel,jdbcType=VARCHAR},
+        standard_time = #{record.standardTime,jdbcType=INTEGER},
+        answer = #{record.answer,jdbcType=VARCHAR},
+        answer_analysis = #{record.answerAnalysis,jdbcType=VARCHAR},
+        answer_note = #{record.answerNote,jdbcType=VARCHAR},
+        weigh = #{record.weigh,jdbcType=INTEGER}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.offer.pojo.PfoQuestion">
+        update pfo_question
+        <set>
+            <if test="questionContent != null">
+                question_content = #{questionContent,jdbcType=VARCHAR},
+            </if>
+            <if test="questionType != null">
+                question_type = #{questionType,jdbcType=VARCHAR},
+            </if>
+            <if test="questionSubject != null">
+                question_subject = #{questionSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="questionLevel != null">
+                question_level = #{questionLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="standardTime != null">
+                standard_time = #{standardTime,jdbcType=INTEGER},
+            </if>
+            <if test="answer != null">
+                answer = #{answer,jdbcType=VARCHAR},
+            </if>
+            <if test="answerAnalysis != null">
+                answer_analysis = #{answerAnalysis,jdbcType=VARCHAR},
+            </if>
+            <if test="answerNote != null">
+                answer_note = #{answerNote,jdbcType=VARCHAR},
+            </if>
+            <if test="weigh != null">
+                weigh = #{weigh,jdbcType=INTEGER},
+            </if>
+        </set>
+        where question_id = #{questionId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.offer.pojo.PfoQuestion">
+    update pfo_question
+    set question_content = #{questionContent,jdbcType=VARCHAR},
+      question_type = #{questionType,jdbcType=VARCHAR},
+      question_subject = #{questionSubject,jdbcType=VARCHAR},
+      question_level = #{questionLevel,jdbcType=VARCHAR},
+      standard_time = #{standardTime,jdbcType=INTEGER},
+      answer = #{answer,jdbcType=VARCHAR},
+      answer_analysis = #{answerAnalysis,jdbcType=VARCHAR},
+      answer_note = #{answerNote,jdbcType=VARCHAR},
+      weigh = #{weigh,jdbcType=INTEGER}
+    where question_id = #{questionId,jdbcType=BIGINT}
+  </update>
+</mapper>

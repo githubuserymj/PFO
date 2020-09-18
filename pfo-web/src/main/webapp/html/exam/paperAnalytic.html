@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>结果分析</title>
+
+    <script src="/pfo/js/jquery-3.4.1.js"></script>
+    <script src="/pfo/js/bootstrap.js"></script>
+    <script src="/pfo/js/jquery.cookie.js"></script>
+    <script src="/pfo/js/common/baseTopNavigation.js"></script>
+    <script src="/pfo/js/common/baseTopNavigationJS.js"></script>
+    <link rel="stylesheet" href="/pfo/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/global.css" type="text/css">
+    <link rel="stylesheet" href="/pfo/css/common/baseTopNavigation.css" type="text/css">
+
+    <style>
+        .analytic-box{
+            margin-top: 50px;
+            border-radius: 5px 5px 0px 0px;
+            margin-bottom: 80px;
+        }
+
+        .review-report{
+            background: #fff;
+            border-top: none;
+            height: 500px;
+        }
+
+        .graph-box{
+            padding: 30px 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .graph-info{
+            width: 50%;
+            padding-left: 30px;
+            float: left;
+            border-right: 1px solid #ddd;
+        }
+
+        .graph-statistic{
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .graph-score{
+            background: url("/pfo/img/tools/成绩查询.png") no-repeat;
+            padding-left: 30px;
+            color: #888;
+            height: 28px;
+            line-height: 24px;
+            display: inline-block;
+            margin-right: 40px;
+        }
+
+        .graph-detail{
+            float: none;
+            width: 80%;
+            font-size: 16px;
+        }
+
+        .module-box{
+            margin-top: 300px;
+            border-radius: 3px;
+            background: #fff;
+        }
+
+        .module-head{
+            padding: 15px 20px 0;
+            line-height: normal;
+            position: relative;
+        }
+
+        .module-head h1{
+            font-size: 16px;
+            line-height: 16px;
+            float: left;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .module-body{
+            padding: 30px;
+        }
+
+        .special-train-item{
+            float: left;
+            position: relative;
+            width: 180px;
+            margin: 0 10px 5px 0;
+            overflow: hidden;
+        }
+
+        .train-img{
+            display: block;
+            width: 180px;
+        }
+
+        .special-train-title {
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 20px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        #skill-radar{
+            width: 50%;
+            float: right;
+            padding: 0 20px;
+        }
+
+        #radar-box{
+            width: 100%;
+            height: 250px;
+            padding-left: 50px;
+            overflow: hidden;
+        }
+
+        #facePhoto{
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="analytic-box bg-white">
+        <!--条件展示-->
+        <div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">评估报告</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link answerCK" href="#">答案解析</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--评估内容-->
+        <div class="review-report">
+            <div class="graph-box">
+                <div class="graph-info">
+
+                    <img id="facePhoto" src="/pfo/img/logo/cancelFocus.svg" width="90" height="120">
+
+                    <div class="graph-statistic">
+                        <span class="graph-score">得分：</span>
+                    </div>
+
+                    <div class="content-item-order graph-detail">
+                        <p><span id="paper-name" class="item-label">试卷：</span>
+                            <span class="paper-level" title="难度系数"></span>
+                        </p>
+                        <p>
+                            <span id="correct-num" class="item-label">正确题数：</span>
+                        </p>
+                        <p>
+                            <span id="consuming-time" class="item-label">用时：</span>
+                        </p>
+                        <p>
+                            <span id="macthValue" class="item-label">人脸匹配度：</span>
+                        </p>
+                        <p>
+                            <a href="#" class="btn btn-primary answerCK">查看解析</a>
+                        </p>
+                    </div>
+                </div>
+                <!--技能雷达图-->
+                <div id="skill-radar">
+                    <b>知识技能雷达图</b>
+                    <div id="radar-box">
+
+                    </div>
+                </div>
+
+                <!--相关推荐-->
+                <div class="module-box">
+                    <div class="module-head">
+                        <h1>根据做题结果，你可能需要：</h1>
+                    </div>
+                    <div class="module-body">
+                        <div class="special-train-list d-flex justify-content-center">
+                            <a href="#" class="special-train-item">
+                                <img class="train-img" src="//static.nowcoder.com//images/res/actBg/2.png" alt="">
+                                <p class="special-train-title">恒生公司2015秋招开发类笔试题（六）</p>
+                                <div class="train-type-label train-type-book"></div>
+                            </a>
+                            <a href="#" class="special-train-item">
+                                <img class="train-img" src="//static.nowcoder.com//images/res/actBg/3.png" alt="">
+                                <p class="special-train-title">恒生公司2015秋招开发类笔试题（五）</p>
+                                <div class="train-type-label train-type-book"></div>
+                            </a>
+                            <a href="#" class="special-train-item">
+                                <img class="train-img" src="//static.nowcoder.com//images/res/actBg/4.png" alt="">
+                                <p class="special-train-title">恒生公司2015秋招开发类笔试题（四）</p>
+                                <div class="train-type-label train-type-book"></div>
+                            </a>
+                            <a href="#" class="special-train-item">
+                                <img class="train-img" src="//static.nowcoder.com//images/res/actBg/5.png" alt="">
+                                <p class="special-train-title">恒生公司2015秋招开发类笔试题（三）</p>
+                                <div class="train-type-label train-type-book"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--雷达图导入-->
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=x7wyDgxyo5ym4sdAs1NaClHMBQIdjnR2"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script type="text/javascript">
+    var dom = document.getElementById("radar-box");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    option = {
+        tooltip: {},
+        radar: {
+            // shape: 'circle',
+            name: {
+                textStyle: {
+                    color: '#fff',
+                    backgroundColor: '#999',
+                    borderRadius: 3,
+                    padding: [3, 5]
+                }
+            },
+            indicator: [
+                { name: 'Java', max: 6500},
+                { name: '编程基础', max: 16000},
+                { name: '网络基础', max: 30000},
+                { name: 'Spring', max: 38000},
+                { name: 'Linux', max: 52000},
+                { name: '数据库', max: 25000}
+            ]
+        },
+        series: [{
+            name: '涉及知识点',
+            type: 'radar',
+            // areaStyle: {normal: {}},
+            data : [
+                {
+                    value : [4300, 10000, 28000, 35000, 52000, 19000],
+                    name : '涉及知识点'
+                }
+            ]
+        }]
+    };
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+
+<!--底部栏-->
+<script src="/pfo/js/common/footer.js" type="application/javascript"></script>
+<link rel="stylesheet" href="/pfo/css/common/footer.css" type="text/css">
+
+<script>
+    $(document).ready(function () {
+        function getUrlParam(name){
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r!=null) return unescape(r[2]); return null;
+        }
+
+        var examId = getUrlParam("examId")
+        var correctNum = getUrlParam("correctNum")
+        var questionNum = getUrlParam("questionNum")
+        var consumingTime = getUrlParam("consumingTime")
+
+        $.get({
+            url:"/pfo/exam/queryExam",
+            data:'examId='+examId,
+            success:function (data) {
+                var examScoreInfo = eval(data.data)
+                console.log(examScoreInfo)
+                initData(examScoreInfo)
+            }
+        })
+
+        /*初始化数据*/
+        function initData(examScoreInfo){
+            $('.graph-score').append(examScoreInfo.score)
+            $('#paper-name').after(examScoreInfo.pfoPaper.paperName)
+            $('#correct-num').append(correctNum+"/"+questionNum)
+            $('#consuming-time').append(consumingTime)
+        }
+
+        $('.answerCK').click(function () {
+            window.location.href = "/pfo/exam/answerAnalytic?examId="+examId+"&correctNum="+correctNum+"&questionNum="+questionNum+"&consumingTime="+consumingTime;
+        })
+
+        /*人脸比对*/
+
+        function faceMatch() {
+            var face1 = sessionStorage['faceImage1']
+            var face2 = sessionStorage['faceImage2']
+            $.post({
+                url:"/pfo/face/faceMatch",
+                data:'image1='+encodeURIComponent(face1)+'&image2='+encodeURIComponent(face2),
+                success:function (data) {
+                    var errorCode = JSON.parse(data).error_code
+                    if(errorCode == 0){
+                        var macthScore = JSON.parse(data).result.score
+
+                        $('#facePhoto').attr("src",face2)
+                        if(macthScore > 60){
+                            $('#macthValue').append(""+macthScore+"   答卷人相同，答卷有效。")
+                        }else {
+                            $('#macthValue').append(""+macthScore+"   答卷人不同，答卷无效。")
+                        }
+                    }else {
+                        $('#macthValue').append(""+JSON.parse(data).error_msg+" ")
+                    }
+
+
+                    console.log(data)
+
+                }
+            })
+
+        }
+        faceMatch()
+    })
+
+
+
+</script>
+</body>
+</html>
